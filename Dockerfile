@@ -19,8 +19,12 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install runtime dependencies only
-RUN apt-get update && apt-get install -y --no-install-recommends \
+ENV TZ=Asia/Ho_Chi_Minh
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=$TZ apt-get install -y --no-install-recommends \
     libopenblas0 \
+    tzdata \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy Python dependencies from builder
@@ -33,7 +37,8 @@ ENV PATH=/root/.local/bin:$PATH \
     STREAMLIT_SERVER_PORT=8501 \
     STREAMLIT_SERVER_ADDRESS=0.0.0.0 \
     STREAMLIT_SERVER_HEADLESS=true \
-    STREAMLIT_LOGGER_LEVEL=info
+    STREAMLIT_LOGGER_LEVEL=info \
+    TZ=Asia/Ho_Chi_Minh
 
 # Copy application files
 COPY app.py .
