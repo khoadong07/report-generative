@@ -1,0 +1,208 @@
+{
+  "report_metadata": {
+    "brand": "Nestlé",
+    "report_date": "2026-02-01",
+    "compare_date": "2026-01-31",
+    "generated_at": "2026-02-05T17:27:44.120300"
+  },
+  "slide_1": {
+    "title": "Tổng quan về thương hiệu Nestlé",
+    "subtitle": "Ngày 2026-02-01 (so sánh với 2026-01-31)",
+    "data": [
+      {
+        "type": "buzz",
+        "label": "Tổng thảo luận",
+        "today": 1727,
+        "yesterday": 845,
+        "change_pct": 104.38
+      },
+      {
+        "type": "post",
+        "label": "Tổng bài đăng",
+        "today": 481,
+        "yesterday": 116,
+        "change_pct": 314.66
+      },
+      {
+        "type": "engagement",
+        "label": "Tổng tương tác",
+        "today": 23259,
+        "yesterday": 30294,
+        "change_pct": -23.22
+      },
+      {
+        "type": "reactions",
+        "label": "Lượt reactions",
+        "today": 17639,
+        "yesterday": 15922,
+        "change_pct": 10.78
+      },
+      {
+        "type": "shares",
+        "label": "Lượt chia sẻ",
+        "today": 4374,
+        "yesterday": 13643,
+        "change_pct": -67.94
+      },
+      {
+        "type": "comments",
+        "label": "Bình luận",
+        "today": 1246,
+        "yesterday": 729,
+        "change_pct": 70.92
+      },
+      {
+        "type": "views",
+        "label": "Lượt xem",
+        "today": 635491,
+        "yesterday": 1170459,
+        "change_pct": -45.71
+      }
+    ],
+    "insight": "Thảo luận về thương hiệu Nestlé tăng đột biến lên 1727 lượt trong ngày 2026-02-01, gấp đôi so với ngày trước đó, chủ yếu tập trung vào thông tin thu hồi sản phẩm của thương hiệu con Gerber tại thị trường Mỹ [Nguồn: https://www.tiktok.com/@vtv.times/video/7601896457389591826]. Sự việc bắt nguồn từ việc phát hiện khả năng lẫn tạp chất nhựa mềm hoặc giấy trong bánh quy Gerber® Arrowroot Biscuits, do nguyên liệu bột dong riềng từ một nhà cung cấp gây ra [Nguồn: http://facebook.com/790024751057832_915924294284235]. Cộng đồng mạng bày tỏ lo ngại về an toàn thực phẩm, đặc biệt đối với trẻ nhỏ, và lan tỏa thông tin về đợt thu hồi diện rộng 21 lô sản phẩm [Nguồn: http://facebook.com/138841156165916_1294284519398922]. Nhiều bình luận thể hiện sự thất vọng và đặt câu hỏi về quy trình kiểm soát chất lượng của Nestlé [Nguồn: http://facebook.com/419555621494041_1317059697125118]. Dù Nestlé đã thông báo ngừng hợp tác với nhà cung cấp liên quan, sự việc vẫn gây ra làn sóng phản ứng tiêu cực và ảnh hưởng đến niềm tin của người tiêu dùng [Nguồn: http://facebook.com/262700667105773_1334483892046952]. Các diễn đàn và mạng xã hội ghi nhận nhiều chia sẻ và cảnh báo từ các bậc phụ huynh [Nguồn: http://facebook.com/74445296351_1474697147656985]."
+  },
+  "slide_2": {
+    "title": "Trendline | Diễn biến thảo luận",
+    "subtitle": "Khoảng thời gian: 2026-01-27 → 2026-02-01",
+    "window": {
+      "start_date": "2026-01-27",
+      "end_date": "2026-02-01"
+    },
+    "trendline": [
+      {
+        "date": "2026-01-27",
+        "buzz": 2
+      },
+      {
+        "date": "2026-01-28",
+        "buzz": 19
+      },
+      {
+        "date": "2026-01-29",
+        "buzz": 1
+      },
+      {
+        "date": "2026-01-30",
+        "buzz": 46
+      },
+      {
+        "date": "2026-01-31",
+        "buzz": 845
+      },
+      {
+        "date": "2026-02-01",
+        "buzz": 1727
+      }
+    ],
+    "peak_day": {
+      "date": "2026-02-01",
+      "buzz": 1727,
+      "links": [
+        "https://www.tiktok.com/@vtv.times/video/7601896457389591826",
+        "http://facebook.com/138841156165916_1294284519398922",
+        "http://facebook.com/419555621494041_1317059697125118"
+      ]
+    },
+    "current_day": {
+      "date": "2026-02-01",
+      "buzz": 1727,
+      "is_still_hot": true
+    },
+    "insight": "Ngày 2026-02-01, sự vụ thu hồi 21 lô bánh ăn dặm Gerber của Nestlé do phát hiện khả năng lẫn mảnh nhựa mềm hoặc giấy đã đạt đến đỉnh điểm thảo luận với 1727 lượt, cho thấy mức độ quan tâm lớn từ cộng đồng về vấn đề an toàn thực phẩm liên quan đến sản phẩm dành cho trẻ nhỏ [Nguồn: https://www.tiktok.com/@vtv.times/video/7601896457389591826]. Dựa trên dữ liệu hiện có, sự việc vẫn đang được cộng đồng đặc biệt quan tâm, thể hiện qua số lượng thảo luận cao trên các nền tảng như TikTok và Facebook [Nguồn: http://facebook.com/138841156165916_1294284519398922]. Việc thu hồi diện rộng 21 lô bánh và thông tin về nguyên nhân từ nhà cung cấp bột dong riềng càng làm gia tăng lo ngại của người tiêu dùng [Nguồn: http://facebook.com/419555621494041_1317059697125118]. Do đó, Nestlé cần tiếp tục minh bạch thông tin và có biện pháp xử lý triệt để để bảo vệ uy tín thương hiệu và niềm tin của khách hàng."
+  },
+  "slide_3": {
+    "title": "Phân tích theo kênh thảo luận",
+    "subtitle": "Ngày 2026-02-01 (so sánh với 2026-01-31)",
+    "top_channel": "Facebook",
+    "channel_distribution": [
+      {
+        "Channel": "Facebook",
+        "today_buzz": 1680,
+        "yesterday_buzz": 834.0,
+        "change_pct": 101.44
+      },
+      {
+        "Channel": "Tiktok",
+        "today_buzz": 21,
+        "yesterday_buzz": 6.0,
+        "change_pct": 250.0
+      },
+      {
+        "Channel": "Youtube",
+        "today_buzz": 16,
+        "yesterday_buzz": 0.0,
+        "change_pct": 100.0
+      },
+      {
+        "Channel": "News",
+        "today_buzz": 8,
+        "yesterday_buzz": 2.0,
+        "change_pct": 300.0
+      },
+      {
+        "Channel": "Threads",
+        "today_buzz": 2,
+        "yesterday_buzz": 3.0,
+        "change_pct": -33.33
+      }
+    ],
+    "insight": "## Insight: Channel Breakdown - Nestlé (01/02/2026)\n\nSự gia tăng đột biến của thảo luận trên Facebook cho thấy đây là kênh chính khuếch đại thông tin về đợt thu hồi bánh ăn dặm Gerber của Nestlé, với mức tăng trưởng buzz lên tới 101.44% so với ngày hôm qua [Nguồn: http://facebook.com/138841156165916_1294284519398922]. Các bài đăng trên các trang báo điện tử lớn như VnExpress.net và VTV Times đang đóng góp đáng kể vào việc lan tỏa thông tin, thu hút sự chú ý của người tiêu dùng [Nguồn: http://facebook.com/262700667105773_1334483892046952] và [Nguồn: http://facebook.com/790024751057832_915924294284235]. Nội dung tập trung chủ yếu vào việc thu hồi 21 lô bánh do nghi ngờ chứa mảnh nhựa và giấy, gây lo ngại về an toàn thực phẩm [Nguồn: http://facebook.com/419555621494041_1317059697125118]. Các cộng đồng địa phương như Hà Nội 24H và Ho Chi Minh City cũng tích cực chia sẻ thông tin, cho thấy mức độ quan tâm rộng khắp trên cả nước [Nguồn: http://facebook.com/419555621494041_1317059697125118] và [Nguồn: http://facebook.com/132116960729271_880652188095370]. Sự lan truyền trên các trang cộng đồng như Hà Nội Fan với biểu tượng cảm xúc mạnh mẽ cho thấy mức độ hoang mang của người tiêu dùng [Nguồn: http://facebook.com/74445296351_1474697147656985]. Mặc dù TikTok và Youtube cũng bắt đầu có thảo luận, nhưng vẫn còn rất nhỏ so với Facebook, cần theo dõi sát sao để đánh giá tiềm năng lan rộng [Nguồn: http://facebook.com/138841156165916_1294284519398922]. Việc chủ động theo dõi và phản hồi trên Facebook là ưu tiên hàng đầu để kiểm soát thông tin và giảm thiểu tác động tiêu cực đến uy tín thương hiệu [Nguồn: http://facebook.com/790024751057832_915924294284235]."
+  },
+  "slide_4": {
+    "title": "Sentiment & Brand Attribute",
+    "subtitle": "Ngày 2026-02-01",
+    "sentiment_distribution": [
+      {
+        "Sentiment": "Neutral",
+        "Count": 1029
+      },
+      {
+        "Sentiment": "Negative",
+        "Count": 583
+      },
+      {
+        "Sentiment": "Positive",
+        "Count": 115
+      }
+    ],
+    "attribute_sentiment": [
+      {
+        "Label_List": "Chất lượng Sản phẩm",
+        "Negative": 461.0,
+        "Neutral": 724.0,
+        "Positive": 76.0
+      },
+      {
+        "Label_List": "Giá cả & Khuyến mãi",
+        "Negative": 86.0,
+        "Neutral": 192.0,
+        "Positive": 24.0
+      },
+      {
+        "Label_List": "Hương vị",
+        "Negative": 8.0,
+        "Neutral": 36.0,
+        "Positive": 1.0
+      },
+      {
+        "Label_List": "Khác",
+        "Negative": 10.0,
+        "Neutral": 13.0,
+        "Positive": 0.0
+      },
+      {
+        "Label_List": "Nguồn gốc &Thành phần",
+        "Negative": 8.0,
+        "Neutral": 24.0,
+        "Positive": 5.0
+      },
+      {
+        "Label_List": "Thương hiệu & Quảng cáo",
+        "Negative": 6.0,
+        "Neutral": 15.0,
+        "Positive": 4.0
+      }
+    ],
+    "insight": "Phân tích sentiment cho thấy Nestlé đang đối mặt với một làn sóng phản hồi tiêu cực đáng kể, với 583 lượt đánh giá tiêu cực so với chỉ 115 lượt tích cực và 1029 lượt trung lập, cho thấy sự cần thiết phải giải quyết các vấn đề đang gây lo ngại cho người tiêu dùng. Vấn đề nổi bật nhất được đề cập trong các phản hồi tiêu cực là \"Chất lượng Sản phẩm\", chiếm tới 461/583 đánh giá tiêu cực, tập trung vào việc thu hồi bánh ăn dặm Gerber do nghi ngờ chứa mảnh nhựa và giấy, gây ảnh hưởng nghiêm trọng đến niềm tin của khách hàng. Mặc dù \"Chất lượng Sản phẩm\" cũng nhận được số lượng lớn đánh giá trung lập (724/1029), nhưng sự chênh lệch lớn so với đánh giá tích cực (76/115) cho thấy cần cải thiện đáng kể để củng cố uy tín thương hiệu. Bên cạnh đó, một số ít phản hồi tiêu cực còn liên quan đến \"Thương hiệu & Quảng cáo\", cho thấy sự việc thu hồi sản phẩm đang lan rộng trên các kênh truyền thông và ảnh hưởng đến hình ảnh của Nestlé [Nguồn: https://www.tiktok.com/@vtv.times/video/7601896457389591826], [Nguồn: http://facebook.com/138841156165916_1294284519398922], [Nguồn: http://facebook.com/419555621494041_1317059697125118], [Nguồn: http://facebook.com/262700667105773_1334483892046952], [Nguồn: http://facebook.com/790024751057832_915924294284235]."
+  }
+}

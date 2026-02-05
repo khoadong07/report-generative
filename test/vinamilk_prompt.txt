@@ -1,0 +1,198 @@
+Create a professional 4-slide presentation for Brand Health Analysis with the following specifications:
+
+═══════════════════════════════════════════════════════════════
+BRAND: Nestlé
+REPORT DATE: 01/02/2026
+COMPARE DATE: 31/01/2026
+═══════════════════════════════════════════════════════════════
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 1 - BRAND OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LAYOUT:
+- Title: "Tổng quan về thương hiệu Nestlé"
+- Subtitle: "Ngày 2026-02-01 (so sánh với 2026-01-31)"
+- 7 KPI cards in grid layout (4 top row, 3 bottom row)
+- Each card shows: metric name, large number, percentage change with arrow
+- Bottom section: Insight box with light blue background
+
+KPI DATA:
+1. Tổng thảo luận: 1,727 (+104.38%)
+2. Tổng bài đăng: 481 (+314.66%)
+3. Tổng tương tác: 23,259 (-23.22%)
+4. Lượt reactions: 17,639 (+10.78%)
+5. Lượt chia sẻ: 4,374 (-67.94%)
+6. Bình luận: 1,246 (+70.92%)
+7. Lượt xem: 635,491 (-45.71%)
+
+INSIGHT:
+Thảo luận về thương hiệu Nestlé tăng đột biến lên 1727 lượt trong ngày 2026-02-01, gấp đôi so với ngày trước đó, chủ yếu tập trung vào thông tin thu hồi sản phẩm của thương hiệu con Gerber tại thị trường Mỹ [Nguồn: [URL](https://www.tiktok.com/@vtv.times/video/7601896457389591826)]. Sự việc bắt nguồn từ việc phát hiện khả năng lẫn tạp chất nhựa mềm hoặc giấy trong bánh quy Gerber® Arrowroot Biscuits, do nguyên liệu bột dong riềng từ một nhà cung cấp gây ra [Nguồn: [URL](http://facebook.com/790024751057832_915924294284235)]. Cộng đồng mạng bày tỏ lo ngại về an toàn thực phẩm, đặc biệt đối với trẻ nhỏ, và lan tỏa thông tin về đợt thu hồi diện rộng 21 lô sản phẩm [Nguồn: [URL](http://facebook.com/138841156165916_1294284519398922)]. Nhiều bình luận thể hiện sự thất vọng và đặt câu hỏi về quy trình kiểm soát chất lượng của Nestlé [Nguồn: [URL](http://facebook.com/419555621494041_1317059697125118)]. Dù Nestlé đã thông báo ngừng hợp tác với nhà cung cấp liên quan, sự việc vẫn gây ra làn sóng phản ứng tiêu cực và ảnh hưởng đến niềm tin của người tiêu dùng [Nguồn: [URL](http://facebook.com/262700667105773_1334483892046952)]. Các diễn đàn và mạng xã hội ghi nhận nhiều chia sẻ và cảnh báo từ các bậc phụ huynh [Nguồn: [URL](http://facebook.com/74445296351_1474697147656985)].
+
+DESIGN:
+- Style: Corporate, clean, data-focused
+- Colors: Green for positive changes, Red for negative changes
+- Font: Modern sans-serif, 32px title, 14px body
+- Background: White with light blue insight box
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 2 - TRENDLINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LAYOUT:
+- Title: "Trendline | Diễn biến thảo luận"
+- Subtitle: "Khoảng thời gian: 2026-01-27 → 2026-02-01"
+- Line chart showing 7-day trend
+- Highlight boxes for peak day and current status
+- Bottom section: Trend analysis insight
+
+TRENDLINE DATA:
+- 27/01/2026: 2
+- 28/01/2026: 19
+- 29/01/2026: 1
+- 30/01/2026: 46
+- 31/01/2026: 845
+- 01/02/2026: 1,727
+
+PEAK DAY: 01/02/2026 - 1,727 lượt
+CURRENT STATUS: 01/02/2026 - Vẫn đang HOT 🔥
+
+INSIGHT:
+Ngày 2026-02-01, sự vụ thu hồi 21 lô bánh ăn dặm Gerber của Nestlé do phát hiện khả năng lẫn mảnh nhựa mềm hoặc giấy đã đạt đến đỉnh điểm thảo luận với 1727 lượt, cho thấy mức độ quan tâm lớn từ cộng đồng về vấn đề an toàn thực phẩm liên quan đến sản phẩm dành cho trẻ nhỏ [Nguồn: [URL](https://www.tiktok.com/@vtv.times/video/7601896457389591826)]. Dựa trên dữ liệu hiện có, sự việc vẫn đang được cộng đồng đặc biệt quan tâm, thể hiện qua số lượng thảo luận cao trên các nền tảng như TikTok và Facebook [Nguồn: [URL](http://facebook.com/138841156165916_1294284519398922)]. Việc thu hồi diện rộng 21 lô bánh và thông tin về nguyên nhân từ nhà cung cấp bột dong riềng càng làm gia tăng lo ngại của người tiêu dùng [Nguồn: [URL](http://facebook.com/419555621494041_1317059697125118)]. Do đó, Nestlé cần tiếp tục minh bạch thông tin và có biện pháp xử lý triệt để để bảo vệ uy tín thương hiệu và niềm tin của khách hàng.
+
+CHART DESIGN:
+- Type: Line chart with markers
+- Line color: Blue (#1e40af), width 3px
+- Peak marker: Red circle, larger size
+- Grid: Light gray, dashed
+- Background: White
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 3 - CHANNEL BREAKDOWN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LAYOUT:
+- Title: "Phân tích theo kênh thảo luận"
+- Subtitle: "Ngày 2026-02-01 (so sánh với 2026-01-31)"
+- Horizontal bar chart
+- Highlight box for top channel
+- Bottom section: Channel analysis insight
+
+CHANNEL DATA:
+- Facebook: 1,680 (+101.44%)
+- Tiktok: 21 (+250.00%)
+- Youtube: 16 (+100.00%)
+- News: 8 (+300.00%)
+- Threads: 2 (-33.33%)
+
+TOP CHANNEL: Facebook 🏆
+
+INSIGHT:
+## Insight: Channel Breakdown - Nestlé (01/02/2026)
+
+Sự gia tăng đột biến của thảo luận trên Facebook cho thấy đây là kênh chính khuếch đại thông tin về đợt thu hồi bánh ăn dặm Gerber của Nestlé, với mức tăng trưởng buzz lên tới 101.44% so với ngày hôm qua [Nguồn: [URL](http://facebook.com/138841156165916_1294284519398922)]. Các bài đăng trên các trang báo điện tử lớn như VnExpress.net và VTV Times đang đóng góp đáng kể vào việc lan tỏa thông tin, thu hút sự chú ý của người tiêu dùng [Nguồn: [URL](http://facebook.com/262700667105773_1334483892046952)] và [Nguồn: [URL](http://facebook.com/790024751057832_915924294284235)]. Nội dung tập trung chủ yếu vào việc thu hồi 21 lô bánh do nghi ngờ chứa mảnh nhựa và giấy, gây lo ngại về an toàn thực phẩm [Nguồn: [URL](http://facebook.com/419555621494041_1317059697125118)]. Các cộng đồng địa phương như Hà Nội 24H và Ho Chi Minh City cũng tích cực chia sẻ thông tin, cho thấy mức độ quan tâm rộng khắp trên cả nước [Nguồn: [URL](http://facebook.com/419555621494041_1317059697125118)] và [Nguồn: [URL](http://facebook.com/132116960729271_880652188095370)]. Sự lan truyền trên các trang cộng đồng như Hà Nội Fan với biểu tượng cảm xúc mạnh mẽ cho thấy mức độ hoang mang của người tiêu dùng [Nguồn: [URL](http://facebook.com/74445296351_1474697147656985)]. Mặc dù TikTok và Youtube cũng bắt đầu có thảo luận, nhưng vẫn còn rất nhỏ so với Facebook, cần theo dõi sát sao để đánh giá tiềm năng lan rộng [Nguồn: [URL](http://facebook.com/138841156165916_1294284519398922)]. Việc chủ động theo dõi và phản hồi trên Facebook là ưu tiên hàng đầu để kiểm soát thông tin và giảm thiểu tác động tiêu cực đến uy tín thương hiệu [Nguồn: [URL](http://facebook.com/790024751057832_915924294284235)].
+
+CHART DESIGN:
+- Type: Horizontal bar chart
+- Bar colors:
+  * Facebook: #1877f2 (Facebook blue)
+  * TikTok: #000000 (Black)
+  * YouTube: #ff0000 (Red)
+  * News: #f59e0b (Orange)
+  * Others: #6b7280 (Gray)
+- Show values and percentage changes on bars
+- Sort by value (descending)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 4 - SENTIMENT & BRAND ATTRIBUTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LAYOUT:
+- Title: "Sentiment & Brand Attribute"
+- Subtitle: "Ngày 2026-02-01"
+- Two-column layout:
+  * Left (40%): Pie chart (Sentiment distribution)
+  * Right (60%): Stacked bar chart (Sentiment by Attribute)
+- Bottom section: Sentiment analysis insight (full width)
+
+SENTIMENT DISTRIBUTION:
+- Neutral: 1,029
+- Negative: 583
+- Positive: 115
+
+BRAND ATTRIBUTES (with Sentiment breakdown):
+- Chất lượng Sản phẩm: Neg 461, Neu 724, Pos 76
+- Giá cả & Khuyến mãi: Neg 86, Neu 192, Pos 24
+- Hương vị: Neg 8, Neu 36, Pos 1
+- Khác: Neg 10, Neu 13, Pos 0
+- Nguồn gốc &Thành phần: Neg 8, Neu 24, Pos 5
+- Thương hiệu & Quảng cáo: Neg 6, Neu 15, Pos 4
+
+INSIGHT:
+Phân tích sentiment cho thấy Nestlé đang đối mặt với một làn sóng phản hồi tiêu cực đáng kể, với 583 lượt đánh giá tiêu cực so với chỉ 115 lượt tích cực và 1029 lượt trung lập, cho thấy sự cần thiết phải giải quyết các vấn đề đang gây lo ngại cho người tiêu dùng. Vấn đề nổi bật nhất được đề cập trong các phản hồi tiêu cực là "Chất lượng Sản phẩm", chiếm tới 461/583 đánh giá tiêu cực, tập trung vào việc thu hồi bánh ăn dặm Gerber do nghi ngờ chứa mảnh nhựa và giấy, gây ảnh hưởng nghiêm trọng đến niềm tin của khách hàng. Mặc dù "Chất lượng Sản phẩm" cũng nhận được số lượng lớn đánh giá trung lập (724/1029), nhưng sự chênh lệch lớn so với đánh giá tích cực (76/115) cho thấy cần cải thiện đáng kể để củng cố uy tín thương hiệu. Bên cạnh đó, một số ít phản hồi tiêu cực còn liên quan đến "Thương hiệu & Quảng cáo", cho thấy sự việc thu hồi sản phẩm đang lan rộng trên các kênh truyền thông và ảnh hưởng đến hình ảnh của Nestlé [Nguồn: [URL](https://www.tiktok.com/@vtv.times/video/7601896457389591826)], [Nguồn: [URL](http://facebook.com/138841156165916_1294284519398922)], [Nguồn: [URL](http://facebook.com/419555621494041_1317059697125118)], [Nguồn: [URL](http://facebook.com/262700667105773_1334483892046952)], [Nguồn: [URL](http://facebook.com/790024751057832_915924294284235)].
+
+CHART DESIGN:
+LEFT - Pie Chart (Donut style):
+- Segments:
+  * Neutral: Gray (#6b7280)
+  * Negative: Red (#dc2626)
+  * Positive: Green (#16a34a)
+- Show percentages on segments
+- Legend at bottom
+
+RIGHT - Stacked Bar Chart (Horizontal):
+- Y-axis: Top 6 brand attributes
+- X-axis: Count
+- Stack colors:
+  * Negative: Red (#dc2626)
+  * Neutral: Gray (#6b7280)
+  * Positive: Green (#16a34a)
+- Legend at top right
+- Show values on hover
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OVERALL DESIGN THEME
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COLOR PALETTE:
+- Primary Blue: #1e40af
+- Secondary Gray: #6b7280
+- Success Green: #16a34a
+- Danger Red: #dc2626
+- Warning Yellow: #f59e0b
+- Background: #ffffff
+- Light Background: #f9fafb
+
+TYPOGRAPHY:
+- Slide Title: 32px, Bold
+- Section Title: 24px, Bold
+- Body Text: 14px, Regular
+- Small Text: 12px, Regular
+- Line Height: 1.6
+- Font Family: Modern sans-serif (Inter, Roboto, or similar)
+
+SPACING:
+- Slide Padding: 48px
+- Section Margin: 32px
+- Element Spacing: 16px
+- Card Padding: 24px
+
+STYLE:
+- Corporate and professional
+- Clean and modern
+- Data-driven and analytical
+- High contrast for readability
+- Consistent spacing and alignment
+
+═══════════════════════════════════════════════════════════════
+END OF PROMPT
+═══════════════════════════════════════════════════════════════
+
+INSTRUCTIONS:
+1. Create all 4 slides with the exact data provided above
+2. Follow the design specifications precisely
+3. Ensure all charts are properly formatted and labeled
+4. Make insights readable with proper formatting
+5. Use the specified color palette consistently
+6. Ensure the presentation is professional and polished
+7. For each slide, the Insight section must reference its source link(s). All source links must be preserved and converted into hyperlinks with the display text “URL”. Raw links must not be shown, removed, or replaced. Users must be able to click on the text “URL” to access the cited source.

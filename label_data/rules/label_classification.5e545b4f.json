@@ -1,0 +1,993 @@
+[{
+  "_id": {
+    "$oid": "697c2f49a2fbd5b909ba9b55"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_1_general_mention",
+  "label_vie": "Đề cập chung",
+  "label_eng": "General Mention",
+  "definition": "Đề cập chung đến thương hiệu/cơ sở y tế, không thuộc nhóm chuyên biệt.",
+  "include_scope": "Đề cập chung đến thương hiệu/cơ sở y tế, không thuộc nhóm chuyên biệt.",
+  "keywords": [
+    "tên bệnh viện",
+    "phòng khám"
+  ],
+  "contexts": [
+    "hỏi thông tin tổng quan",
+    "hỏi trải nghiệm chung",
+    "nhắc tên bệnh viện/phòng khám không kèm ngữ cảnh cụ thể"
+  ],
+  "positive_examples": [
+    "có ai từng khám ở đây chưa?"
+  ],
+  "exclude_scope": "Nội dung chuyên sâu khác",
+  "negative_examples": [
+    "chi phí khám tổng quát bao nhiêu tiền?"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:49.182Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:49.182Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f49a2fbd5b909ba9b56"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_2_management_/_leadership",
+  "label_vie": "Ban lãnh đạo",
+  "label_eng": "Management / Leadership",
+  "definition": "Thông tin về ban lãnh đạo, giám đốc, quản lý cấp cao.",
+  "include_scope": "Thông tin về ban lãnh đạo, giám đốc, quản lý cấp cao.",
+  "keywords": [
+    "giám đốc",
+    "lãnh đạo"
+  ],
+  "contexts": [
+    "phát ngôn của lãnh đạo",
+    "bổ nhiệm/thay đổi ban giám đốc",
+    "chia sẻ định hướng quản lý"
+  ],
+  "positive_examples": [
+    "giám đốc mới của bệnh viện là ai?"
+  ],
+  "exclude_scope": "Nhân viên tuyến đầu",
+  "negative_examples": [
+    "bác sĩ trực hôm nay tư vấn rất kỹ"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:49.793Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:49.793Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f4aa2fbd5b909ba9b57"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_3_fanpage_activities",
+  "label_vie": "Hoạt động fanpage",
+  "label_eng": "Fanpage Activities",
+  "definition": "Hoạt động truyền thông và quản trị kênh social.",
+  "include_scope": "Hoạt động truyền thông và quản trị kênh social.",
+  "keywords": [
+    "fanpage",
+    "post",
+    "inbox"
+  ],
+  "contexts": [
+    "hoạt động đăng bài",
+    "phản hồi comment/inbox",
+    "tương tác trên fanpage hoặc kênh social chính thức"
+  ],
+  "positive_examples": [
+    "fanpage phản hồi inbox chậm"
+  ],
+  "exclude_scope": "Chất lượng khám",
+  "negative_examples": [
+    "khám ở đây khá hài lòng"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:50.455Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:50.455Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f4ba2fbd5b909ba9b58"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_4_facilities_and_infrastructure",
+  "label_vie": "Cơ sở vật chất",
+  "label_eng": "Facilities & Infrastructure",
+  "definition": "Trang thiết bị, không gian, máy móc y tế.",
+  "include_scope": "Trang thiết bị, không gian, máy móc y tế.",
+  "keywords": [
+    "thiết bị",
+    "phòng khám"
+  ],
+  "contexts": [
+    "đánh giá mức độ hiện đại",
+    "sạch sẽ",
+    "trang thiết bị",
+    "không gian khám chữa bệnh"
+  ],
+  "positive_examples": [
+    "cơ sở vật chất rất mới"
+  ],
+  "exclude_scope": "Quy trình khám",
+  "negative_examples": [
+    "thủ tục đăng ký khám khá rườm rà"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:51.071Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:51.071Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f4ba2fbd5b909ba9b59"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_5_customer_service",
+  "label_vie": "Chăm sóc khách hàng",
+  "label_eng": "Customer Service",
+  "definition": "Hỗ trợ và chăm sóc bệnh nhân.",
+  "include_scope": "Hỗ trợ và chăm sóc bệnh nhân.",
+  "keywords": [
+    "cskh",
+    "tư vấn"
+  ],
+  "contexts": [
+    "thái độ tư vấn",
+    "hỗ trợ bệnh nhân",
+    "xử lý thắc mắc/khiếu nại"
+  ],
+  "positive_examples": [
+    "cskh hỗ trợ tốt"
+  ],
+  "exclude_scope": "Chuyên môn y khoa",
+  "negative_examples": [
+    "bác sĩ chẩn đoán rất chính xác"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:51.684Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:51.684Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f4ca2fbd5b909ba9b5a"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_6_staff",
+  "label_vie": "Đội ngũ nhân viên",
+  "label_eng": "Staff",
+  "definition": "Bác sĩ, y tá, điều dưỡng, nhân viên hành chính.",
+  "include_scope": "Bác sĩ, y tá, điều dưỡng, nhân viên hành chính.",
+  "keywords": [
+    "y tá",
+    "điều dưỡng",
+    "bác sĩ",
+    "bảo vệ"
+  ],
+  "contexts": [
+    "đánh giá sự thân thiện",
+    "chuyên nghiệp của y tá",
+    "điều dưỡng",
+    "nhân viên hành chính"
+  ],
+  "positive_examples": [
+    "điều dưỡng hướng dẫn rõ"
+  ],
+  "exclude_scope": "Ban lãnh đạo",
+  "negative_examples": [
+    "giám đốc bệnh viện mới được bổ nhiệm"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:52.301Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:52.301Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f4da2fbd5b909ba9b5b"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_7_medical_process",
+  "label_vie": "Quy trình khám",
+  "label_eng": "Medical Process",
+  "definition": "Quy trình đăng ký, khám, xét nghiệm.",
+  "include_scope": "Quy trình đăng ký, khám, xét nghiệm.",
+  "keywords": [
+    "quy trình",
+    "thủ tục"
+  ],
+  "contexts": [
+    "quy trình đăng ký",
+    "khám",
+    "xét nghiệm",
+    "thanh toán; nhanh/chậm",
+    "thuận tiện hay rườm rà"
+  ],
+  "positive_examples": [
+    "quy trình khá nhanh"
+  ],
+  "exclude_scope": "Chi phí",
+  "negative_examples": [
+    "giá khám chuyên khoa hơi cao"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:53.116Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:53.116Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f4da2fbd5b909ba9b5c"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_8_minigame",
+  "label_vie": "Minigame",
+  "label_eng": "Minigame",
+  "definition": "Hoạt động trò chơi, giveaway.",
+  "include_scope": "Hoạt động trò chơi, giveaway.",
+  "keywords": [
+    "minigame",
+    "giveaway"
+  ],
+  "contexts": [
+    "tham gia trò chơi",
+    "nhận quà",
+    "quay số trúng thưởng"
+  ],
+  "positive_examples": [
+    "minigame nhận voucher"
+  ],
+  "exclude_scope": "Ưu đãi chính thức",
+  "negative_examples": [
+    "đang có gói khám ưu đãi 30%"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:53.734Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:53.734Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f4ea2fbd5b909ba9b5d"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_9_opening_hours",
+  "label_vie": "Giờ làm việc",
+  "label_eng": "Opening Hours",
+  "definition": "Thông tin và thảo luận liên quan đến thời gian hoạt động của bệnh viện/phòng khám, bao gồm giờ mở – đóng cửa, khám ngoài giờ hành chính, cuối tuần hoặc ngày lễ.",
+  "include_scope": "Thông tin và thảo luận liên quan đến thời gian hoạt động của bệnh viện/phòng khám, bao gồm giờ mở – đóng cửa, khám ngoài giờ hành chính, cuối tuần hoặc ngày lễ.",
+  "keywords": [
+    "giờ mở cửa",
+    "thời gian làm việc",
+    "khám ngoài giờ",
+    "cuối tuần"
+  ],
+  "contexts": [
+    "hỏi giờ mở cửa – đóng cửa",
+    "lịch khám ngoài giờ",
+    "cuối tuần",
+    "lễ"
+  ],
+  "positive_examples": [
+    "bệnh viện này có khám tối thứ bảy không?"
+  ],
+  "exclude_scope": "quy trình khám, thời gian chờ, chất lượng dịch vụ khám",
+  "negative_examples": [
+    "chờ lấy số khám mất gần 2 tiếng"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:54.444Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:54.444Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f4fa2fbd5b909ba9b5e"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_10_food_service",
+  "label_vie": "Chất lượng đồ ăn",
+  "label_eng": "Food Service",
+  "definition": "Đánh giá và phản hồi về chất lượng suất ăn, căn tin hoặc dịch vụ ăn uống dành cho bệnh nhân và người nhà trong cơ sở y tế.",
+  "include_scope": "Đánh giá và phản hồi về chất lượng suất ăn, căn tin hoặc dịch vụ ăn uống dành cho bệnh nhân và người nhà trong cơ sở y tế.",
+  "keywords": [
+    "đồ ăn",
+    "suất ăn",
+    "căn tin",
+    "dinh dưỡng"
+  ],
+  "contexts": [
+    "đánh giá suất ăn bệnh nhân",
+    "căn tin",
+    "khẩu phần và dinh dưỡng"
+  ],
+  "positive_examples": [
+    "suất ăn cho bệnh nhân ở đây khá dễ ăn và hợp khẩu vị"
+  ],
+  "exclude_scope": "dịch vụ y tế, chăm sóc khách hàng, cơ sở vật chất chung",
+  "negative_examples": [
+    "phòng bệnh sạch sẽ nhưng hơi chật"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:55.052Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:55.052Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f4fa2fbd5b909ba9b5f"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_11_pricing_/_cost",
+  "label_vie": "Chi phí",
+  "label_eng": "Pricing / Cost",
+  "definition": "Chi phí khám, điều trị.",
+  "include_scope": "Chi phí khám, điều trị.",
+  "keywords": [
+    "giá",
+    "phí"
+  ],
+  "contexts": [
+    "đánh giá mức giá khám",
+    "chi phí điều trị",
+    "so sánh đắt – rẻ – hợp lý"
+  ],
+  "positive_examples": [
+    "chi phí hơi cao"
+  ],
+  "exclude_scope": "Bảo hiểm",
+  "negative_examples": [
+    "có áp dụng bảo hiểm y tế không?"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:55.677Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:55.677Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f50a2fbd5b909ba9b60"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_12_promotion",
+  "label_vie": "Chương trình ưu đãi",
+  "label_eng": "Promotion",
+  "definition": "Giảm giá, gói khám ưu đãi.",
+  "include_scope": "Giảm giá, gói khám ưu đãi.",
+  "keywords": [
+    "ưu đãi",
+    "combo"
+  ],
+  "contexts": [
+    "thông tin giảm giá",
+    "gói khám ưu đãi",
+    "combo dịch vụ"
+  ],
+  "positive_examples": [
+    "có gói khám giảm giá"
+  ],
+  "exclude_scope": "Minigame",
+  "negative_examples": [
+    "tham gia minigame nhận voucher"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:56.289Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:56.289Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f50a2fbd5b909ba9b61"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_13_csr_/_community",
+  "label_vie": "Hoạt động cộng đồng",
+  "label_eng": "CSR / Community",
+  "definition": "Hoạt động thiện nguyện, vì cộng đồng.",
+  "include_scope": "Hoạt động thiện nguyện, vì cộng đồng.",
+  "keywords": [
+    "csr",
+    "thiện nguyện",
+    "hoạt động cộng đồng"
+  ],
+  "contexts": [
+    "khám miễn phí",
+    "thiện nguyện",
+    "hoạt động csr"
+  ],
+  "positive_examples": [
+    "khám miễn phí cho người già"
+  ],
+  "exclude_scope": "PR thương mại",
+  "negative_examples": [
+    "chạy quảng cáo gói khám mới"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:56.897Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:56.897Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f51a2fbd5b909ba9b62"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_14_achievements",
+  "label_vie": "Thành tựu",
+  "label_eng": "Achievements",
+  "definition": "Giải thưởng, chứng nhận.",
+  "include_scope": "Giải thưởng, chứng nhận.",
+  "keywords": [
+    "giải thưởng",
+    "đạt giải",
+    "thành tích"
+  ],
+  "contexts": [
+    "giải thưởng",
+    "chứng nhận chuyên môn",
+    "tiêu chuẩn chất lượng"
+  ],
+  "positive_examples": [
+    "đạt chuẩn quốc tế"
+  ],
+  "exclude_scope": "KQKD",
+  "negative_examples": [
+    "doanh thu bệnh viện tăng mạnh"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:57.524Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:57.524Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f52a2fbd5b909ba9b63"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_15_events",
+  "label_vie": "Sự kiện",
+  "label_eng": "Events",
+  "definition": "Hội thảo, lễ, workshop.",
+  "include_scope": "Hội thảo, lễ, workshop.",
+  "keywords": [
+    "sự kiện",
+    "hội thảo",
+    "event"
+  ],
+  "contexts": [
+    "hội thảo y khoa",
+    "lễ khai trương",
+    "workshop",
+    "tọa đàm"
+  ],
+  "positive_examples": [
+    "hội thảo cuối tuần"
+  ],
+  "exclude_scope": "Chiến dịch",
+  "negative_examples": [
+    "chiến dịch tầm soát ung thư kéo dài 3 tháng"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:58.130Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:58.130Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f52a2fbd5b909ba9b64"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_16_campaign",
+  "label_vie": "Chiến dịch",
+  "label_eng": "Campaign",
+  "definition": "Chiến dịch truyền thông y tế.",
+  "include_scope": "Chiến dịch truyền thông y tế.",
+  "keywords": [
+    "chiến dịch"
+  ],
+  "contexts": [
+    "chiến dịch truyền thông sức khỏe",
+    "tầm soát bệnh",
+    "quảng cáo hình ảnh"
+  ],
+  "positive_examples": [
+    "chiến dịch tầm soát"
+  ],
+  "exclude_scope": "Sự kiện đơn lẻ",
+  "negative_examples": [
+    "hội thảo y khoa tổ chức trong 1 ngày"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:58.741Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:58.741Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f53a2fbd5b909ba9b65"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_17_scientific_research",
+  "label_vie": "Nghiên cứu khoa học",
+  "label_eng": "Scientific Research",
+  "definition": "Nghiên cứu, thử nghiệm y khoa.",
+  "include_scope": "Nghiên cứu, thử nghiệm y khoa.",
+  "keywords": [
+    "nghiên cứu"
+  ],
+  "contexts": [
+    "công bố nghiên cứu",
+    "thử nghiệm lâm sàng"
+  ],
+  "positive_examples": [
+    "nghiên cứu mới"
+  ],
+  "exclude_scope": "PR",
+  "negative_examples": [
+    "bài pr giới thiệu dịch vụ mới"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:59.351Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:59.351Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f53a2fbd5b909ba9b66"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_18_recruitment",
+  "label_vie": "Tuyển dụng",
+  "label_eng": "Recruitment",
+  "definition": "Tuyển dụng nhân sự y tế.",
+  "include_scope": "Tuyển dụng nhân sự y tế.",
+  "keywords": [
+    "tuyển dụng",
+    "nhân sự"
+  ],
+  "contexts": [
+    "đăng tin tuyển bác sĩ",
+    "điều dưỡng",
+    "nhân sự y tế",
+    "lễ tân"
+  ],
+  "positive_examples": [
+    "tuyển bác sĩ"
+  ],
+  "exclude_scope": "Đánh giá",
+  "negative_examples": [
+    "nhân viên làm việc khá thân thiện"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:10:59.961Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:10:59.961Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f54a2fbd5b909ba9b67"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_19_competitor_comparison",
+  "label_vie": "So sánh đối thủ",
+  "label_eng": "Competitor Comparison",
+  "definition": "So sánh với cơ sở y tế khác.",
+  "include_scope": "So sánh với cơ sở y tế khác.",
+  "keywords": [
+    "so sánh"
+  ],
+  "contexts": [
+    "so sánh chất lượng",
+    "chi phí",
+    "dịch vụ giữa các đơn vị"
+  ],
+  "positive_examples": [
+    "bệnh viện vinmec tốt hơn aih"
+  ],
+  "exclude_scope": "Đánh giá đơn lẻ",
+  "negative_examples": [
+    "khám ở đây khá ổn"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:00.574Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:00.574Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f55a2fbd5b909ba9b68"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_20_business_performance",
+  "label_vie": "Kết quả kinh doanh",
+  "label_eng": "Business Performance",
+  "definition": "Doanh thu, tăng trưởng.",
+  "include_scope": "Doanh thu, tăng trưởng.",
+  "keywords": [
+    "doanh thu"
+  ],
+  "contexts": [
+    "thông tin tăng trưởng",
+    "mở rộng hệ thống",
+    "kết quả kinh doanh"
+  ],
+  "positive_examples": [
+    "chuỗi tăng trưởng tốt",
+    "nơi làm việc tốt"
+  ],
+  "exclude_scope": "Thành tựu",
+  "negative_examples": [
+    "đạt chứng nhận chất lượng quốc tế"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:01.189Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:01.189Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f55a2fbd5b909ba9b69"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_21_patient_review",
+  "label_vie": "Đánh giá từ bệnh nhân",
+  "label_eng": "Patient Review",
+  "definition": "Phản hồi, review trải nghiệm.",
+  "include_scope": "Phản hồi, review trải nghiệm.",
+  "keywords": [
+    "review",
+    "trải nghiệm"
+  ],
+  "contexts": [
+    "review trải nghiệm",
+    "mức độ hài lòng hoặc không hài lòng",
+    "có khuyến khích mọi người vô không"
+  ],
+  "positive_examples": [
+    "khám khá ổn"
+  ],
+  "exclude_scope": "Hỏi thông tin",
+  "negative_examples": [
+    "bệnh viện có khám cuối tuần không?"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:01.803Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:01.803Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f56a2fbd5b909ba9b6a"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_22_health_insurance",
+  "label_vie": "Bảo hiểm sức khỏe",
+  "label_eng": "Health Insurance",
+  "definition": "Thanh toán và áp dụng bảo hiểm.",
+  "include_scope": "Thanh toán và áp dụng bảo hiểm.",
+  "keywords": [
+    "bảo hiểm",
+    "bhsk",
+    "bhyt"
+  ],
+  "contexts": [
+    "áp dụng bảo hiểm",
+    "bảo lãnh viện phí"
+  ],
+  "positive_examples": [
+    "có áp dụng bh không"
+  ],
+  "exclude_scope": "Chi phí",
+  "negative_examples": [
+    "chi phí xét nghiệm hơi cao"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:02.438Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:02.438Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f57a2fbd5b909ba9b6b"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_23_medical_specialty",
+  "label_vie": "Chuyên khoa y tế",
+  "label_eng": "Medical Specialty",
+  "definition": "Chuyên khoa điều trị.",
+  "include_scope": "Chuyên khoa điều trị.",
+  "keywords": [
+    "chuyên khoa"
+  ],
+  "contexts": [
+    "hỏi/đánh giá khoa điều trị cụ thể"
+  ],
+  "positive_examples": [
+    "khoa nhi mạnh"
+  ],
+  "exclude_scope": "Bác sĩ cụ thể",
+  "negative_examples": [
+    "bác sĩ a tư vấn rất tận tình"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:03.044Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:03.044Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f57a2fbd5b909ba9b6c"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_24_security",
+  "label_vie": "Công tác an ninh",
+  "label_eng": "Security",
+  "definition": "An ninh, trật tự.",
+  "include_scope": "An ninh, trật tự.",
+  "keywords": [
+    "bảo vệ"
+  ],
+  "contexts": [
+    "an toàn",
+    "bảo vệ",
+    "trật tự khuôn viên"
+  ],
+  "positive_examples": [
+    "bảo vệ hướng dẫn kỹ"
+  ],
+  "exclude_scope": "Cơ sở vật chất",
+  "negative_examples": [
+    "phòng bệnh sạch sẽ và mới"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:03.653Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:03.653Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f58a2fbd5b909ba9b6d"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_25_livestream",
+  "label_vie": "Livestream",
+  "label_eng": "Livestream",
+  "definition": "Các thảo luận liên quan đến hoạt động livestream của bệnh viện/phòng khám trên nền tảng mạng xã hội, bao gồm livestream tư vấn sức khỏe, hỏi–đáp trực tiếp với bác sĩ, giới thiệu dịch vụ, sự kiện hoặc tương tác thời gian thực với người xem.",
+  "include_scope": "Các thảo luận liên quan đến hoạt động livestream của bệnh viện/phòng khám trên nền tảng mạng xã hội, bao gồm livestream tư vấn sức khỏe, hỏi–đáp trực tiếp với bác sĩ, giới thiệu dịch vụ, sự kiện hoặc tương tác thời gian thực với người xem.",
+  "keywords": [
+    "livestream",
+    "live",
+    "phát trực tiếp",
+    "live stream"
+  ],
+  "contexts": [
+    "livestream tư vấn sức khỏe",
+    "bác sĩ trả lời trực tiếp",
+    "live hỏi đáp",
+    "live trên fanpage",
+    "xem livestream của bệnh viện"
+  ],
+  "positive_examples": [
+    "livestream tối qua bác sĩ giải thích về bệnh tim mạch rất dễ hiểu."
+  ],
+  "exclude_scope": "Không bao gồm video đăng tải lại (clip ghi hình), bài viết tĩnh hoặc nội dung chỉ nhắc đến fanpage mà không đề cập đến livestream",
+  "negative_examples": [
+    "xem lại video tư vấn sức khỏe trên fanpage thấy khá hữu ích"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:04.278Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:04.278Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f58a2fbd5b909ba9b6e"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_26_partnership",
+  "label_vie": "Hợp tác",
+  "label_eng": "Partnership",
+  "definition": "Hợp tác với tổ chức khác.",
+  "include_scope": "Hợp tác với tổ chức khác.",
+  "keywords": [
+    "hợp tác"
+  ],
+  "contexts": [
+    "ký kết",
+    "hợp tác chuyên môn hoặc chiến lược"
+  ],
+  "positive_examples": [
+    "hợp tác quốc tế"
+  ],
+  "exclude_scope": "Tài trợ",
+  "negative_examples": [
+    "tài trợ chương trình khám miễn phí"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:04.888Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:04.888Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f59a2fbd5b909ba9b6f"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_27_sponsorship",
+  "label_vie": "Tài trợ",
+  "label_eng": "Sponsorship",
+  "definition": "Tài trợ chương trình y tế.",
+  "include_scope": "Tài trợ chương trình y tế.",
+  "keywords": [
+    "tài trợ"
+  ],
+  "contexts": [
+    "đồng hành",
+    "tài trợ chương trình y tế",
+    "sự kiện"
+  ],
+  "positive_examples": [
+    "tài trợ chương trình"
+  ],
+  "exclude_scope": "CSR",
+  "negative_examples": [
+    "hoạt động csr vì cộng đồng"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:05.496Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:05.496Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f5aa2fbd5b909ba9b70"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_28_investor",
+  "label_vie": "Nhà đầu tư",
+  "label_eng": "Investor",
+  "definition": "Nhà đầu tư, cổ đông.",
+  "include_scope": "Nhà đầu tư, cổ đông.",
+  "keywords": [
+    "đầu tư"
+  ],
+  "contexts": [
+    "đầu tư",
+    "gọi vốn",
+    "cổ đông",
+    "quỹ đầu tư"
+  ],
+  "positive_examples": [
+    "quỹ đầu tư mới"
+  ],
+  "exclude_scope": "KQKD",
+  "negative_examples": [
+    "lợi nhuận quý này tăng trưởng tốt"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:06.108Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:06.108Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "697c2f5aa2fbd5b909ba9b71"
+  },
+  "category_id": "5e545b4f",
+  "label_id": "5e545b4f_29_others",
+  "label_vie": "Khác",
+  "label_eng": "Others",
+  "definition": "Nội dung không thuộc nhóm trên.",
+  "include_scope": "Nội dung không thuộc nhóm trên.",
+  "keywords": [
+    "nan"
+  ],
+  "contexts": [
+    "nội dung y tế không thuộc các nhóm trên"
+  ],
+  "positive_examples": [
+    "nội dung khác"
+  ],
+  "exclude_scope": "Các nhóm đã có",
+  "negative_examples": [
+    "nội dung đã thuộc các label khác"
+  ],
+  "updated_at": {
+    "$date": "2026-01-30T04:11:06.721Z"
+  },
+  "is_active": true,
+  "created_at": {
+    "$date": "2026-01-30T04:11:06.721Z"
+  }
+}]
