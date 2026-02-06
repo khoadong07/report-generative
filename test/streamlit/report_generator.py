@@ -248,7 +248,7 @@ class ReportGenerator:
         # Generate Slide 6 (deleted posts - from entire dataset, not filtered by date)
         print("      [Slide 6] 🗑️  Generating deleted posts table (all dates)...")
         slide6_data = self.slide6_gen.generate(
-            df, self.brand_name, self.report_date
+            df, self.brand_name, self.report_date, file_path=self.file_path
         )
         print("      [Slide 6] ✅ Completed")
         

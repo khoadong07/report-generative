@@ -205,66 +205,104 @@ def generate_slide5_data(slide_data):
     table_rows = []
     for post in slide_data['top_posts']:
         # Format date
-        date_obj = datetime.strptime(post['ngay_dang'], "%Y-%m-%d %H:%M:%S")
-        date_formatted = date_obj.strftime("%d/%m/%Y")
+        try:
+            date_obj = datetime.strptime(post['ngay_dang'], "%Y-%m-%d %H:%M:%S")
+            date_formatted = date_obj.strftime("%d/%m/%Y")
+        except:
+            date_formatted = str(post.get('ngay_dang', 'N/A'))
         
         # Build content with link
-        content = post['noi_dung_bai_dang']
+        content = post.get('noi_dung_bai_dang', '')
         url = post.get('url_topic', '')
         
+        # Get engagement metrics safely
+        luong_tuong_tac = post.get('luong_tuong_tac', {})
+        if isinstance(luong_tuong_tac, dict):
+            like = luong_tuong_tac.get('like', 0)
+            share = luong_tuong_tac.get('share', 0)
+            comments = luong_tuong_tac.get('comments', 0)
+            views = luong_tuong_tac.get('views', 0)
+        else:
+            # Fallback if luong_tuong_tac is not a dict
+            like = share = comments = views = 0
+        
         table_rows.append({
-            'stt': post['stt'],
+            'stt': post.get('stt', 0),
             'noi_dung': content,
             'url': url,
             'ngay_dang': date_formatted,
-            'kenh': post['kenh'],
-            'nguoi_dang': post['nguoi_dang'],
-            'like': format_number(post['luong_tuong_tac']['like']),
-            'share': format_number(post['luong_tuong_tac']['share']),
-            'comments': format_number(post['luong_tuong_tac']['comments']),
-            'views': format_number(post['luong_tuong_tac']['views'])
+            'kenh': post.get('kenh', 'N/A'),
+            'nguoi_dang': post.get('nguoi_dang', 'N/A'),
+            'like': format_number(like),
+            'share': format_number(share),
+            'comments': format_number(comments),
+            'views': format_number(views)
         })
     
     return {
-        'title': slide_data['title'],
-        'subtitle': slide_data['subtitle'],
+        'title': slide_data.get('title', 'Top 5 bài đăng có lượng tương tác cao'),
+        'subtitle': slide_data.get('subtitle', ''),
         'table_rows': table_rows
     }
 
 
 def generate_slide6_data(slide_data):
     """Generate formatted data for Slide 6"""
+    
+    # Helper function to normalize deleted indicators
+    def normalize_deleted_value(value):
+        """Convert various deleted indicators to 'Deleted'"""
+        value_str = str(value).lower().strip()
+        deleted_indicators = ['deleted', 'not exist', 'close group', 'die', 'removed', 'unavailable']
+        
+        # Check if value contains any deleted indicator
+        if any(indicator in value_str for indicator in deleted_indicators):
+            return 'Deleted'
+        return value
+    
     table_rows = []
-    for post in slide_data['deleted_posts']:
+    for post in slide_data.get('deleted_posts', []):
         # Format date
         try:
-            date_obj = datetime.strptime(post['ngay_dang'], "%Y-%m-%d %H:%M:%S")
+            date_obj = datetime.strptime(str(post.get('ngay_dang', '')), "%Y-%m-%d %H:%M:%S")
             date_formatted = date_obj.strftime("%d/%m/%Y")
         except:
-            date_formatted = post['ngay_dang']
+            date_formatted = str(post.get('ngay_dang', 'N/A'))
         
         # Build content with link
-        content = post['noi_dung_bai_dang']
+        content = post.get('noi_dung_bai_dang', '')
         url = post.get('url_topic', '')
         
+        # Get metric status safely and normalize deleted values
+        metric_status = post.get('metric_status', {})
+        if isinstance(metric_status, dict):
+            likes = normalize_deleted_value(metric_status.get('likes', 'N/A'))
+            shares = normalize_deleted_value(metric_status.get('shares', 'N/A'))
+            comments = normalize_deleted_value(metric_status.get('comments', 'N/A'))
+            views = normalize_deleted_value(metric_status.get('views', 'N/A'))
+            total = normalize_deleted_value(metric_status.get('total', 'N/A'))
+        else:
+            # Fallback if metric_status is not a dict
+            likes = shares = comments = views = total = 'Deleted'
+        
         table_rows.append({
-            'stt': post['stt'],
+            'stt': post.get('stt', 0),
             'noi_dung': content,
             'url': url,
             'ngay_dang': date_formatted,
-            'kenh': post['kenh'],
-            'nguoi_dang': post['nguoi_dang'],
-            'likes': post['metric_status']['likes'],
-            'shares': post['metric_status']['shares'],
-            'comments': post['metric_status']['comments'],
-            'views': post['metric_status']['views'],
-            'total': post['metric_status']['total']
+            'kenh': post.get('kenh', 'N/A'),
+            'nguoi_dang': post.get('nguoi_dang', 'N/A'),
+            'likes': likes,
+            'shares': shares,
+            'comments': comments,
+            'views': views,
+            'total': total
         })
     
     return {
-        'title': slide_data['title'],
-        'subtitle': slide_data['subtitle'],
-        'total_deleted': slide_data['total_deleted_posts'],
+        'title': slide_data.get('title', 'Top 5 bài đăng đã xóa'),
+        'subtitle': slide_data.get('subtitle', ''),
+        'total_deleted': slide_data.get('total_deleted_posts', 0),
         'table_rows': table_rows
     }
 
@@ -527,17 +565,22 @@ TABLE DATA:
 """
     
     for row in slide5['table_rows']:
+        # Safely handle content that might be NaN or float
+        noi_dung = str(row.get('noi_dung', ''))
+        if noi_dung in ['nan', 'None', '']:
+            noi_dung = '[Không có nội dung]'
+        
         prompt += f"""
-Row {row['stt']}:
-- STT: {row['stt']}
-- Nội dung: {row['noi_dung'][:100]}{'...' if len(row['noi_dung']) > 100 else ''} [Link]({row['url']})
-- Ngày đăng: {row['ngay_dang']}
-- Kênh: {row['kenh']}
-- Người đăng: {row['nguoi_dang']}
-- Like: {row['like']}
-- Share: {row['share']}
-- Comments: {row['comments']}
-- Views: {row['views']}
+Row {row.get('stt', 0)}:
+- STT: {row.get('stt', 0)}
+- Nội dung: {noi_dung[:100]}{'...' if len(noi_dung) > 100 else ''} [Link]({row.get('url', '')})
+- Ngày đăng: {row.get('ngay_dang', 'N/A')}
+- Kênh: {row.get('kenh', 'N/A')}
+- Người đăng: {row.get('nguoi_dang', 'N/A')}
+- Like: {row.get('like', '0')}
+- Share: {row.get('share', '0')}
+- Comments: {row.get('comments', '0')}
+- Views: {row.get('views', '0')}
 """
     
     prompt += f"""
@@ -613,18 +656,23 @@ TABLE DATA:
 """
     
     for row in slide6['table_rows']:
+        # Safely handle content that might be NaN or float
+        noi_dung = str(row.get('noi_dung', ''))
+        if noi_dung in ['nan', 'None', '']:
+            noi_dung = '[Không có nội dung]'
+        
         prompt += f"""
-Row {row['stt']}:
-- STT: {row['stt']}
-- Nội dung: {row['noi_dung'][:100]}{'...' if len(row['noi_dung']) > 100 else ''} [Link]({row['url']})
-- Ngày đăng: {row['ngay_dang']}
-- Kênh: {row['kenh']}
-- Người đăng: {row['nguoi_dang']}
-- Likes: {row['likes']}
-- Shares: {row['shares']}
-- Comments: {row['comments']}
-- Views: {row['views']}
-- Total: {row['total']}
+Row {row.get('stt', 0)}:
+- STT: {row.get('stt', 0)}
+- Nội dung: {noi_dung[:100]}{'...' if len(noi_dung) > 100 else ''} [Link]({row.get('url', '')})
+- Ngày đăng: {row.get('ngay_dang', 'N/A')}
+- Kênh: {row.get('kenh', 'N/A')}
+- Người đăng: {row.get('nguoi_dang', 'N/A')}
+- Likes: {row.get('likes', 'N/A')}
+- Shares: {row.get('shares', 'N/A')}
+- Comments: {row.get('comments', 'N/A')}
+- Views: {row.get('views', 'N/A')}
+- Total: {row.get('total', 'N/A')}
 """
     
     prompt += f"""

@@ -73,8 +73,15 @@ with st.sidebar:
 
     generate_button = st.button(
         "Generate prompt",
-        disabled=not (uploaded_file and brand_name)
+        disabled=not (uploaded_file and brand_name),
+        type="primary",
+        use_container_width=True
     )
+    
+    if st.button("🔄 Clear Cache & Refresh", use_container_width=True):
+        st.cache_data.clear()
+        st.session_state.clear()
+        st.rerun()
 
 # =====================
 # MAIN
@@ -125,6 +132,12 @@ else:
         st.session_state.json_data = None
 
     if generate_button:
+        # Clear previous state
+        if 'prompt_generated' in st.session_state:
+            st.session_state.prompt_generated = False
+            st.session_state.prompt_text = ""
+            st.session_state.json_data = None
+        
         with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
             tmp.write(uploaded_file.getvalue())
             tmp_path = tmp.name
@@ -275,20 +288,35 @@ else:
                 import pandas as pd
                 table_data = []
                 for post in slide5['top_posts']:
-                    # Format date
-                    date_obj = datetime.strptime(post['ngay_dang'], "%Y-%m-%d %H:%M:%S")
-                    date_formatted = date_obj.strftime("%d/%m/%Y")
+                    # Format date safely
+                    try:
+                        date_obj = datetime.strptime(post['ngay_dang'], "%Y-%m-%d %H:%M:%S")
+                        date_formatted = date_obj.strftime("%d/%m/%Y")
+                    except:
+                        date_formatted = str(post.get('ngay_dang', 'N/A'))
                     
+                    # Get engagement metrics safely
+                    luong_tuong_tac = post.get('luong_tuong_tac', {})
+                    if isinstance(luong_tuong_tac, dict):
+                        like = luong_tuong_tac.get('like', 0)
+                        share = luong_tuong_tac.get('share', 0)
+                        comments = luong_tuong_tac.get('comments', 0)
+                        views = luong_tuong_tac.get('views', 0)
+                    else:
+                        # Fallback if luong_tuong_tac is not a dict
+                        like = share = comments = views = 0
+                    
+                    content = str(post.get('noi_dung_bai_dang', ''))
                     table_data.append({
-                        'STT': post['stt'],
-                        'Nội dung': post['noi_dung_bai_dang'][:100] + '...' if len(post['noi_dung_bai_dang']) > 100 else post['noi_dung_bai_dang'],
+                        'STT': post.get('stt', 0),
+                        'Nội dung': content[:100] + '...' if len(content) > 100 else content,
                         'Ngày đăng': date_formatted,
-                        'Kênh': post['kenh'],
-                        'Người đăng': post['nguoi_dang'],
-                        'Like': f"{post['luong_tuong_tac']['like']:,}",
-                        'Share': f"{post['luong_tuong_tac']['share']:,}",
-                        'Comments': f"{post['luong_tuong_tac']['comments']:,}",
-                        'Views': f"{post['luong_tuong_tac']['views']:,}",
+                        'Kênh': post.get('kenh', 'N/A'),
+                        'Người đăng': post.get('nguoi_dang', 'N/A'),
+                        'Like': f"{like:,}",
+                        'Share': f"{share:,}",
+                        'Comments': f"{comments:,}",
+                        'Views': f"{views:,}",
                         'Link': post.get('url_topic', '')
                     })
                 
@@ -317,98 +345,181 @@ else:
                 st.markdown("---")
                 st.markdown("**📝 Full Content**")
                 for post in slide5['top_posts']:
-                    with st.expander(f"#{post['stt']} - {post['nguoi_dang']} ({post['kenh']})"):
+                    # Get engagement metrics safely
+                    luong_tuong_tac = post.get('luong_tuong_tac', {})
+                    if isinstance(luong_tuong_tac, dict):
+                        like = luong_tuong_tac.get('like', 0)
+                        share = luong_tuong_tac.get('share', 0)
+                        comments = luong_tuong_tac.get('comments', 0)
+                        views = luong_tuong_tac.get('views', 0)
+                    else:
+                        like = share = comments = views = 0
+                    
+                    with st.expander(f"#{post.get('stt', 0)} - {post.get('nguoi_dang', 'N/A')} ({post.get('kenh', 'N/A')})"):
                         st.markdown(f"**Nội dung:**")
-                        st.write(post['noi_dung_bai_dang'])
+                        st.write(post.get('noi_dung_bai_dang', 'N/A'))
                         st.markdown(f"**Link:** [{post.get('url_topic', 'N/A')}]({post.get('url_topic', '#')})")
                         
                         col1, col2, col3, col4 = st.columns(4)
                         with col1:
-                            st.metric("Like", f"{post['luong_tuong_tac']['like']:,}")
+                            st.metric("Like", f"{like:,}")
                         with col2:
-                            st.metric("Share", f"{post['luong_tuong_tac']['share']:,}")
+                            st.metric("Share", f"{share:,}")
                         with col3:
-                            st.metric("Comments", f"{post['luong_tuong_tac']['comments']:,}")
+                            st.metric("Comments", f"{comments:,}")
                         with col4:
-                            st.metric("Views", f"{post['luong_tuong_tac']['views']:,}")
+                            st.metric("Views", f"{views:,}")
         
         # Slide 6 Preview - DELETED POSTS TABLE
         with slide_tabs[5]:
-            if st.session_state.json_data and 'slide_6' in st.session_state.json_data:
+            if not st.session_state.json_data:
+                st.info("📊 Generate a report first to see Slide 6 data.")
+            elif 'slide_6' not in st.session_state.json_data:
+                st.error("⚠️ Slide 6 data not found in report!")
+                with st.expander("Debug Info"):
+                    st.write("Available keys:", list(st.session_state.json_data.keys()))
+            else:
                 slide6 = st.session_state.json_data['slide_6']
-                st.markdown(f"### {slide6['title']}")
-                st.caption(slide6['subtitle'])
+                
+                # Helper function to normalize deleted indicators
+                def normalize_deleted_value(value):
+                    """Convert various deleted indicators to 'Deleted'"""
+                    value_str = str(value).lower().strip()
+                    deleted_indicators = ['deleted', 'not exist', 'close group', 'die', 'removed', 'unavailable']
+                    
+                    # Check if value contains any deleted indicator
+                    if any(indicator in value_str for indicator in deleted_indicators):
+                        return 'Deleted'
+                    return value
+                
+                # Display title and subtitle
+                st.markdown(f"### {slide6.get('title', 'Top 5 bài đăng đã xóa')}")
+                st.caption(slide6.get('subtitle', 'Tất cả thời gian'))
                 
                 # Show summary
-                st.info(f"🗑️ **Tổng số bài đăng đã xóa:** {slide6['total_deleted_posts']}")
+                total_deleted = slide6.get('total_deleted_posts', 0)
+                st.info(f"🗑️ **Tổng số bài đăng đã xóa:** {total_deleted}")
                 
-                # Build table data
-                import pandas as pd
-                table_data = []
-                for post in slide6['deleted_posts']:
-                    # Format date
-                    try:
-                        date_obj = datetime.strptime(post['ngay_dang'], "%Y-%m-%d %H:%M:%S")
-                        date_formatted = date_obj.strftime("%d/%m/%Y")
-                    except:
-                        date_formatted = post['ngay_dang']
+                # Check if there are deleted posts
+                deleted_posts = slide6.get('deleted_posts', [])
+                if len(deleted_posts) == 0:
+                    st.warning("⚠️ Không có bài đăng đã xóa trong dataset này.")
+                    st.markdown("""
+                    **Lý do có thể:**
+                    - Dataset không có posts với metrics = "Deleted"
+                    - Tất cả posts đều còn active
+                    - Filter không tìm thấy deleted indicators
+                    """)
+                else:
+                    st.success(f"✅ Tìm thấy {len(deleted_posts)} bài đăng đã xóa (hiển thị top 5)")
                     
-                    table_data.append({
-                        'STT': post['stt'],
-                        'Nội dung': post['noi_dung_bai_dang'][:100] + '...' if len(post['noi_dung_bai_dang']) > 100 else post['noi_dung_bai_dang'],
-                        'Ngày đăng': date_formatted,
-                        'Kênh': post['kenh'],
-                        'Người đăng': post['nguoi_dang'],
-                        'Likes': post['metric_status']['likes'],
-                        'Shares': post['metric_status']['shares'],
-                        'Comments': post['metric_status']['comments'],
-                        'Views': post['metric_status']['views'],
-                        'Total': post['metric_status']['total'],
-                        'Link': post.get('url_topic', '')
-                    })
-                
-                df_deleted = pd.DataFrame(table_data)
-                
-                # Display table with styling
-                st.dataframe(
-                    df_deleted,
-                    hide_index=True,
-                    use_container_width=True,
-                    column_config={
-                        'STT': st.column_config.NumberColumn('STT', width='small'),
-                        'Nội dung': st.column_config.TextColumn('Nội dung bài đăng', width='large'),
-                        'Ngày đăng': st.column_config.TextColumn('Ngày đăng', width='small'),
-                        'Kênh': st.column_config.TextColumn('Kênh', width='small'),
-                        'Người đăng': st.column_config.TextColumn('Người đăng', width='medium'),
-                        'Likes': st.column_config.TextColumn('Likes', width='small'),
-                        'Shares': st.column_config.TextColumn('Shares', width='small'),
-                        'Comments': st.column_config.TextColumn('Comments', width='small'),
-                        'Views': st.column_config.TextColumn('Views', width='small'),
-                        'Total': st.column_config.TextColumn('Total', width='small'),
-                        'Link': st.column_config.LinkColumn('Link', width='small')
-                    }
-                )
-                
-                # Show full content in expanders
-                st.markdown("---")
-                st.markdown("**📝 Full Content**")
-                for post in slide6['deleted_posts']:
-                    with st.expander(f"#{post['stt']} - {post['nguoi_dang']} ({post['kenh']}) 🗑️"):
-                        st.markdown(f"**Nội dung:**")
-                        st.write(post['noi_dung_bai_dang'])
-                        st.markdown(f"**Link:** [{post.get('url_topic', 'N/A')}]({post.get('url_topic', '#')})")
+                    # Build table data
+                    import pandas as pd
+                    table_data = []
+                    for post in deleted_posts:
+                        # Format date safely
+                        try:
+                            if 'ngay_dang' in post and post['ngay_dang']:
+                                date_obj = datetime.strptime(str(post['ngay_dang']), "%Y-%m-%d %H:%M:%S")
+                                date_formatted = date_obj.strftime("%d/%m/%Y")
+                            else:
+                                date_formatted = "N/A"
+                        except:
+                            date_formatted = str(post.get('ngay_dang', 'N/A'))
                         
-                        col1, col2, col3, col4, col5 = st.columns(5)
-                        with col1:
-                            st.metric("Likes", post['metric_status']['likes'])
-                        with col2:
-                            st.metric("Shares", post['metric_status']['shares'])
-                        with col3:
-                            st.metric("Comments", post['metric_status']['comments'])
-                        with col4:
-                            st.metric("Views", post['metric_status']['views'])
-                        with col5:
-                            st.metric("Total", post['metric_status']['total'])
+                        # Handle content safely
+                        content = str(post.get('noi_dung_bai_dang', 'N/A'))
+                        if content == 'nan' or content == 'None':
+                            content = '[Không có nội dung]'
+                        
+                        # Normalize deleted values
+                        metric_status = post.get('metric_status', {})
+                        likes = normalize_deleted_value(metric_status.get('likes', 'N/A'))
+                        shares = normalize_deleted_value(metric_status.get('shares', 'N/A'))
+                        comments = normalize_deleted_value(metric_status.get('comments', 'N/A'))
+                        views = normalize_deleted_value(metric_status.get('views', 'N/A'))
+                        total = normalize_deleted_value(metric_status.get('total', 'N/A'))
+                        
+                        table_data.append({
+                            'STT': post.get('stt', 0),
+                            'Nội dung': content[:100] + '...' if len(content) > 100 else content,
+                            'Ngày đăng': date_formatted,
+                            'Kênh': post.get('kenh', 'N/A'),
+                            'Người đăng': post.get('nguoi_dang', 'N/A'),
+                            'Likes': likes,
+                            'Shares': shares,
+                            'Comments': comments,
+                            'Views': views,
+                            'Total': total,
+                            'Link': post.get('url_topic', '')
+                        })
+                    
+                    df_deleted = pd.DataFrame(table_data)
+                    
+                    # Display table with styling
+                    st.dataframe(
+                        df_deleted,
+                        hide_index=True,
+                        use_container_width=True,
+                        column_config={
+                            'STT': st.column_config.NumberColumn('STT', width='small'),
+                            'Nội dung': st.column_config.TextColumn('Nội dung bài đăng', width='large'),
+                            'Ngày đăng': st.column_config.TextColumn('Ngày đăng', width='small'),
+                            'Kênh': st.column_config.TextColumn('Kênh', width='small'),
+                            'Người đăng': st.column_config.TextColumn('Người đăng', width='medium'),
+                            'Likes': st.column_config.TextColumn('Likes', width='small'),
+                            'Shares': st.column_config.TextColumn('Shares', width='small'),
+                            'Comments': st.column_config.TextColumn('Comments', width='small'),
+                            'Views': st.column_config.TextColumn('Views', width='small'),
+                            'Total': st.column_config.TextColumn('Total', width='small'),
+                            'Link': st.column_config.LinkColumn('Link', width='small')
+                        }
+                    )
+                    
+                    # Show full content in expanders
+                    st.markdown("---")
+                    st.markdown("**📝 Chi tiết bài đăng**")
+                    for post in deleted_posts:
+                        author = post.get('nguoi_dang', 'N/A')
+                        channel = post.get('kenh', 'N/A')
+                        stt = post.get('stt', 0)
+                        
+                        with st.expander(f"#{stt} - {author} ({channel}) 🗑️"):
+                            content = post.get('noi_dung_bai_dang', 'N/A')
+                            if str(content) in ['nan', 'None', 'N/A']:
+                                st.warning("Không có nội dung")
+                            else:
+                                st.markdown("**Nội dung:**")
+                                st.write(content)
+                            
+                            url = post.get('url_topic', '')
+                            if url and url != 'None':
+                                st.markdown(f"**Link:** [{url}]({url})")
+                            else:
+                                st.markdown("**Link:** N/A")
+                            
+                            # Metrics - normalize deleted values
+                            metrics = post.get('metric_status', {})
+                            likes = normalize_deleted_value(metrics.get('likes', 'N/A'))
+                            shares = normalize_deleted_value(metrics.get('shares', 'N/A'))
+                            comments = normalize_deleted_value(metrics.get('comments', 'N/A'))
+                            views = normalize_deleted_value(metrics.get('views', 'N/A'))
+                            total = normalize_deleted_value(metrics.get('total', 'N/A'))
+                            
+                            col1, col2, col3, col4, col5 = st.columns(5)
+                            with col1:
+                                st.metric("Likes", likes)
+                            with col2:
+                                st.metric("Shares", shares)
+                            with col3:
+                                st.metric("Comments", comments)
+                            with col4:
+                                st.metric("Views", views)
+                            with col5:
+                                st.metric("Total", total)
+        
+        st.divider()
+        st.header("Generated Prompt")
         
         st.divider()
         st.header("Generated Prompt")

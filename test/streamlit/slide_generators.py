@@ -725,18 +725,39 @@ class Slide5Generator:
         # Build table data
         top_posts = []
         for idx, row in enumerate(df_top.itertuples(index=False), start=1):
+            # Safely convert to int, handling NaN and float values
+            try:
+                reactions = int(float(row.Reactions)) if pd.notna(row.Reactions) else 0
+            except (ValueError, TypeError):
+                reactions = 0
+            
+            try:
+                shares = int(float(row.Shares)) if pd.notna(row.Shares) else 0
+            except (ValueError, TypeError):
+                shares = 0
+            
+            try:
+                comments = int(float(row.Comments)) if pd.notna(row.Comments) else 0
+            except (ValueError, TypeError):
+                comments = 0
+            
+            try:
+                views = int(float(row.Views)) if pd.notna(row.Views) else 0
+            except (ValueError, TypeError):
+                views = 0
+            
             top_posts.append({
                 "stt": idx,
-                "noi_dung_bai_dang": row.Content,
+                "noi_dung_bai_dang": str(row.Content) if pd.notna(row.Content) else "",
                 "ngay_dang": str(row.PublishedDate),
-                "kenh": row.Channel,
-                "nguoi_dang": row.SiteName,
-                "url_topic": row.UrlTopic,
+                "kenh": str(row.Channel) if pd.notna(row.Channel) else "",
+                "nguoi_dang": str(row.SiteName) if pd.notna(row.SiteName) else "",
+                "url_topic": str(row.UrlTopic) if pd.notna(row.UrlTopic) else "",
                 "luong_tuong_tac": {
-                    "like": int(row.Reactions),
-                    "share": int(row.Shares),
-                    "comments": int(row.Comments),
-                    "views": int(row.Views)
+                    "like": reactions,
+                    "share": shares,
+                    "comments": comments,
+                    "views": views
                 }
             })
         
@@ -763,29 +784,48 @@ class Slide6Generator:
         self.topic_types = topic_types
         self.top_n = top_n
         self.check_cols = ["Reactions", "Shares", "Comments", "Views"]
+        # Values that indicate deleted/removed posts
+        self.deleted_indicators = ["deleted", "not exist or close group", "die", "removed"]
     
     def generate(self, full_df: pd.DataFrame, brand: str,
-                 report_date: str) -> Dict[str, Any]:
+                 report_date: str, file_path: str = None) -> Dict[str, Any]:
         """
         Generate slide 6 data
         
         Args:
-            full_df: Full dataframe (NOT filtered by date)
+            full_df: Full dataframe (processed by DataLoader - may have converted metrics)
             brand: Brand name
             report_date: Report date string (for display only)
+            file_path: Path to original Excel file (to load raw data)
             
         Returns:
             Slide 6 data dictionary
         """
         print("      🗑️  Analyzing deleted posts (from entire dataset)...")
         
-        # Filter for topics only
-        df_topics = full_df[full_df["Type"].isin(self.topic_types)].copy()
+        # Load raw data directly to preserve string values like "Deleted"
+        # This avoids the numeric conversion done by DataLoader
+        if file_path:
+            print("      → Loading raw data to preserve 'Deleted' values...")
+            df_raw = pd.read_excel(file_path)
+        else:
+            # Fallback to processed data (may not have deleted values)
+            print("      → Using processed data (may not have 'Deleted' values)...")
+            df_raw = full_df
         
-        # Filter posts with 'deleted' in any metric column
-        # Check if any of the metric columns contains 'deleted' (case-insensitive)
-        deleted_mask = df_topics[self.check_cols].astype(str).apply(
-            lambda x: x.str.lower() == "deleted"
+        # Filter for topics only
+        df_topics = df_raw[df_raw["Type"].isin(self.topic_types)].copy()
+        
+        # Filter posts with deleted indicators in any metric column
+        # Check if any of the metric columns contains deleted indicators (case-insensitive)
+        def is_deleted(value):
+            """Check if value indicates deleted/removed post"""
+            value_str = str(value).lower().strip()
+            return any(indicator in value_str for indicator in self.deleted_indicators)
+        
+        # Apply is_deleted to each column and check if any column has deleted value
+        deleted_mask = df_topics[self.check_cols].apply(
+            lambda col: col.apply(is_deleted)
         ).any(axis=1)
         
         deleted_df = df_topics[deleted_mask].copy()

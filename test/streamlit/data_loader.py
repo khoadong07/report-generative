@@ -48,10 +48,10 @@ class DataLoader:
         """Ensure metric columns are numeric"""
         for col in self.metric_columns:
             if col in self.df.columns:
-                self.df[col] = pd.to_numeric(
-                    self.df[col], 
-                    errors="coerce"
-                ).fillna(0)
+                # Convert to numeric, non-numeric values become NaN
+                self.df[col] = pd.to_numeric(self.df[col], errors="coerce")
+                # Fill NaN with 0
+                self.df[col] = self.df[col].fillna(0)
     
     def preprocess(self) -> pd.DataFrame:
         """Run all preprocessing steps"""
