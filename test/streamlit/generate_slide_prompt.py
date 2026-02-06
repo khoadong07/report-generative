@@ -708,9 +708,9 @@ Header Tier 1 (Main columns):
 - Ngày đăng (center aligned)
 - Kênh (center aligned)
 - Người đăng (center aligned)
-- Trạng thái Metrics (colspan=4, center aligned)
+- Lượng tương tác (colspan=4, center aligned)
 
-Header Tier 2 (Under "Trạng thái Metrics"):
+Header Tier 2 (Under "Lượng tương tác"):
 - Likes (center aligned)
 - Shares (center aligned)
 - Comments (center aligned)
