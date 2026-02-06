@@ -4,7 +4,7 @@ Data loading and preprocessing utilities
 
 import pandas as pd
 from typing import Tuple
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 
 class DataLoader:
@@ -36,12 +36,13 @@ class DataLoader:
                 self.df[col] = self.df[col].fillna("").astype(str)
     
     def normalize_dates(self):
-        """Normalize date columns"""
+        """Normalize date columns (keep full datetime, not just date)"""
         self.df["PublishedDate"] = pd.to_datetime(
             self.df["PublishedDate"], 
             errors="coerce"
         )
         self.df = self.df[self.df["PublishedDate"].notna()].copy()
+        # Keep PublishedDay for backward compatibility
         self.df["PublishedDay"] = self.df["PublishedDate"].dt.date
     
     def ensure_numeric_columns(self):
@@ -71,9 +72,27 @@ class DataLoader:
         
         return self.df
     
+    def filter_by_datetime_range(self, end_datetime: str) -> pd.DataFrame:
+        """
+        Filter dataframe by 24-hour datetime range (end_datetime - 24h to end_datetime)
+        
+        Args:
+            end_datetime: End datetime string in format "YYYY-MM-DD HH:MM:SS"
+            
+        Returns:
+            Filtered dataframe for 24-hour window
+        """
+        end_dt = pd.to_datetime(end_datetime)
+        start_dt = end_dt - timedelta(hours=24)
+        
+        return self.df[
+            (self.df["PublishedDate"] > start_dt) &
+            (self.df["PublishedDate"] <= end_dt)
+        ].copy()
+    
     def filter_by_date(self, date: str) -> pd.DataFrame:
         """
-        Filter dataframe by specific date
+        Filter dataframe by specific date (backward compatibility)
         
         Args:
             date: Date string in format YYYY-MM-DD

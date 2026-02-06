@@ -106,8 +106,7 @@ class ReportGenerator:
         )
         
         self.slide4_gen = Slide4Generator(
-            self.llm_client,
-            TOP_N_ATTRIBUTES
+            self.llm_client
         )
         
         self.slide5_gen = Slide5Generator(
@@ -123,6 +122,7 @@ class ReportGenerator:
     def generate_report(self) -> Dict[str, Any]:
         """
         Generate complete report with all slides (parallel processing)
+        Supports both date-only and datetime formats
         
         Returns:
             Dictionary containing all slide data
@@ -135,28 +135,55 @@ class ReportGenerator:
         df = self.data_loader.preprocess()
         print(f"      ✅ Loaded {len(df)} rows")
         
-        print("\n[2/5] Filtering data by dates...")
-        report_df = self.data_loader.filter_by_date(self.report_date)
-        compare_df = self.data_loader.filter_by_date(self.compare_date)
-        print(f"      ✅ Report date ({self.report_date}): {len(report_df)} rows")
-        print(f"      ✅ Compare date ({self.compare_date}): {len(compare_df)} rows")
+        # Detect if using datetime or date-only format
+        is_datetime_mode = len(self.report_date) > 10  # "YYYY-MM-DD HH:MM:SS" vs "YYYY-MM-DD"
+        
+        print("\n[2/5] Filtering data by datetime ranges...")
+        
+        if is_datetime_mode:
+            # DateTime mode: 24-hour windows
+            from datetime import datetime, timedelta
+            import pandas as pd
+            
+            report_dt = pd.to_datetime(self.report_date)
+            compare_dt = report_dt - timedelta(hours=24)
+            
+            report_df = self.data_loader.filter_by_datetime_range(self.report_date)
+            compare_df = self.data_loader.filter_by_datetime_range(
+                compare_dt.strftime("%Y-%m-%d %H:%M:%S")
+            )
+            
+            # Keep both raw and display formats
+            report_date_raw = self.report_date  # For parsing: "2026-02-03 15:00:00"
+            compare_date_raw = compare_dt.strftime("%Y-%m-%d %H:%M:%S")
+            
+            # Format for display (24h window)
+            report_display = report_dt.strftime("%d/%m/%Y %H:%M")
+            compare_display = compare_dt.strftime("%d/%m/%Y %H:%M")
+            
+            # Format for subtitle (show 24h range)
+            datetime_range_display = f"{compare_display} → {report_display}"
+            
+            print(f"      ✅ Report window: {datetime_range_display} (24h)")
+            print(f"      ✅ Report data: {len(report_df)} rows")
+            print(f"      ✅ Compare data: {len(compare_df)} rows")
+        else:
+            # Date-only mode: backward compatibility
+            report_df = self.data_loader.filter_by_date(self.report_date)
+            compare_df = self.data_loader.filter_by_date(self.compare_date)
+            
+            report_date_raw = self.report_date
+            compare_date_raw = self.compare_date
+            report_display = self.report_date
+            compare_display = self.compare_date
+            datetime_range_display = report_display
+            
+            print(f"      ✅ Report date ({self.report_date}): {len(report_df)} rows")
+            print(f"      ✅ Compare date ({self.compare_date}): {len(compare_df)} rows")
         
         # Validate data availability
         if len(report_df) == 0:
-            print(f"\n      ⚠️  WARNING: No data found for report date {self.report_date}")
-            print(f"      Available dates in dataset:")
-            available_dates = sorted(df['PublishedDay'].unique())
-            for date in available_dates[:10]:  # Show first 10 dates
-                print(f"         - {date}")
-            if len(available_dates) > 10:
-                print(f"         ... and {len(available_dates) - 10} more dates")
-            raise ValueError(
-                f"No data available for report date {self.report_date}. "
-                f"Please choose a date between {available_dates[0]} and {available_dates[-1]}"
-            )
-        
-        if len(compare_df) == 0:
-            print(f"\n      ⚠️  WARNING: No data found for compare date {self.compare_date}")
+            print(f"\n      ⚠️  WARNING: No data found for report period")
             print(f"      Available dates in dataset:")
             available_dates = sorted(df['PublishedDay'].unique())
             for date in available_dates[:10]:
@@ -164,9 +191,13 @@ class ReportGenerator:
             if len(available_dates) > 10:
                 print(f"         ... and {len(available_dates) - 10} more dates")
             raise ValueError(
-                f"No data available for compare date {self.compare_date}. "
+                f"No data available for report period. "
                 f"Please choose a date between {available_dates[0]} and {available_dates[-1]}"
             )
+        
+        if len(compare_df) == 0:
+            print(f"\n      ⚠️  WARNING: No data found for compare period")
+            raise ValueError("No data available for compare period.")
         
         print("\n[3/5] Generating all slides in parallel...")
         print("      🚀 Starting 4 parallel tasks (this will take ~1 minute)...")
@@ -177,7 +208,7 @@ class ReportGenerator:
             print("      [Slide 1] 🤖 Calling LLM for insights...")
             result = self.slide1_gen.generate(
                 report_df, compare_df,
-                self.brand_name, self.report_date, self.compare_date
+                self.brand_name, datetime_range_display, compare_display
             )
             print("      [Slide 1] ✅ Completed")
             return ('slide_1', result)
@@ -186,7 +217,7 @@ class ReportGenerator:
             print("      [Slide 2] 📈 Calculating trendline data...")
             print("      [Slide 2] 🤖 Calling LLM for insights...")
             result = self.slide2_gen.generate(
-                df, self.brand_name, self.report_date
+                df, self.brand_name, report_date_raw  # Pass raw format for parsing
             )
             print("      [Slide 2] ✅ Completed")
             return ('slide_2', result)
@@ -196,7 +227,7 @@ class ReportGenerator:
             print("      [Slide 3] 🤖 Calling LLM for insights...")
             result = self.slide3_gen.generate(
                 report_df, compare_df,
-                self.brand_name, self.report_date, self.compare_date
+                self.brand_name, datetime_range_display, compare_display
             )
             print("      [Slide 3] ✅ Completed")
             return ('slide_3', result)
@@ -205,7 +236,7 @@ class ReportGenerator:
             print("      [Slide 4] 💭 Analyzing sentiment distribution...")
             print("      [Slide 4] 🤖 Calling LLM for insights...")
             result = self.slide4_gen.generate(
-                report_df, self.brand_name, self.report_date
+                report_df, self.brand_name, datetime_range_display
             )
             print("      [Slide 4] ✅ Completed")
             return ('slide_4', result)
@@ -241,22 +272,22 @@ class ReportGenerator:
         # Generate Slide 5 (no LLM needed, so run after parallel tasks)
         print("      [Slide 5] 📊 Generating top posts table...")
         slide5_data = self.slide5_gen.generate(
-            report_df, self.brand_name, self.report_date
+            report_df, self.brand_name, datetime_range_display
         )
         print("      [Slide 5] ✅ Completed")
         
         # Generate Slide 6 (deleted posts - from entire dataset, not filtered by date)
         print("      [Slide 6] 🗑️  Generating deleted posts table (all dates)...")
         slide6_data = self.slide6_gen.generate(
-            df, self.brand_name, self.report_date, file_path=self.file_path
+            df, self.brand_name, datetime_range_display, file_path=self.file_path
         )
         print("      [Slide 6] ✅ Completed")
         
         report = {
             "report_metadata": {
                 "brand": self.brand_name,
-                "report_date": self.report_date,
-                "compare_date": self.compare_date,
+                "report_date": datetime_range_display,  # Show 24h range
+                "compare_date": compare_display,
                 "generated_at": pd.Timestamp.now().isoformat(),
                 "generation_mode": "parallel"
             },

@@ -136,16 +136,16 @@ YÊU CẦU BẮT BUỘC:
 
 
 def get_sentiment_insight_prompt(brand: str, report_day: str,
-                                   sentiment_dist: str, attribute_sentiment: str,
+                                   sentiment_dist: str, channel_sentiment: str,
                                    evidence_context: str, url_whitelist: str) -> str:
     """
-    Generate prompt for sentiment & brand attribute insight (Slide 4)
+    Generate prompt for sentiment & channel breakdown insight (Slide 4)
     
     Args:
         brand: Brand name
-        report_day: Report date
-        sentiment_dist: Sentiment distribution data
-        attribute_sentiment: Attribute x sentiment data
+        report_day: Report date/time
+        sentiment_dist: Overall sentiment distribution
+        channel_sentiment: Sentiment breakdown by channel
         evidence_context: Evidence from top posts
         url_whitelist: Whitelist of valid URLs
         
@@ -153,37 +153,39 @@ def get_sentiment_insight_prompt(brand: str, report_day: str,
         Formatted prompt string
     """
     return f"""
-Bạn là chuyên gia social listening & brand health analysis.
+Bạn là chuyên gia social listening & sentiment analysis.
 
 BỐI CẢNH:
 - Thương hiệu: {brand}
-- Ngày phân tích: {report_day}
+- Khung giờ phân tích: {report_day}
 
-PHÂN BỔ SENTIMENT:
+PHÂN BỔ SENTIMENT TỔNG QUAN:
 {sentiment_dist}
 
-BRAND ATTRIBUTE THEO SENTIMENT:
-{attribute_sentiment}
+SENTIMENT THEO KÊNH:
+{channel_sentiment}
 
-DẪN CHỨNG:
+DẪN CHỨNG (Top posts theo sentiment):
 {evidence_context}
 
 URL HỢP LỆ:
 {url_whitelist}
 
-NHIỆU VỤ:
-Viết insight phân tích Sentiment kết hợp Brand Attribute.
+NHIỆM VỤ:
+Viết insight phân tích Sentiment tổng quan và phân bố theo từng kênh.
 
 YÊU CẦU BẮT BUỘC:
-- Viết 4–5 câu, văn xuôi
-- So sánh Negative / Neutral / Positive
-- Nêu rõ brand attribute nổi bật theo từng sắc thái
+- Viết 5–6 câu, văn xuôi
+- Câu 1-2: Phân tích tỷ lệ Negative / Neutral / Positive tổng quan
+- Câu 3-4: Phân tích sentiment trên từng kênh chính (Facebook, Tiktok, Youtube, etc.)
+- Câu 5-6: Nêu rõ nội dung chính của các bài đăng negative (quan trọng nhất)
 - Mỗi câu kết thúc bằng [Nguồn: URL_X]
 - Mỗi URL_X chỉ dùng 1 lần
 - Không ghi URL thật
 
 FORMAT:
-Câu insight... [Nguồn: URL_X]
+Câu insight về sentiment tổng quan... [Nguồn: URL_X]
+Câu insight về sentiment theo kênh... [Nguồn: URL_Y]
 """
 
 

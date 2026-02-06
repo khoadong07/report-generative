@@ -40,12 +40,33 @@ def format_percentage(pct):
 
 
 def format_date(date_str):
-    """Format date to DD/MM/YYYY"""
+    """Format date to DD/MM/YYYY - handles multiple input formats"""
     if isinstance(date_str, str):
-        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+        # Try multiple formats
+        formats = [
+            "%Y-%m-%d %H:%M:%S",  # 2026-02-04 15:00:00
+            "%Y-%m-%d",           # 2026-02-04
+            "%d/%m/%Y %H:%M",     # 04/02/2026 15:00
+            "%d/%m/%Y",           # 04/02/2026
+        ]
+        
+        for fmt in formats:
+            try:
+                date_obj = datetime.strptime(date_str, fmt)
+                return date_obj.strftime("%d/%m/%Y")
+            except ValueError:
+                continue
+        
+        # Fallback to pandas
+        try:
+            import pandas as pd
+            date_obj = pd.to_datetime(date_str)
+            return date_obj.strftime("%d/%m/%Y")
+        except:
+            return str(date_str)
     else:
         date_obj = date_str
-    return date_obj.strftime("%d/%m/%Y")
+        return date_obj.strftime("%d/%m/%Y")
 
 
 def extract_urls_from_text(text):
@@ -169,22 +190,36 @@ def generate_slide3_data(slide_data):
 
 
 def generate_slide4_data(slide_data):
-    """Generate formatted data for Slide 4"""
+    """Generate formatted data for Slide 4 (Sentiment + Channel Breakdown)"""
     sentiment = []
     for item in slide_data['sentiment_distribution']:
         sentiment.append(
             f"{item['Sentiment']}: {format_number(item['Count'])}"
         )
     
-    attributes = []
-    for item in slide_data['attribute_sentiment']:
-        attr_name = item['Label_List']
+    # Channel sentiment breakdown
+    channels = []
+    for item in slide_data.get('channel_sentiment', []):
+        channel_name = item['Channel']
         neg = int(item.get('Negative', 0))
         neu = int(item.get('Neutral', 0))
         pos = int(item.get('Positive', 0))
-        attributes.append(
-            f"{attr_name}: Neg {neg}, Neu {neu}, Pos {pos}"
-        )
+        total = neg + neu + pos
+        
+        # Calculate percentages
+        neg_pct = (neg / total * 100) if total > 0 else 0
+        neu_pct = (neu / total * 100) if total > 0 else 0
+        pos_pct = (pos / total * 100) if total > 0 else 0
+        
+        channels.append({
+            'name': channel_name,
+            'negative': neg,
+            'neutral': neu,
+            'positive': pos,
+            'neg_pct': round(neg_pct, 1),
+            'neu_pct': round(neu_pct, 1),
+            'pos_pct': round(pos_pct, 1)
+        })
     
     # Convert insight with hyperlinks
     insight = convert_insight_to_hyperlink_format(slide_data['insight'])
@@ -194,7 +229,7 @@ def generate_slide4_data(slide_data):
         'title': slide_data['title'],
         'subtitle': slide_data['subtitle'],
         'sentiment': sentiment,
-        'attributes': attributes,
+        'channels': channels,
         'insight': insight,
         'hyperlinks': hyperlinks
     }
@@ -478,29 +513,34 @@ CHART DESIGN:
 - Sort by value (descending)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 4 - SENTIMENT & BRAND ATTRIBUTE
+SLIDE 4 - SENTIMENT & CHANNEL BREAKDOWN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 LAYOUT:
 - Title: "{slide4['title']}"
 - Subtitle: "{slide4['subtitle']}"
-- Two-column layout:
-  * Left (40%): Pie chart (Sentiment distribution)
-  * Right (60%): Stacked bar chart (Sentiment by Attribute)
-- Bottom section: Sentiment analysis insight (full width)
+- Two-column layout (equal width):
+  * Left (50%): Pie chart (Overall Sentiment Distribution)
+  * Right (50%): Stacked Bar Chart (Sentiment by Channel)
+- Bottom section: Insight (full width)
 
-SENTIMENT DISTRIBUTION:
+OVERALL SENTIMENT DISTRIBUTION:
 """
     
     for sent in slide4['sentiment']:
         prompt += f"- {sent}\n"
     
     prompt += f"""
-BRAND ATTRIBUTES (with Sentiment breakdown):
+SENTIMENT BY CHANNEL (Stacked Bar Chart):
 """
     
-    for attr in slide4['attributes']:
-        prompt += f"- {attr}\n"
+    for ch in slide4.get('channels', []):
+        prompt += f"""
+{ch['name']}:
+- Negative: {ch['negative']} ({ch['neg_pct']}%)
+- Neutral: {ch['neutral']} ({ch['neu_pct']}%)
+- Positive: {ch['positive']} ({ch['pos_pct']}%)
+"""
     
     prompt += f"""
 INSIGHT:
@@ -516,23 +556,49 @@ HYPERLINKS IN INSIGHT:
     
     prompt += f"""
 CHART DESIGN:
+
 LEFT - Pie Chart (Donut style):
 - Segments:
   * Neutral: Gray (#6b7280)
   * Negative: Red (#dc2626)
   * Positive: Green (#16a34a)
 - Show percentages on segments
+- Show count values
 - Legend at bottom
+- Title: "Phân bố sắc thái thảo luận"
 
-RIGHT - Stacked Bar Chart (Horizontal):
-- Y-axis: Top 6 brand attributes
-- X-axis: Count
-- Stack colors:
-  * Negative: Red (#dc2626)
-  * Neutral: Gray (#6b7280)
-  * Positive: Green (#16a34a)
-- Legend at top right
-- Show values on hover
+RIGHT - Stacked Bar Chart (100% Stacked, VERTICAL):
+- X-axis: Channel names (Facebook Users, Facebook Pages, Facebook Groups, Tiktok, Youtube, etc.)
+- Y-axis: Percentage (0-100%)
+- Each bar is 100% height, divided by sentiment percentages
+- Stack colors (same as pie chart):
+  * Negative: Red (#dc2626) - bottom
+  * Neutral: Gray (#6b7280) - middle
+  * Positive: Green (#16a34a) - top
+- Show percentage labels on each segment
+- Legend at top
+- Title: "Sắc thái thảo luận theo kênh có lượng thảo luận cao nhất"
+- All bars have equal height (100% stacked)
+- Bars are VERTICAL (columns), not horizontal
+- Sort channels by total count (descending, left to right)
+- Show top 8 channels only
+
+IMPORTANT NOTES:
+- Facebook channel is split into 3 sub-channels:
+  * Facebook Users (from fbUserComment, fbUserTopic)
+  * Facebook Pages (from fbPageComment, fbPageTopic)
+  * Facebook Groups (from fbGroupComment, fbGroupTopic)
+- Chart orientation: VERTICAL bars (columns standing up)
+- NOT horizontal bars
+- Only top 8 channels with highest discussion count are shown
+
+INSIGHT SECTION:
+- Full width below charts
+- Professional paragraph format
+- Each sentence ends with [Nguồn: URL]
+- Hyperlinks styled in blue (#1e40af)
+- Focus on overall sentiment + channel-specific trends
+- Format: "Insight text... [Nguồn: URL]"
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SLIDE 5 - TOP 5 BÀI ĐĂNG CÓ LƯỢNG TƯƠNG TÁC CAO

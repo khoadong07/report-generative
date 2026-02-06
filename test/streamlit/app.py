@@ -12,6 +12,23 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
+# Force reload modules to pick up latest changes
+import sys
+import importlib
+
+# Remove cached modules
+modules_to_reload = [
+    'slide_generators',
+    'report_generator', 
+    'generate_slide_prompt',
+    'data_loader',
+    'prompts'
+]
+
+for module_name in modules_to_reload:
+    if module_name in sys.modules:
+        importlib.reload(sys.modules[module_name])
+
 # =====================
 # LOAD ENV
 # =====================
@@ -35,7 +52,7 @@ st.set_page_config(
 )
 
 st.title("📊 Slide Prompt Generator")
-st.caption("Generate slide prompts for Manus & Genspark")
+st.caption("Generate slide prompts for Manus & Genspark - 24h Window Reporting")
 
 # =====================
 # SIDEBAR
@@ -53,13 +70,38 @@ with st.sidebar:
         placeholder="Vinamilk, Nestlé, VinFast..."
     )
 
-    report_date = st.date_input(
-        "Report date",
-        value=datetime.now()
-    )
-
-    compare_date = report_date - timedelta(days=1)
-    st.caption(f"Compare date: {compare_date.strftime('%Y-%m-%d')}")
+    st.subheader("Report Time Window (24h)")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        report_date = st.date_input(
+            "Report date",
+            value=datetime.now()
+        )
+    with col2:
+        from datetime import time
+        report_time = st.time_input(
+            "Report time",
+            value=time(15, 0),  # Default 15:00
+            help="End time of 24-hour window"
+        )
+    
+    # Combine date and time
+    report_datetime = datetime.combine(report_date, report_time)
+    report_datetime_str = report_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Auto-calculate compare datetime (24h before)
+    from datetime import timedelta
+    compare_datetime = report_datetime - timedelta(hours=24)
+    compare_datetime_str = compare_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    
+    st.info(f"""
+    **Report Window (24h):**  
+    📅 {compare_datetime.strftime('%d/%m/%Y %H:%M')} → {report_datetime.strftime('%d/%m/%Y %H:%M')}
+    
+    **Compare Window (24h before):**  
+    📅 {(compare_datetime - timedelta(hours=24)).strftime('%d/%m/%Y %H:%M')} → {compare_datetime.strftime('%d/%m/%Y %H:%M')}
+    """)
 
     st.divider()
 
@@ -154,8 +196,8 @@ else:
                 base_url=BASE_URL,
                 file_path=tmp_path,
                 brand_name=brand_name,
-                report_date=report_date.strftime("%Y-%m-%d"),
-                compare_date=compare_date.strftime("%Y-%m-%d")
+                report_date=report_datetime_str,  # Use datetime string
+                compare_date=compare_datetime_str  # Use datetime string
             )
 
             status.text("Generating report data (parallel processing ~1 minute)...")
@@ -164,7 +206,11 @@ else:
             # Show info about parallel processing
             info_placeholder = st.empty()
             with info_placeholder.container():
-                st.info("🚀 **Parallel Processing!** Generating 6 slides (4 with LLM + 2 data tables). This will take ~1 minute.")
+                st.info(f"""
+                🚀 **Parallel Processing!** Generating 6 slides (4 with LLM + 2 data tables).  
+                📅 **Report Window**: {compare_datetime.strftime('%d/%m/%Y %H:%M')} → {report_datetime.strftime('%d/%m/%Y %H:%M')} (24h)  
+                ⏱️ This will take ~1 minute.
+                """)
 
             report_data = generator.generate_report()
             
@@ -257,25 +303,47 @@ else:
                 
                 st.success(f"🏆 **Top Channel:** {slide3['top_channel']}")
         
-        # Slide 4 Preview
+        # Slide 4 Preview - Sentiment & Channel Breakdown
         with slide_tabs[3]:
             if st.session_state.json_data and 'slide_4' in st.session_state.json_data:
                 slide4 = st.session_state.json_data['slide_4']
                 st.markdown(f"### {slide4['title']}")
                 st.caption(slide4['subtitle'])
                 
+                import pandas as pd
+                
+                # Two-column layout
                 col1, col2 = st.columns(2)
                 
+                # Left: Overall Sentiment Distribution
                 with col1:
-                    st.markdown("**Sentiment Distribution**")
-                    import pandas as pd
+                    st.markdown("**Phân bố sắc thái thảo luận**")
                     df_sent = pd.DataFrame(slide4['sentiment_distribution'])
-                    st.dataframe(df_sent, hide_index=True)
+                    st.dataframe(df_sent, hide_index=True, use_container_width=True)
+                    
+                    # Pie chart (using bar chart as approximation)
+                    st.bar_chart(df_sent.set_index('Sentiment')['Count'])
                 
+                # Right: Sentiment by Channel
                 with col2:
-                    st.markdown("**Top Attributes**")
-                    df_attr = pd.DataFrame(slide4['attribute_sentiment'])
-                    st.dataframe(df_attr.head(6), hide_index=True)
+                    st.markdown("**Sắc thái thảo luận theo kênh có lượng thảo luận cao nhất**")
+                    df_channel_sent = pd.DataFrame(slide4.get('channel_sentiment', []))
+                    
+                    if len(df_channel_sent) > 0:
+                        # Display table
+                        st.dataframe(df_channel_sent, hide_index=True, use_container_width=True)
+                        
+                        # Stacked bar chart (horizontal)
+                        # Prepare data for stacked chart
+                        df_chart = df_channel_sent.set_index('Channel')
+                        
+                        # Filter only sentiment columns (exclude Channel)
+                        sentiment_cols = [col for col in df_chart.columns if col in ['Negative', 'Neutral', 'Positive']]
+                        
+                        if sentiment_cols:
+                            st.bar_chart(df_chart[sentiment_cols])
+                    else:
+                        st.info("No channel sentiment data available")
         
         # Slide 5 Preview - TOP POSTS TABLE
         with slide_tabs[4]:

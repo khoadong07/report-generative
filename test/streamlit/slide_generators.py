@@ -5,7 +5,7 @@ Slide generation modules for each report section
 import pandas as pd
 import re
 from typing import Dict, Any, List
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 try:
     from test.data_loader import calculate_percentage_change, calculate_engagement
@@ -25,6 +25,44 @@ except ImportError:
         get_channel_breakdown_prompt,
         get_sentiment_insight_prompt
     )
+
+
+def parse_date_flexible(date_str: str):
+    """
+    Parse date string flexibly - handles multiple formats
+    
+    Args:
+        date_str: Date string in various formats
+        
+    Returns:
+        datetime object
+    """
+    print(f"      🔍 DEBUG: parse_date_flexible() called with: '{date_str}'")
+    
+    # Try common formats
+    formats = [
+        "%Y-%m-%d %H:%M:%S",  # 2026-02-04 15:00:00
+        "%Y-%m-%d",           # 2026-02-04
+        "%d/%m/%Y %H:%M",     # 04/02/2026 15:00
+        "%d/%m/%Y",           # 04/02/2026
+    ]
+    
+    for fmt in formats:
+        try:
+            result = datetime.strptime(date_str, fmt)
+            print(f"      ✅ Parsed with format: {fmt}")
+            return result
+        except ValueError:
+            continue
+    
+    # Fallback to pandas
+    try:
+        result = pd.to_datetime(date_str)
+        print(f"      ✅ Parsed with pandas")
+        return result
+    except Exception as e:
+        print(f"      ❌ Failed to parse: {e}")
+        raise ValueError(f"Cannot parse date: {date_str}")
 
 
 class Slide1Generator:
@@ -234,7 +272,8 @@ class Slide2Generator:
         Returns:
             Slide 2 data dictionary
         """
-        report_day = pd.to_datetime(report_date).date()
+        print("      🔍 DEBUG: Slide2Generator with empty dataframe fix loaded")
+        report_day = parse_date_flexible(report_date).date()
         start_day = report_day - timedelta(days=self.lookback_days - 1)
         
         # Filter data for window
@@ -251,6 +290,30 @@ class Slide2Generator:
             .reset_index(name="buzz")
             .sort_values("PublishedDay")
         )
+        
+        # Check if we have data
+        if len(trend_df) == 0:
+            print("      ⚠️  Warning: No data in 7-day window, returning empty trendline")
+            return {
+                "title": f"Trendline | Diễn biến thảo luận",
+                "subtitle": f"Khoảng thời gian: {start_day} → {report_day}",
+                "window": {
+                    "start_date": str(start_day),
+                    "end_date": str(report_day)
+                },
+                "trendline": [],
+                "peak_day": {
+                    "date": str(report_day),
+                    "buzz": 0,
+                    "links": []
+                },
+                "current_day": {
+                    "date": str(report_day),
+                    "buzz": 0,
+                    "is_still_hot": False
+                },
+                "insight": f"Không có dữ liệu thảo luận trong khoảng thời gian {start_day} đến {report_day}. Vui lòng kiểm tra lại dữ liệu nguồn hoặc chọn khoảng thời gian khác có dữ liệu."
+            }
         
         trendline_data = [
             {
@@ -303,7 +366,7 @@ class Slide2Generator:
                           report_date: str, current_buzz: int) -> tuple:
         """Generate insight using LLM"""
         print("         → Analyzing peak day topics...")
-        peak_day_date = pd.to_datetime(peak_day).date()
+        peak_day_date = parse_date_flexible(peak_day).date()
         
         # Get peak day negative topics
         df_peak = df_window[
@@ -362,23 +425,21 @@ URL: {row['UrlTopic']}
 
 
 class Slide4Generator:
-    """Generate sentiment & brand attribute slide"""
+    """Generate sentiment & channel breakdown slide"""
     
-    def __init__(self, llm_client: LLMClient, top_n_attr: int = 6):
+    def __init__(self, llm_client: LLMClient):
         """
         Initialize slide 4 generator
         
         Args:
             llm_client: LLM client for insight generation
-            top_n_attr: Number of top attributes to analyze
         """
         self.llm_client = llm_client
-        self.top_n_attr = top_n_attr
     
     def generate(self, report_df: pd.DataFrame, brand: str,
                  report_date: str) -> Dict[str, Any]:
         """
-        Generate slide 4 data
+        Generate slide 4 data (Sentiment + Channel Breakdown)
         
         Args:
             report_df: Report day dataframe
@@ -388,16 +449,33 @@ class Slide4Generator:
         Returns:
             Slide 4 data dictionary
         """
-        # Normalize sentiment and labels
+        # Normalize sentiment
         report_df = report_df.copy()
         report_df["Sentiment"] = report_df["Sentiment"].str.capitalize()
-        report_df["Label_List"] = report_df["Labels"].apply(
-            lambda x: [i.strip() for i in str(x).split(",") if i.strip()]
-        )
         
-        df_exploded = report_df.explode("Label_List")
+        # Normalize Facebook channels based on Type
+        def normalize_facebook_channel(row):
+            """Split Facebook into Users/Pages/Groups based on Type"""
+            if row['Channel'] != 'Facebook':
+                return row['Channel']
+            
+            type_val = str(row.get('Type', '')).lower()
+            
+            # Map Type to Facebook sub-channels
+            if 'user' in type_val:
+                return 'Facebook Users'
+            elif 'page' in type_val:
+                return 'Facebook Pages'
+            elif 'group' in type_val:
+                return 'Facebook Groups'
+            else:
+                return 'Facebook'  # Fallback
         
-        # Sentiment distribution
+        report_df['ChannelNormalized'] = report_df.apply(normalize_facebook_channel, axis=1)
+        
+        print(f"         → Normalized channels: {report_df['ChannelNormalized'].unique().tolist()}")
+        
+        # Overall sentiment distribution
         sentiment_dist = (
             report_df["Sentiment"]
             .value_counts()
@@ -405,72 +483,76 @@ class Slide4Generator:
             .rename(columns={"index": "Sentiment"})
         )
         
-        # Attribute x Sentiment
-        attr_sentiment = (
-            df_exploded.groupby(["Label_List", "Sentiment"])
+        # Sentiment by Channel (using normalized channel)
+        channel_sentiment = (
+            report_df.groupby(["ChannelNormalized", "Sentiment"])
             .size()
             .reset_index(name="Count")
         )
         
-        top_attrs = (
-            attr_sentiment.groupby("Label_List")["Count"]
-            .sum()
-            .sort_values(ascending=False)
-            .head(self.top_n_attr)
-            .index
-        )
-        
-        attr_sentiment_top = attr_sentiment[
-            attr_sentiment["Label_List"].isin(top_attrs)
-        ]
-        
-        pivot_df = attr_sentiment_top.pivot(
-            index="Label_List",
+        # Pivot for easier chart generation
+        channel_sentiment_pivot = channel_sentiment.pivot(
+            index="ChannelNormalized",
             columns="Sentiment",
             values="Count"
         ).fillna(0)
         
-        # Generate insight
+        # Sort by total count (descending) and get top 8
+        channel_sentiment_pivot['Total'] = channel_sentiment_pivot.sum(axis=1)
+        channel_sentiment_pivot = channel_sentiment_pivot.sort_values('Total', ascending=False)
+        
+        print(f"         → Total channels available: {len(channel_sentiment_pivot)}")
+        print(f"         → All channels: {channel_sentiment_pivot.index.tolist()}")
+        
+        # Keep top 8 channels only
+        top_8_channels = channel_sentiment_pivot.head(8).copy()
+        top_8_channels = top_8_channels.drop('Total', axis=1)
+        
+        print(f"         → Filtered to top 8 channels: {top_8_channels.index.tolist()}")
+        print(f"         → Number of channels in output: {len(top_8_channels)}")
+        
+        # Generate insight (sentiment + channel) - use all channels for insight
+        all_channels = channel_sentiment_pivot.drop('Total', axis=1)
         insight = self._generate_insight(
-            df_exploded, top_attrs, brand, report_date,
-            sentiment_dist, pivot_df
+            report_df, brand, report_date, sentiment_dist, all_channels
         )
         
         return {
-            "title": "Sentiment & Brand Attribute",
-            "subtitle": f"Ngày {report_date}",
+            "title": "Sentiment & Channel Breakdown",
+            "subtitle": f"Khung giờ: {report_date}",
             "sentiment_distribution": sentiment_dist.to_dict(orient="records"),
-            "attribute_sentiment": pivot_df.reset_index().to_dict(orient="records"),
+            "channel_sentiment": top_8_channels.reset_index().rename(columns={'ChannelNormalized': 'Channel'}).to_dict(orient="records"),
             "insight": insight
         }
     
-    def _generate_insight(self, df_exploded: pd.DataFrame, top_attrs: pd.Index,
-                          brand: str, report_date: str,
-                          sentiment_dist: pd.DataFrame,
-                          pivot_df: pd.DataFrame) -> str:
-        """Generate insight using LLM"""
-        print("         → Building evidence from top posts...")
-        # Build evidence
-        evidence_df = df_exploded[
-            df_exploded["Label_List"].isin(top_attrs)
-        ].copy()
+    def _generate_insight(self, report_df: pd.DataFrame, brand: str,
+                          report_date: str, sentiment_dist: pd.DataFrame,
+                          channel_sentiment: pd.DataFrame) -> str:
+        """Generate insight using LLM (sentiment + channel breakdown)"""
+        print("         → Building evidence from top posts by sentiment and channel...")
         
-        evidence_df["engagement"] = calculate_engagement(evidence_df)
+        # Get top posts for each sentiment category
+        report_df["engagement"] = calculate_engagement(report_df)
         
-        evidence_top = (
-            evidence_df
-            .sort_values("engagement", ascending=False)
-            .drop_duplicates(subset=["UrlTopic"])
-            .head(5)
-            .reset_index(drop=True)
-        )
+        # Get top negative posts (most important for crisis management)
+        negative_posts = report_df[
+            report_df["Sentiment"].str.lower() == "negative"
+        ].sort_values("engagement", ascending=False).head(3)
         
-        print(f"         → Found {len(evidence_top)} evidence posts")
+        # Get top positive posts
+        positive_posts = report_df[
+            report_df["Sentiment"].str.lower() == "positive"
+        ].sort_values("engagement", ascending=False).head(2)
+        
+        # Combine evidence posts
+        evidence_posts = pd.concat([negative_posts, positive_posts]).reset_index(drop=True)
+        
+        print(f"         → Found {len(evidence_posts)} evidence posts")
         
         url_map = {}
         evidence_blocks = []
         
-        for idx, row in evidence_top.iterrows():
+        for idx, row in evidence_posts.iterrows():
             key = f"URL_{idx+1}"
             url_map[key] = row["UrlTopic"]
             
@@ -478,10 +560,11 @@ class Slide4Generator:
                 f"""
 [{key}]
 Sentiment: {row['Sentiment']}
-Brand Attribute: {row['Label_List']}
+Channel: {row['Channel']}
 Tiêu đề: {row['Title']}
 Mô tả: {row['Description']}
 Nội dung: {row['Content']}
+Engagement: {row['engagement']}
 """.strip()
             )
         
@@ -493,7 +576,7 @@ Nội dung: {row['Content']}
         prompt = get_sentiment_insight_prompt(
             brand, report_date,
             sentiment_dist.to_string(index=False),
-            pivot_df.reset_index().to_string(index=False),
+            channel_sentiment.to_string(),
             evidence_context, url_whitelist_text
         )
         
