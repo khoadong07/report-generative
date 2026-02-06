@@ -829,9 +829,14 @@ class Slide5Generator:
             except (ValueError, TypeError):
                 views = 0
             
+            # Get content from Content column, fallback to Title if empty
+            content = str(row.Content) if pd.notna(row.Content) and str(row.Content).strip() else ""
+            if not content:
+                content = str(row.Title) if pd.notna(row.Title) else ""
+            
             top_posts.append({
                 "stt": idx,
-                "noi_dung_bai_dang": str(row.Content) if pd.notna(row.Content) else "",
+                "noi_dung_bai_dang": content,
                 "ngay_dang": str(row.PublishedDate),
                 "kenh": str(row.Channel) if pd.notna(row.Channel) else "",
                 "nguoi_dang": str(row.SiteName) if pd.notna(row.SiteName) else "",
