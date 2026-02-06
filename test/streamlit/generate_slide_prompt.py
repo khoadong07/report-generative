@@ -273,17 +273,16 @@ def generate_slide6_data(slide_data):
         content = post.get('noi_dung_bai_dang', '')
         url = post.get('url_topic', '')
         
-        # Get metric status safely and normalize deleted values
+        # Get metric status safely and normalize deleted values (without Total)
         metric_status = post.get('metric_status', {})
         if isinstance(metric_status, dict):
             likes = normalize_deleted_value(metric_status.get('likes', 'N/A'))
             shares = normalize_deleted_value(metric_status.get('shares', 'N/A'))
             comments = normalize_deleted_value(metric_status.get('comments', 'N/A'))
             views = normalize_deleted_value(metric_status.get('views', 'N/A'))
-            total = normalize_deleted_value(metric_status.get('total', 'N/A'))
         else:
             # Fallback if metric_status is not a dict
-            likes = shares = comments = views = total = 'Deleted'
+            likes = shares = comments = views = 'Deleted'
         
         table_rows.append({
             'stt': post.get('stt', 0),
@@ -295,8 +294,8 @@ def generate_slide6_data(slide_data):
             'likes': likes,
             'shares': shares,
             'comments': comments,
-            'views': views,
-            'total': total
+            'views': views
+            # Removed 'total' field
         })
     
     return {
@@ -643,14 +642,13 @@ Header Tier 1 (Main columns):
 - Ngày đăng (center aligned)
 - Kênh (center aligned)
 - Người đăng (center aligned)
-- Trạng thái Metrics (colspan=5, center aligned)
+- Trạng thái Metrics (colspan=4, center aligned)
 
 Header Tier 2 (Under "Trạng thái Metrics"):
 - Likes (center aligned)
 - Shares (center aligned)
 - Comments (center aligned)
 - Views (center aligned)
-- Total (center aligned)
 
 TABLE DATA:
 """
@@ -672,7 +670,6 @@ Row {row.get('stt', 0)}:
 - Shares: {row.get('shares', 'N/A')}
 - Comments: {row.get('comments', 'N/A')}
 - Views: {row.get('views', 'N/A')}
-- Total: {row.get('total', 'N/A')}
 """
     
     prompt += f"""

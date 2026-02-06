@@ -438,7 +438,6 @@ else:
                         shares = normalize_deleted_value(metric_status.get('shares', 'N/A'))
                         comments = normalize_deleted_value(metric_status.get('comments', 'N/A'))
                         views = normalize_deleted_value(metric_status.get('views', 'N/A'))
-                        total = normalize_deleted_value(metric_status.get('total', 'N/A'))
                         
                         table_data.append({
                             'STT': post.get('stt', 0),
@@ -450,13 +449,12 @@ else:
                             'Shares': shares,
                             'Comments': comments,
                             'Views': views,
-                            'Total': total,
                             'Link': post.get('url_topic', '')
                         })
                     
                     df_deleted = pd.DataFrame(table_data)
                     
-                    # Display table with styling
+                    # Display table with styling (without Total column)
                     st.dataframe(
                         df_deleted,
                         hide_index=True,
@@ -471,7 +469,6 @@ else:
                             'Shares': st.column_config.TextColumn('Shares', width='small'),
                             'Comments': st.column_config.TextColumn('Comments', width='small'),
                             'Views': st.column_config.TextColumn('Views', width='small'),
-                            'Total': st.column_config.TextColumn('Total', width='small'),
                             'Link': st.column_config.LinkColumn('Link', width='small')
                         }
                     )
@@ -498,15 +495,14 @@ else:
                             else:
                                 st.markdown("**Link:** N/A")
                             
-                            # Metrics - normalize deleted values
+                            # Metrics - normalize deleted values (without Total)
                             metrics = post.get('metric_status', {})
                             likes = normalize_deleted_value(metrics.get('likes', 'N/A'))
                             shares = normalize_deleted_value(metrics.get('shares', 'N/A'))
                             comments = normalize_deleted_value(metrics.get('comments', 'N/A'))
                             views = normalize_deleted_value(metrics.get('views', 'N/A'))
-                            total = normalize_deleted_value(metrics.get('total', 'N/A'))
                             
-                            col1, col2, col3, col4, col5 = st.columns(5)
+                            col1, col2, col3, col4 = st.columns(4)
                             with col1:
                                 st.metric("Likes", likes)
                             with col2:
@@ -515,8 +511,6 @@ else:
                                 st.metric("Comments", comments)
                             with col4:
                                 st.metric("Views", views)
-                            with col5:
-                                st.metric("Total", total)
         
         st.divider()
         st.header("Generated Prompt")

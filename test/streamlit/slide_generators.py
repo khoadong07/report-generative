@@ -830,27 +830,37 @@ class Slide6Generator:
         
         deleted_df = df_topics[deleted_mask].copy()
         
-        print(f"      → Found {len(deleted_df)} deleted posts (across all dates)")
+        total_deleted = len(deleted_df)
+        print(f"      → Found {total_deleted} deleted posts (across all dates)")
         
-        # Get top N (or all if less than N)
-        df_top = deleted_df.head(self.top_n)
+        # Filter posts with non-empty content for display
+        # Check if Content is not NaN and not empty string
+        deleted_df['has_content'] = deleted_df['Content'].apply(
+            lambda x: pd.notna(x) and str(x).strip() not in ['', 'nan', 'None']
+        )
         
-        # Build table data
+        deleted_with_content = deleted_df[deleted_df['has_content']].copy()
+        print(f"      → {len(deleted_with_content)} posts have content (will display top {self.top_n})")
+        
+        # Get top N posts with content
+        df_top = deleted_with_content.head(self.top_n)
+        
+        # Build table data (without Total column)
         deleted_posts = []
         for idx, row in enumerate(df_top.itertuples(index=False), start=1):
             deleted_posts.append({
                 "stt": idx,
-                "noi_dung_bai_dang": row.Content,
+                "noi_dung_bai_dang": str(row.Content),
                 "ngay_dang": str(row.PublishedDate),
-                "kenh": row.Channel,
-                "nguoi_dang": row.SiteName,
-                "url_topic": getattr(row, 'UrlTopic', None),
+                "kenh": str(row.Channel) if pd.notna(row.Channel) else "N/A",
+                "nguoi_dang": str(row.SiteName) if pd.notna(row.SiteName) else "N/A",
+                "url_topic": str(getattr(row, 'UrlTopic', '')) if pd.notna(getattr(row, 'UrlTopic', None)) else "",
                 "metric_status": {
                     "likes": str(row.Reactions),
                     "shares": str(row.Shares),
                     "comments": str(row.Comments),
-                    "views": str(row.Views),
-                    "total": str(getattr(row, 'Total', 'N/A'))
+                    "views": str(row.Views)
+                    # Removed "total" field
                 }
             })
         
@@ -858,7 +868,7 @@ class Slide6Generator:
             "title": f"Top {self.top_n} bài đăng đã xóa",
             "subtitle": "Tất cả thời gian (không filter theo ngày)",
             "report_date": report_date,
-            "total_deleted_posts": len(deleted_df),
-            "deleted_posts": deleted_posts
+            "total_deleted_posts": total_deleted,  # Count all deleted posts
+            "deleted_posts": deleted_posts  # Only posts with content
         }
 
