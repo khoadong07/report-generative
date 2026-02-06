@@ -670,3 +670,79 @@ Engagement: {row['engagement']}
             )
         
         return final_insight
+
+
+
+class Slide5Generator:
+    """Generate top 5 posts with highest engagement"""
+    
+    def __init__(self, topic_types: List[str], top_n: int = 5):
+        """
+        Initialize slide 5 generator
+        
+        Args:
+            topic_types: List of valid topic types
+            top_n: Number of top posts to show (default: 5)
+        """
+        self.topic_types = topic_types
+        self.top_n = top_n
+    
+    def generate(self, report_df: pd.DataFrame, brand: str,
+                 report_date: str) -> Dict[str, Any]:
+        """
+        Generate slide 5 data
+        
+        Args:
+            report_df: Report day dataframe
+            brand: Brand name
+            report_date: Report date string
+            
+        Returns:
+            Slide 5 data dictionary
+        """
+        print("      📊 Analyzing top posts by engagement...")
+        
+        # Filter for topics only
+        df_topics = report_df[report_df["Type"].isin(self.topic_types)].copy()
+        
+        # Ensure numeric columns
+        engagement_cols = ["Reactions", "Shares", "Comments", "Views"]
+        df_topics[engagement_cols] = df_topics[engagement_cols].apply(
+            pd.to_numeric, errors="coerce"
+        ).fillna(0)
+        
+        # Sort by engagement metrics (descending)
+        df_sorted = df_topics.sort_values(
+            by=engagement_cols,
+            ascending=False
+        )
+        
+        # Get top N posts
+        df_top = df_sorted.head(self.top_n)
+        
+        print(f"      → Found {len(df_top)} top posts")
+        
+        # Build table data
+        top_posts = []
+        for idx, row in enumerate(df_top.itertuples(index=False), start=1):
+            top_posts.append({
+                "stt": idx,
+                "noi_dung_bai_dang": row.Content,
+                "ngay_dang": str(row.PublishedDate),
+                "kenh": row.Channel,
+                "nguoi_dang": row.SiteName,
+                "url_topic": row.UrlTopic,
+                "luong_tuong_tac": {
+                    "like": int(row.Reactions),
+                    "share": int(row.Shares),
+                    "comments": int(row.Comments),
+                    "views": int(row.Views)
+                }
+            })
+        
+        return {
+            "title": f"Top {self.top_n} bài đăng có lượng tương tác cao",
+            "subtitle": f"Ngày {report_date}",
+            "report_date": report_date,
+            "top_posts": top_posts
+        }

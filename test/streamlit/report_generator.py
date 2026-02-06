@@ -41,7 +41,8 @@ except ImportError:
         Slide1Generator,
         Slide2Generator,
         Slide3Generator,
-        Slide4Generator
+        Slide4Generator,
+        Slide5Generator
     )
 
 
@@ -106,6 +107,11 @@ class ReportGenerator:
         self.slide4_gen = Slide4Generator(
             self.llm_client,
             TOP_N_ATTRIBUTES
+        )
+        
+        self.slide5_gen = Slide5Generator(
+            TOPIC_TYPES,
+            top_n=5
         )
     
     def generate_report(self) -> Dict[str, Any]:
@@ -225,6 +231,14 @@ class ReportGenerator:
         print("\n[4/5] All slides generated successfully!")
         
         print("\n[5/5] Combining all slides...")
+        
+        # Generate Slide 5 (no LLM needed, so run after parallel tasks)
+        print("      [Slide 5] 📊 Generating top posts table...")
+        slide5_data = self.slide5_gen.generate(
+            report_df, self.brand_name, self.report_date
+        )
+        print("      [Slide 5] ✅ Completed")
+        
         report = {
             "report_metadata": {
                 "brand": self.brand_name,
@@ -236,7 +250,8 @@ class ReportGenerator:
             "slide_1": slides_data['slide_1'],
             "slide_2": slides_data['slide_2'],
             "slide_3": slides_data['slide_3'],
-            "slide_4": slides_data['slide_4']
+            "slide_4": slides_data['slide_4'],
+            "slide_5": slide5_data
         }
         print("      ✅ Report structure created")
         

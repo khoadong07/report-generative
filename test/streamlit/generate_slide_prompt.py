@@ -200,6 +200,38 @@ def generate_slide4_data(slide_data):
     }
 
 
+def generate_slide5_data(slide_data):
+    """Generate formatted data for Slide 5"""
+    table_rows = []
+    for post in slide_data['top_posts']:
+        # Format date
+        date_obj = datetime.strptime(post['ngay_dang'], "%Y-%m-%d %H:%M:%S")
+        date_formatted = date_obj.strftime("%d/%m/%Y")
+        
+        # Build content with link
+        content = post['noi_dung_bai_dang']
+        url = post.get('url_topic', '')
+        
+        table_rows.append({
+            'stt': post['stt'],
+            'noi_dung': content,
+            'url': url,
+            'ngay_dang': date_formatted,
+            'kenh': post['kenh'],
+            'nguoi_dang': post['nguoi_dang'],
+            'like': format_number(post['luong_tuong_tac']['like']),
+            'share': format_number(post['luong_tuong_tac']['share']),
+            'comments': format_number(post['luong_tuong_tac']['comments']),
+            'views': format_number(post['luong_tuong_tac']['views'])
+        })
+    
+    return {
+        'title': slide_data['title'],
+        'subtitle': slide_data['subtitle'],
+        'table_rows': table_rows
+    }
+
+
 def generate_complete_prompt(report_data):
     """Generate complete prompt with all data embedded"""
     
@@ -214,6 +246,7 @@ def generate_complete_prompt(report_data):
     slide2 = generate_slide2_data(report_data['slide_2'])
     slide3 = generate_slide3_data(report_data['slide_3'])
     slide4 = generate_slide4_data(report_data['slide_4'])
+    slide5 = generate_slide5_data(report_data['slide_5'])
     
     # Collect all hyperlinks
     all_hyperlinks = []
@@ -225,8 +258,16 @@ def generate_complete_prompt(report_data):
                     'url': link['url']
                 })
     
+    # Add Slide 5 URLs
+    for row in slide5['table_rows']:
+        if row.get('url'):
+            all_hyperlinks.append({
+                'slide': 5,
+                'url': row['url']
+            })
+    
     # Build complete prompt
-    prompt = f"""Create a professional 4-slide presentation for Brand Health Analysis with the following specifications:
+    prompt = f"""Create a professional 5-slide presentation for Brand Health Analysis with the following specifications:
 
 ═══════════════════════════════════════════════════════════════
 BRAND: {brand}
@@ -409,6 +450,90 @@ RIGHT - Stacked Bar Chart (Horizontal):
   * Positive: Green (#16a34a)
 - Legend at top right
 - Show values on hover
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 5 - TOP 5 BÀI ĐĂNG CÓ LƯỢNG TƯƠNG TÁC CAO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LAYOUT:
+- Title: "{slide5['title']}"
+- Subtitle: "{slide5['subtitle']}"
+- Full-width table with 2-tier header
+- Clean, professional table design
+- NO insight section (data table only)
+
+TABLE STRUCTURE:
+Header Tier 1 (Main columns):
+- STT (center aligned)
+- Nội dung bài đăng (left aligned, wide column)
+- Ngày đăng (center aligned)
+- Kênh (center aligned)
+- Người đăng (center aligned)
+- Lượng tương tác (colspan=4, center aligned)
+
+Header Tier 2 (Under "Lượng tương tác"):
+- Like (right aligned)
+- Share (right aligned)
+- Comments (right aligned)
+- Views (right aligned)
+
+TABLE DATA:
+"""
+    
+    for row in slide5['table_rows']:
+        prompt += f"""
+Row {row['stt']}:
+- STT: {row['stt']}
+- Nội dung: {row['noi_dung'][:100]}{'...' if len(row['noi_dung']) > 100 else ''} [Link]({row['url']})
+- Ngày đăng: {row['ngay_dang']}
+- Kênh: {row['kenh']}
+- Người đăng: {row['nguoi_dang']}
+- Like: {row['like']}
+- Share: {row['share']}
+- Comments: {row['comments']}
+- Views: {row['views']}
+"""
+    
+    prompt += f"""
+TABLE DESIGN:
+- Header background: #1e40af (primary blue)
+- Header text: White, bold, 14px
+- Row background: Alternating white and #f9fafb
+- Border: 1px solid #e5e7eb
+- Cell padding: 12px vertical, 16px horizontal
+- Font: 13px for body text
+- Text alignment:
+  * STT: Center
+  * Nội dung: Left (allow text wrap, show "Link" at end)
+  * Ngày đăng: Center
+  * Kênh: Center
+  * Người đăng: Center
+  * Metrics (Like/Share/Comments/Views): Right aligned
+- Column widths:
+  * STT: 60px
+  * Nội dung: 40% (flexible, allow wrap)
+  * Ngày đăng: 100px
+  * Kênh: 100px
+  * Người đăng: 150px
+  * Like: 80px
+  * Share: 80px
+  * Comments: 80px
+  * Views: 100px
+
+HYPERLINK HANDLING:
+- Each row's "Nội dung" column ends with the word "Link"
+- "Link" should be a clickable hyperlink to the URL
+- Style: Blue (#1e40af), underline on hover
+- Opens in new tab when clicked
+- Format: Content text... [Link](url)
+
+IMPORTANT NOTES:
+1. Numbers are already formatted with commas - display as-is
+2. Do NOT convert numbers to K/M format
+3. Keep raw numbers (e.g., 4,091 not 4.1K)
+4. Content text can wrap to multiple lines
+5. Table should be responsive and fit slide width
+6. This slide has NO insight section - only the table
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OVERALL DESIGN THEME

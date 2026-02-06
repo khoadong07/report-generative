@@ -1,0 +1,77 @@
+{
+  "title": "Top 5 bài đăng có lượng tương tác cao",
+  "subtitle": "Ngày 2026-02-01",
+  "report_date": "2026-02-01",
+  "top_posts": [
+    {
+      "stt": 1,
+      "noi_dung_bai_dang": "Công ty Sản phẩm Gerber thông báo bắt đầu thu hồi tự nguyện một số lô bánh quy Gerber® Arrowroot Biscuits tại Mỹ",
+      "ngay_dang": "2026-02-01 00:00:00",
+      "kenh": "Tiktok",
+      "nguoi_dang": "vtv.times",
+      "url_topic": "https://tiktok.com/post1",
+      "luong_tuong_tac": {
+        "like": 4091,
+        "share": 3237,
+        "comments": 225,
+        "views": 580500
+      }
+    },
+    {
+      "stt": 2,
+      "noi_dung_bai_dang": "‼️Đến bánh ăn dặm‼️ Thu hồi 21 lô bánh ăn dặm Gerber của Nestlé",
+      "ngay_dang": "2026-02-01 00:00:00",
+      "kenh": "Facebook",
+      "nguoi_dang": "Weibo Việt Nam",
+      "url_topic": "https://facebook.com/post2",
+      "luong_tuong_tac": {
+        "like": 2337,
+        "share": 95,
+        "comments": 349,
+        "views": 0
+      }
+    },
+    {
+      "stt": 3,
+      "noi_dung_bai_dang": "Thu hồi 21 lô bánh ăn dặm Gerber của Nestlé tại Mỹ do nghi ngờ chứa mảnh nhựa và giấy",
+      "ngay_dang": "2026-02-01 00:00:00",
+      "kenh": "Facebook",
+      "nguoi_dang": "VTV Times",
+      "url_topic": "https://facebook.com/post3",
+      "luong_tuong_tac": {
+        "like": 1786,
+        "share": 202,
+        "comments": 202,
+        "views": 0
+      }
+    },
+    {
+      "stt": 4,
+      "noi_dung_bai_dang": "Thu hồi 21 lô bánh ăn dặm Gerber của Nestlé👇",
+      "ngay_dang": "2026-02-01 00:00:00",
+      "kenh": "Facebook",
+      "nguoi_dang": "VnExpress.net",
+      "url_topic": "https://facebook.com/post4",
+      "luong_tuong_tac": {
+        "like": 1589,
+        "share": 290,
+        "comments": 456,
+        "views": 0
+      }
+    },
+    {
+      "stt": 5,
+      "noi_dung_bai_dang": "🆘🆘Thu hồi 21 lô bánh ăn dặm Gerber của Nestlé 👇",
+      "ngay_dang": "2026-02-01 00:00:00",
+      "kenh": "Facebook",
+      "nguoi_dang": "Hà Nội 24H",
+      "url_topic": "https://facebook.com/post5",
+      "luong_tuong_tac": {
+        "like": 1528,
+        "share": 170,
+        "comments": 702,
+        "views": 0
+      }
+    }
+  ]
+}

@@ -87,7 +87,7 @@ if not uploaded_file or not brand_name:
     with st.expander("Example output"):
         st.code(
             """
-Create a 4-slide presentation
+Create a 5-slide presentation
 
 BRAND: Vinamilk
 REPORT DATE: 30/01/2026
@@ -96,7 +96,20 @@ COMPARE DATE: 29/01/2026
 SLIDE 1 - BRAND OVERVIEW
 - Total Buzz: 1,234 (+15%)
 - Positive Sentiment: 567 (+20%)
-...
+
+SLIDE 2 - TRENDLINE
+- 7-day trend analysis
+
+SLIDE 3 - CHANNEL BREAKDOWN
+- Top channels by buzz
+
+SLIDE 4 - SENTIMENT & ATTRIBUTES
+- Sentiment distribution
+- Brand attributes
+
+SLIDE 5 - TOP 5 POSTS
+- Top posts by engagement
+- Full table with metrics
             """,
             language="text"
         )
@@ -134,7 +147,7 @@ else:
             # Show info about parallel processing
             info_placeholder = st.empty()
             with info_placeholder.container():
-                st.info("🚀 **Parallel Processing!** Generating 4 slides simultaneously. This will take ~1 minute instead of 3-4 minutes.")
+                st.info("🚀 **Parallel Processing!** Generating 5 slides (4 with LLM + 1 data table). This will take ~1 minute.")
 
             report_data = generator.generate_report()
             
@@ -161,6 +174,159 @@ else:
                 os.unlink(tmp_path)
 
     if st.session_state.prompt_generated:
+        st.divider()
+        st.header("Generated Prompt")
+
+        # =====================
+        # SLIDE PREVIEW TABS
+        # =====================
+        st.subheader("📊 Slide Preview")
+        
+        slide_tabs = st.tabs([
+            "Slide 1: Overview",
+            "Slide 2: Trendline", 
+            "Slide 3: Channels",
+            "Slide 4: Sentiment",
+            "Slide 5: Top Posts"
+        ])
+        
+        # Slide 1 Preview
+        with slide_tabs[0]:
+            if st.session_state.json_data and 'slide_1' in st.session_state.json_data:
+                slide1 = st.session_state.json_data['slide_1']
+                st.markdown(f"### {slide1['title']}")
+                st.caption(slide1['subtitle'])
+                
+                cols = st.columns(3)
+                for idx, item in enumerate(slide1['data'][:6]):
+                    with cols[idx % 3]:
+                        delta_color = "normal" if item['change_pct'] >= 0 else "inverse"
+                        st.metric(
+                            item['label'],
+                            f"{item['today']:,}",
+                            f"{item['change_pct']:.1f}%",
+                            delta_color=delta_color
+                        )
+        
+        # Slide 2 Preview
+        with slide_tabs[1]:
+            if st.session_state.json_data and 'slide_2' in st.session_state.json_data:
+                slide2 = st.session_state.json_data['slide_2']
+                st.markdown(f"### {slide2['title']}")
+                st.caption(slide2['subtitle'])
+                
+                import pandas as pd
+                df_trend = pd.DataFrame(slide2['trendline'])
+                st.line_chart(df_trend.set_index('date')['buzz'])
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.info(f"🔥 **Peak Day**\n\n{slide2['peak_day']['date']}: {slide2['peak_day']['buzz']:,} lượt")
+                with col2:
+                    status = "🔥 Vẫn HOT" if slide2['current_day']['is_still_hot'] else "❄️ Đã hạ nhiệt"
+                    st.info(f"**Current Status**\n\n{status}")
+        
+        # Slide 3 Preview
+        with slide_tabs[2]:
+            if st.session_state.json_data and 'slide_3' in st.session_state.json_data:
+                slide3 = st.session_state.json_data['slide_3']
+                st.markdown(f"### {slide3['title']}")
+                st.caption(slide3['subtitle'])
+                
+                import pandas as pd
+                df_channels = pd.DataFrame(slide3['channel_distribution'])
+                st.bar_chart(df_channels.set_index('Channel')['today_buzz'])
+                
+                st.success(f"🏆 **Top Channel:** {slide3['top_channel']}")
+        
+        # Slide 4 Preview
+        with slide_tabs[3]:
+            if st.session_state.json_data and 'slide_4' in st.session_state.json_data:
+                slide4 = st.session_state.json_data['slide_4']
+                st.markdown(f"### {slide4['title']}")
+                st.caption(slide4['subtitle'])
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("**Sentiment Distribution**")
+                    import pandas as pd
+                    df_sent = pd.DataFrame(slide4['sentiment_distribution'])
+                    st.dataframe(df_sent, hide_index=True)
+                
+                with col2:
+                    st.markdown("**Top Attributes**")
+                    df_attr = pd.DataFrame(slide4['attribute_sentiment'])
+                    st.dataframe(df_attr.head(6), hide_index=True)
+        
+        # Slide 5 Preview - TOP POSTS TABLE
+        with slide_tabs[4]:
+            if st.session_state.json_data and 'slide_5' in st.session_state.json_data:
+                slide5 = st.session_state.json_data['slide_5']
+                st.markdown(f"### {slide5['title']}")
+                st.caption(slide5['subtitle'])
+                
+                # Build table data
+                import pandas as pd
+                table_data = []
+                for post in slide5['top_posts']:
+                    # Format date
+                    date_obj = datetime.strptime(post['ngay_dang'], "%Y-%m-%d %H:%M:%S")
+                    date_formatted = date_obj.strftime("%d/%m/%Y")
+                    
+                    table_data.append({
+                        'STT': post['stt'],
+                        'Nội dung': post['noi_dung_bai_dang'][:100] + '...' if len(post['noi_dung_bai_dang']) > 100 else post['noi_dung_bai_dang'],
+                        'Ngày đăng': date_formatted,
+                        'Kênh': post['kenh'],
+                        'Người đăng': post['nguoi_dang'],
+                        'Like': f"{post['luong_tuong_tac']['like']:,}",
+                        'Share': f"{post['luong_tuong_tac']['share']:,}",
+                        'Comments': f"{post['luong_tuong_tac']['comments']:,}",
+                        'Views': f"{post['luong_tuong_tac']['views']:,}",
+                        'Link': post.get('url_topic', '')
+                    })
+                
+                df_posts = pd.DataFrame(table_data)
+                
+                # Display table with styling
+                st.dataframe(
+                    df_posts,
+                    hide_index=True,
+                    use_container_width=True,
+                    column_config={
+                        'STT': st.column_config.NumberColumn('STT', width='small'),
+                        'Nội dung': st.column_config.TextColumn('Nội dung bài đăng', width='large'),
+                        'Ngày đăng': st.column_config.TextColumn('Ngày đăng', width='small'),
+                        'Kênh': st.column_config.TextColumn('Kênh', width='small'),
+                        'Người đăng': st.column_config.TextColumn('Người đăng', width='medium'),
+                        'Like': st.column_config.TextColumn('Like', width='small'),
+                        'Share': st.column_config.TextColumn('Share', width='small'),
+                        'Comments': st.column_config.TextColumn('Comments', width='small'),
+                        'Views': st.column_config.TextColumn('Views', width='small'),
+                        'Link': st.column_config.LinkColumn('Link', width='small')
+                    }
+                )
+                
+                # Show full content in expanders
+                st.markdown("---")
+                st.markdown("**📝 Full Content**")
+                for post in slide5['top_posts']:
+                    with st.expander(f"#{post['stt']} - {post['nguoi_dang']} ({post['kenh']})"):
+                        st.markdown(f"**Nội dung:**")
+                        st.write(post['noi_dung_bai_dang'])
+                        st.markdown(f"**Link:** [{post.get('url_topic', 'N/A')}]({post.get('url_topic', '#')})")
+                        
+                        col1, col2, col3, col4 = st.columns(4)
+                        with col1:
+                            st.metric("Like", f"{post['luong_tuong_tac']['like']:,}")
+                        with col2:
+                            st.metric("Share", f"{post['luong_tuong_tac']['share']:,}")
+                        with col3:
+                            st.metric("Comments", f"{post['luong_tuong_tac']['comments']:,}")
+                        with col4:
+                            st.metric("Views", f"{post['luong_tuong_tac']['views']:,}")
+        
         st.divider()
         st.header("Generated Prompt")
 
@@ -219,6 +385,15 @@ else:
 - Click **Generate**
 - Review & refine slides  
 👉 https://www.genspark.ai/
+
+---
+
+**📊 Presentation includes 5 slides:**
+1. Brand Overview (KPIs)
+2. Trendline (7-day trend)
+3. Channel Breakdown
+4. Sentiment & Attributes
+5. **Top 5 Posts** (with engagement metrics)
 """
         )
 
