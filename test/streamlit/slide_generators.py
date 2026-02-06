@@ -949,7 +949,7 @@ class Slide6Generator:
         
         return {
             "title": f"Top {self.top_n} bài đăng đã xóa",
-            "subtitle": "Tất cả thời gian (không filter theo ngày)",
+            "subtitle": "Tất cả thời gian",
             "report_date": report_date,
             "total_deleted_posts": total_deleted,  # Count all deleted posts
             "deleted_posts": deleted_posts  # Only posts with content
