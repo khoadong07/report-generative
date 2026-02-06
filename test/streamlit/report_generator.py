@@ -42,7 +42,8 @@ except ImportError:
         Slide2Generator,
         Slide3Generator,
         Slide4Generator,
-        Slide5Generator
+        Slide5Generator,
+        Slide6Generator
     )
 
 
@@ -110,6 +111,11 @@ class ReportGenerator:
         )
         
         self.slide5_gen = Slide5Generator(
+            TOPIC_TYPES,
+            top_n=5
+        )
+        
+        self.slide6_gen = Slide6Generator(
             TOPIC_TYPES,
             top_n=5
         )
@@ -239,6 +245,13 @@ class ReportGenerator:
         )
         print("      [Slide 5] ✅ Completed")
         
+        # Generate Slide 6 (deleted posts - from entire dataset, not filtered by date)
+        print("      [Slide 6] 🗑️  Generating deleted posts table (all dates)...")
+        slide6_data = self.slide6_gen.generate(
+            df, self.brand_name, self.report_date
+        )
+        print("      [Slide 6] ✅ Completed")
+        
         report = {
             "report_metadata": {
                 "brand": self.brand_name,
@@ -251,7 +264,8 @@ class ReportGenerator:
             "slide_2": slides_data['slide_2'],
             "slide_3": slides_data['slide_3'],
             "slide_4": slides_data['slide_4'],
-            "slide_5": slide5_data
+            "slide_5": slide5_data,
+            "slide_6": slide6_data
         }
         print("      ✅ Report structure created")
         

@@ -87,7 +87,7 @@ if not uploaded_file or not brand_name:
     with st.expander("Example output"):
         st.code(
             """
-Create a 5-slide presentation
+Create a 6-slide presentation
 
 BRAND: Vinamilk
 REPORT DATE: 30/01/2026
@@ -110,6 +110,10 @@ SLIDE 4 - SENTIMENT & ATTRIBUTES
 SLIDE 5 - TOP 5 POSTS
 - Top posts by engagement
 - Full table with metrics
+
+SLIDE 6 - TOP 5 DELETED POSTS
+- Deleted posts tracking
+- Metric status table
             """,
             language="text"
         )
@@ -147,7 +151,7 @@ else:
             # Show info about parallel processing
             info_placeholder = st.empty()
             with info_placeholder.container():
-                st.info("🚀 **Parallel Processing!** Generating 5 slides (4 with LLM + 1 data table). This will take ~1 minute.")
+                st.info("🚀 **Parallel Processing!** Generating 6 slides (4 with LLM + 2 data tables). This will take ~1 minute.")
 
             report_data = generator.generate_report()
             
@@ -187,7 +191,8 @@ else:
             "Slide 2: Trendline", 
             "Slide 3: Channels",
             "Slide 4: Sentiment",
-            "Slide 5: Top Posts"
+            "Slide 5: Top Posts",
+            "Slide 6: Deleted Posts"
         ])
         
         # Slide 1 Preview
@@ -327,6 +332,84 @@ else:
                         with col4:
                             st.metric("Views", f"{post['luong_tuong_tac']['views']:,}")
         
+        # Slide 6 Preview - DELETED POSTS TABLE
+        with slide_tabs[5]:
+            if st.session_state.json_data and 'slide_6' in st.session_state.json_data:
+                slide6 = st.session_state.json_data['slide_6']
+                st.markdown(f"### {slide6['title']}")
+                st.caption(slide6['subtitle'])
+                
+                # Show summary
+                st.info(f"🗑️ **Tổng số bài đăng đã xóa:** {slide6['total_deleted_posts']}")
+                
+                # Build table data
+                import pandas as pd
+                table_data = []
+                for post in slide6['deleted_posts']:
+                    # Format date
+                    try:
+                        date_obj = datetime.strptime(post['ngay_dang'], "%Y-%m-%d %H:%M:%S")
+                        date_formatted = date_obj.strftime("%d/%m/%Y")
+                    except:
+                        date_formatted = post['ngay_dang']
+                    
+                    table_data.append({
+                        'STT': post['stt'],
+                        'Nội dung': post['noi_dung_bai_dang'][:100] + '...' if len(post['noi_dung_bai_dang']) > 100 else post['noi_dung_bai_dang'],
+                        'Ngày đăng': date_formatted,
+                        'Kênh': post['kenh'],
+                        'Người đăng': post['nguoi_dang'],
+                        'Likes': post['metric_status']['likes'],
+                        'Shares': post['metric_status']['shares'],
+                        'Comments': post['metric_status']['comments'],
+                        'Views': post['metric_status']['views'],
+                        'Total': post['metric_status']['total'],
+                        'Link': post.get('url_topic', '')
+                    })
+                
+                df_deleted = pd.DataFrame(table_data)
+                
+                # Display table with styling
+                st.dataframe(
+                    df_deleted,
+                    hide_index=True,
+                    use_container_width=True,
+                    column_config={
+                        'STT': st.column_config.NumberColumn('STT', width='small'),
+                        'Nội dung': st.column_config.TextColumn('Nội dung bài đăng', width='large'),
+                        'Ngày đăng': st.column_config.TextColumn('Ngày đăng', width='small'),
+                        'Kênh': st.column_config.TextColumn('Kênh', width='small'),
+                        'Người đăng': st.column_config.TextColumn('Người đăng', width='medium'),
+                        'Likes': st.column_config.TextColumn('Likes', width='small'),
+                        'Shares': st.column_config.TextColumn('Shares', width='small'),
+                        'Comments': st.column_config.TextColumn('Comments', width='small'),
+                        'Views': st.column_config.TextColumn('Views', width='small'),
+                        'Total': st.column_config.TextColumn('Total', width='small'),
+                        'Link': st.column_config.LinkColumn('Link', width='small')
+                    }
+                )
+                
+                # Show full content in expanders
+                st.markdown("---")
+                st.markdown("**📝 Full Content**")
+                for post in slide6['deleted_posts']:
+                    with st.expander(f"#{post['stt']} - {post['nguoi_dang']} ({post['kenh']}) 🗑️"):
+                        st.markdown(f"**Nội dung:**")
+                        st.write(post['noi_dung_bai_dang'])
+                        st.markdown(f"**Link:** [{post.get('url_topic', 'N/A')}]({post.get('url_topic', '#')})")
+                        
+                        col1, col2, col3, col4, col5 = st.columns(5)
+                        with col1:
+                            st.metric("Likes", post['metric_status']['likes'])
+                        with col2:
+                            st.metric("Shares", post['metric_status']['shares'])
+                        with col3:
+                            st.metric("Comments", post['metric_status']['comments'])
+                        with col4:
+                            st.metric("Views", post['metric_status']['views'])
+                        with col5:
+                            st.metric("Total", post['metric_status']['total'])
+        
         st.divider()
         st.header("Generated Prompt")
 
@@ -388,12 +471,13 @@ else:
 
 ---
 
-**📊 Presentation includes 5 slides:**
+**📊 Presentation includes 6 slides:**
 1. Brand Overview (KPIs)
 2. Trendline (7-day trend)
 3. Channel Breakdown
 4. Sentiment & Attributes
 5. **Top 5 Posts** (with engagement metrics)
+6. **Top 5 Deleted Posts** (with metric status)
 """
         )
 

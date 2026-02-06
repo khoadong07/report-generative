@@ -746,3 +746,79 @@ class Slide5Generator:
             "report_date": report_date,
             "top_posts": top_posts
         }
+
+
+
+class Slide6Generator:
+    """Generate top 5 deleted posts (from entire dataset, not filtered by date)"""
+    
+    def __init__(self, topic_types: List[str], top_n: int = 5):
+        """
+        Initialize slide 6 generator
+        
+        Args:
+            topic_types: List of valid topic types
+            top_n: Number of top deleted posts to show (default: 5)
+        """
+        self.topic_types = topic_types
+        self.top_n = top_n
+        self.check_cols = ["Reactions", "Shares", "Comments", "Views"]
+    
+    def generate(self, full_df: pd.DataFrame, brand: str,
+                 report_date: str) -> Dict[str, Any]:
+        """
+        Generate slide 6 data
+        
+        Args:
+            full_df: Full dataframe (NOT filtered by date)
+            brand: Brand name
+            report_date: Report date string (for display only)
+            
+        Returns:
+            Slide 6 data dictionary
+        """
+        print("      🗑️  Analyzing deleted posts (from entire dataset)...")
+        
+        # Filter for topics only
+        df_topics = full_df[full_df["Type"].isin(self.topic_types)].copy()
+        
+        # Filter posts with 'deleted' in any metric column
+        # Check if any of the metric columns contains 'deleted' (case-insensitive)
+        deleted_mask = df_topics[self.check_cols].astype(str).apply(
+            lambda x: x.str.lower() == "deleted"
+        ).any(axis=1)
+        
+        deleted_df = df_topics[deleted_mask].copy()
+        
+        print(f"      → Found {len(deleted_df)} deleted posts (across all dates)")
+        
+        # Get top N (or all if less than N)
+        df_top = deleted_df.head(self.top_n)
+        
+        # Build table data
+        deleted_posts = []
+        for idx, row in enumerate(df_top.itertuples(index=False), start=1):
+            deleted_posts.append({
+                "stt": idx,
+                "noi_dung_bai_dang": row.Content,
+                "ngay_dang": str(row.PublishedDate),
+                "kenh": row.Channel,
+                "nguoi_dang": row.SiteName,
+                "url_topic": getattr(row, 'UrlTopic', None),
+                "metric_status": {
+                    "likes": str(row.Reactions),
+                    "shares": str(row.Shares),
+                    "comments": str(row.Comments),
+                    "views": str(row.Views),
+                    "total": str(getattr(row, 'Total', 'N/A'))
+                }
+            })
+        
+        return {
+            "title": f"Top {self.top_n} bài đăng đã xóa",
+            "subtitle": "Tất cả thời gian (không filter theo ngày)",
+            "report_date": report_date,
+            "total_deleted_posts": len(deleted_df),
+            "deleted_posts": deleted_posts
+        }
+

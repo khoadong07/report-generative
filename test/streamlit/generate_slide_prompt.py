@@ -232,6 +232,43 @@ def generate_slide5_data(slide_data):
     }
 
 
+def generate_slide6_data(slide_data):
+    """Generate formatted data for Slide 6"""
+    table_rows = []
+    for post in slide_data['deleted_posts']:
+        # Format date
+        try:
+            date_obj = datetime.strptime(post['ngay_dang'], "%Y-%m-%d %H:%M:%S")
+            date_formatted = date_obj.strftime("%d/%m/%Y")
+        except:
+            date_formatted = post['ngay_dang']
+        
+        # Build content with link
+        content = post['noi_dung_bai_dang']
+        url = post.get('url_topic', '')
+        
+        table_rows.append({
+            'stt': post['stt'],
+            'noi_dung': content,
+            'url': url,
+            'ngay_dang': date_formatted,
+            'kenh': post['kenh'],
+            'nguoi_dang': post['nguoi_dang'],
+            'likes': post['metric_status']['likes'],
+            'shares': post['metric_status']['shares'],
+            'comments': post['metric_status']['comments'],
+            'views': post['metric_status']['views'],
+            'total': post['metric_status']['total']
+        })
+    
+    return {
+        'title': slide_data['title'],
+        'subtitle': slide_data['subtitle'],
+        'total_deleted': slide_data['total_deleted_posts'],
+        'table_rows': table_rows
+    }
+
+
 def generate_complete_prompt(report_data):
     """Generate complete prompt with all data embedded"""
     
@@ -247,6 +284,7 @@ def generate_complete_prompt(report_data):
     slide3 = generate_slide3_data(report_data['slide_3'])
     slide4 = generate_slide4_data(report_data['slide_4'])
     slide5 = generate_slide5_data(report_data['slide_5'])
+    slide6 = generate_slide6_data(report_data['slide_6'])
     
     # Collect all hyperlinks
     all_hyperlinks = []
@@ -266,8 +304,16 @@ def generate_complete_prompt(report_data):
                 'url': row['url']
             })
     
+    # Add Slide 6 URLs
+    for row in slide6['table_rows']:
+        if row.get('url'):
+            all_hyperlinks.append({
+                'slide': 6,
+                'url': row['url']
+            })
+    
     # Build complete prompt
-    prompt = f"""Create a professional 5-slide presentation for Brand Health Analysis with the following specifications:
+    prompt = f"""Create a professional 6-slide presentation for Brand Health Analysis with the following specifications:
 
 ═══════════════════════════════════════════════════════════════
 BRAND: {brand}
@@ -536,6 +582,95 @@ IMPORTANT NOTES:
 6. This slide has NO insight section - only the table
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 6 - TOP 5 BÀI ĐĂNG ĐÃ XÓA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LAYOUT:
+- Title: "{slide6['title']}"
+- Subtitle: "{slide6['subtitle']}"
+- Summary: "Tổng số bài đăng đã xóa: {slide6['total_deleted']}"
+- Full-width table with 2-tier header
+- Clean, professional table design
+- NO insight section (data table only)
+
+TABLE STRUCTURE:
+Header Tier 1 (Main columns):
+- STT (center aligned)
+- Nội dung bài đăng (left aligned, wide column)
+- Ngày đăng (center aligned)
+- Kênh (center aligned)
+- Người đăng (center aligned)
+- Trạng thái Metrics (colspan=5, center aligned)
+
+Header Tier 2 (Under "Trạng thái Metrics"):
+- Likes (center aligned)
+- Shares (center aligned)
+- Comments (center aligned)
+- Views (center aligned)
+- Total (center aligned)
+
+TABLE DATA:
+"""
+    
+    for row in slide6['table_rows']:
+        prompt += f"""
+Row {row['stt']}:
+- STT: {row['stt']}
+- Nội dung: {row['noi_dung'][:100]}{'...' if len(row['noi_dung']) > 100 else ''} [Link]({row['url']})
+- Ngày đăng: {row['ngay_dang']}
+- Kênh: {row['kenh']}
+- Người đăng: {row['nguoi_dang']}
+- Likes: {row['likes']}
+- Shares: {row['shares']}
+- Comments: {row['comments']}
+- Views: {row['views']}
+- Total: {row['total']}
+"""
+    
+    prompt += f"""
+TABLE DESIGN:
+- Header background: #dc2626 (danger red - indicates deleted)
+- Header text: White, bold, 14px
+- Row background: Alternating white and #fef2f2 (light red tint)
+- Border: 1px solid #fecaca
+- Cell padding: 12px vertical, 16px horizontal
+- Font: 13px for body text
+- Text alignment:
+  * STT: Center
+  * Nội dung: Left (allow text wrap, show "Link" at end)
+  * Ngày đăng: Center
+  * Kênh: Center
+  * Người đăng: Center
+  * Metrics (all): Center
+- Column widths:
+  * STT: 60px
+  * Nội dung: 35% (flexible, allow wrap)
+  * Ngày đăng: 100px
+  * Kênh: 100px
+  * Người đăng: 150px
+  * Likes: 80px
+  * Shares: 80px
+  * Comments: 80px
+  * Views: 80px
+  * Total: 80px
+
+HYPERLINK HANDLING:
+- Each row's "Nội dung" column ends with the word "Link"
+- "Link" should be a clickable hyperlink to the URL
+- Style: Red (#dc2626), underline on hover
+- Opens in new tab when clicked
+- Format: Content text... [Link](url)
+
+IMPORTANT NOTES:
+1. Metrics show "deleted" status (not numbers)
+2. Display metric values as-is (may be "deleted", "0", or numbers)
+3. Content text can wrap to multiple lines
+4. Table should be responsive and fit slide width
+5. This slide has NO insight section - only the table
+6. Red color scheme indicates deleted/removed content
+7. Summary shows total count of deleted posts
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OVERALL DESIGN THEME
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -617,7 +752,7 @@ END OF PROMPT
 ═══════════════════════════════════════════════════════════════
 
 INSTRUCTIONS:
-1. Create all 4 slides with the exact data provided above
+1. Create all 6 slides with the exact data provided above
 2. Follow the design specifications precisely
 3. Ensure all charts are properly formatted and labeled
 4. Make insights readable with proper formatting
