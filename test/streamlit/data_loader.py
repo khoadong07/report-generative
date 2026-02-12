@@ -72,21 +72,22 @@ class DataLoader:
         
         return self.df
     
-    def filter_by_datetime_range(self, end_datetime: str) -> pd.DataFrame:
+    def filter_by_datetime_range(self, end_datetime: str, days: int = 7) -> pd.DataFrame:
         """
-        Filter dataframe by 24-hour datetime range (end_datetime - 24h to end_datetime)
+        Filter dataframe by datetime range (end_datetime - N days to end_datetime)
         
         Args:
             end_datetime: End datetime string in format "YYYY-MM-DD HH:MM:SS"
+            days: Number of days to look back (default: 7 for weekly reports)
             
         Returns:
-            Filtered dataframe for 24-hour window
+            Filtered dataframe for the specified time window
         """
         end_dt = pd.to_datetime(end_datetime)
-        start_dt = end_dt - timedelta(hours=24)
+        start_dt = end_dt - timedelta(days=days)
         
         return self.df[
-            (self.df["PublishedDate"] > start_dt) &
+            (self.df["PublishedDate"] >= start_dt) &
             (self.df["PublishedDate"] <= end_dt)
         ].copy()
     
@@ -159,13 +160,29 @@ def calculate_engagement(df: pd.DataFrame) -> pd.Series:
     Calculate engagement score for each row
     
     Args:
-        df: Dataframe with Reactions, Shares, Comments columns
+        df: Dataframe with Likes, Shares, Comments columns
         
     Returns:
         Series with engagement scores
     """
-    return (
-        pd.to_numeric(df.get("Reactions", 0), errors="coerce").fillna(0) +
-        pd.to_numeric(df.get("Shares", 0), errors="coerce").fillna(0) +
-        pd.to_numeric(df.get("Comments", 0), errors="coerce").fillna(0)
-    )
+    # Handle empty DataFrame
+    if len(df) == 0:
+        return pd.Series(dtype='float64')
+    
+    # Get columns or create Series of zeros with same index as df
+    if "Likes" in df.columns:
+        reactions = pd.to_numeric(df["Likes"], errors="coerce").fillna(0)
+    else:
+        reactions = pd.Series(0, index=df.index)
+    
+    if "Shares" in df.columns:
+        shares = pd.to_numeric(df["Shares"], errors="coerce").fillna(0)
+    else:
+        shares = pd.Series(0, index=df.index)
+    
+    if "Comments" in df.columns:
+        comments = pd.to_numeric(df["Comments"], errors="coerce").fillna(0)
+    else:
+        comments = pd.Series(0, index=df.index)
+    
+    return reactions + shares + comments

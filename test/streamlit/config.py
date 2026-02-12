@@ -50,6 +50,20 @@ TOPIC_TYPES = [
     "snsTopic"
 ]
 
+COMMENT_TYPES = [
+    "fbPageComment",
+    "fbGroupComment",
+    "fbUserComment",
+    "forumComment",
+    "newsComment",
+    "youtubeComment",
+    "tiktokComment",
+    "snsComment",
+    "linkedinComment",
+    "ecommerceComment",
+    "threadsComment"
+]
+
 # =====================
 # LLM CONFIG
 # =====================
@@ -61,5 +75,5 @@ LLM_SYSTEM_PROMPT = "Bạn là chuyên gia crisis & executive insight."
 # DATA COLUMNS
 # =====================
 TEXT_COLUMNS = ["Title", "Content", "Description"]
-METRIC_COLUMNS = ["Reactions", "Shares", "Comments", "Views"]
+METRIC_COLUMNS = ["Likes", "Shares", "Comments", "Views"]
 REQUIRED_COLUMNS = ["PublishedDate", "Type", "Sentiment", "Labels", "UrlTopic"]
