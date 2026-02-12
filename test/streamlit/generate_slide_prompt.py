@@ -253,13 +253,13 @@ def generate_slide5_data(slide_data):
         # Get engagement metrics safely
         luong_tuong_tac = post.get('luong_tuong_tac', {})
         if isinstance(luong_tuong_tac, dict):
-            like = luong_tuong_tac.get('like', 0)
+            reactions = luong_tuong_tac.get('reactions', 0)
             share = luong_tuong_tac.get('share', 0)
             comments = luong_tuong_tac.get('comments', 0)
             views = luong_tuong_tac.get('views', 0)
         else:
             # Fallback if luong_tuong_tac is not a dict
-            like = share = comments = views = 0
+            reactions = share = comments = views = 0
         
         table_rows.append({
             'stt': post.get('stt', 0),
@@ -268,7 +268,7 @@ def generate_slide5_data(slide_data):
             'ngay_dang': date_formatted,
             'kenh': post.get('kenh', 'N/A'),
             'nguoi_dang': post.get('nguoi_dang', 'N/A'),
-            'like': format_number(like),
+            'reactions': format_number(reactions),
             'share': format_number(share),
             'comments': format_number(comments),
             'views': format_number(views)
@@ -311,13 +311,13 @@ def generate_slide6_data(slide_data):
         # Get metric status safely and normalize deleted values (without Total)
         metric_status = post.get('metric_status', {})
         if isinstance(metric_status, dict):
-            likes = normalize_deleted_value(metric_status.get('likes', 'N/A'))
+            reactions = normalize_deleted_value(metric_status.get('reactions', 'N/A'))
             shares = normalize_deleted_value(metric_status.get('shares', 'N/A'))
             comments = normalize_deleted_value(metric_status.get('comments', 'N/A'))
             views = normalize_deleted_value(metric_status.get('views', 'N/A'))
         else:
             # Fallback if metric_status is not a dict
-            likes = shares = comments = views = 'Deleted'
+            reactions = shares = comments = views = 'Deleted'
         
         table_rows.append({
             'stt': post.get('stt', 0),
@@ -326,7 +326,7 @@ def generate_slide6_data(slide_data):
             'ngay_dang': date_formatted,
             'kenh': post.get('kenh', 'N/A'),
             'nguoi_dang': post.get('nguoi_dang', 'N/A'),
-            'likes': likes,
+            'reactions': reactions,
             'shares': shares,
             'comments': comments,
             'views': views
@@ -621,7 +621,7 @@ Header Tier 1 (Main columns):
 - Lượng tương tác (colspan=4, center aligned)
 
 Header Tier 2 (Under "Lượng tương tác"):
-- Like (right aligned)
+- Reactions (right aligned)
 - Share (right aligned)
 - Comments (right aligned)
 - Views (right aligned)
@@ -642,7 +642,7 @@ Row {row.get('stt', 0)}:
 - Ngày đăng: {row.get('ngay_dang', 'N/A')}
 - Kênh: {row.get('kenh', 'N/A')}
 - Người đăng: {row.get('nguoi_dang', 'N/A')}
-- Like: {row.get('like', '0')}
+- Reactions: {row.get('reactions', '0')}
 - Share: {row.get('share', '0')}
 - Comments: {row.get('comments', '0')}
 - Views: {row.get('views', '0')}
@@ -662,14 +662,14 @@ TABLE DESIGN:
   * Ngày đăng: Center
   * Kênh: Center
   * Người đăng: Center
-  * Metrics (Like/Share/Comments/Views): Right aligned
+  * Metrics (Reactions/Share/Comments/Views): Right aligned
 - Column widths:
   * STT: 60px
   * Nội dung: 40% (flexible, allow wrap)
   * Ngày đăng: 100px
   * Kênh: 100px
   * Người đăng: 150px
-  * Like: 80px
+  * Reactions: 80px
   * Share: 80px
   * Comments: 80px
   * Views: 100px
@@ -711,7 +711,7 @@ Header Tier 1 (Main columns):
 - Lượng tương tác (colspan=4, center aligned)
 
 Header Tier 2 (Under "Lượng tương tác"):
-- Likes (center aligned)
+- Reactions (center aligned)
 - Shares (center aligned)
 - Comments (center aligned)
 - Views (center aligned)
@@ -732,7 +732,7 @@ Row {row.get('stt', 0)}:
 - Ngày đăng: {row.get('ngay_dang', 'N/A')}
 - Kênh: {row.get('kenh', 'N/A')}
 - Người đăng: {row.get('nguoi_dang', 'N/A')}
-- Likes: {row.get('likes', 'N/A')}
+- Reactions: {row.get('reactions', 'N/A')}
 - Shares: {row.get('shares', 'N/A')}
 - Comments: {row.get('comments', 'N/A')}
 - Views: {row.get('views', 'N/A')}
@@ -759,7 +759,7 @@ TABLE DESIGN:
   * Ngày đăng: 100px
   * Kênh: 100px
   * Người đăng: 150px
-  * Likes: 80px
+  * Reactions: 80px
   * Shares: 80px
   * Comments: 80px
   * Views: 80px
@@ -801,6 +801,14 @@ TYPOGRAPHY:
 - Small Text: 12px, Regular
 - Line Height: 1.6
 - Font Family: Modern sans-serif (Inter, Roboto, or similar)
+
+NUMBER FORMATTING:
+- Thousands separator: Comma (,)
+  Examples: 2,000 | 15,500 | 1,234,567
+- Decimal separator: Period (.)
+  Examples: 2.3% | 15.7% | 0.5%
+- Percentages: One decimal place (e.g., 45.2%, not 45.23%)
+- Large numbers: Use comma separators (e.g., 1,000,000 not 1000000)
 
 SPACING:
 - Slide Padding: 48px
@@ -869,7 +877,8 @@ INSTRUCTIONS:
 4. Make insights readable with proper formatting
 5. Use the specified color palette consistently
 6. Ensure the presentation is professional and polished
-7. For each slide, the Insight section must reference its source link(s). All source links must be preserved and converted into hyperlinks with the display text “URL”. Raw links must not be shown, removed, or replaced. Users must be able to click on the text “URL” to access the cited source.
+7. Apply number formatting rules consistently across all slides (comma for thousands, period for decimals)
+8. For each slide, the Insight section must reference its source link(s). All source links must be preserved and converted into hyperlinks with the display text “URL”. Raw links must not be shown, removed, or replaced. Users must be able to click on the text “URL” to access the cited source.
 """
     
     return prompt

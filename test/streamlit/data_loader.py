@@ -72,13 +72,13 @@ class DataLoader:
         
         return self.df
     
-    def filter_by_datetime_range(self, end_datetime: str, days: int = 7) -> pd.DataFrame:
+    def filter_by_datetime_range(self, end_datetime: str, days: int = 1) -> pd.DataFrame:
         """
         Filter dataframe by datetime range (end_datetime - N days to end_datetime)
         
         Args:
             end_datetime: End datetime string in format "YYYY-MM-DD HH:MM:SS"
-            days: Number of days to look back (default: 7 for weekly reports)
+            days: Number of days to look back (default: 1 for daily reports, use 7 for weekly)
             
         Returns:
             Filtered dataframe for the specified time window
@@ -160,7 +160,7 @@ def calculate_engagement(df: pd.DataFrame) -> pd.Series:
     Calculate engagement score for each row
     
     Args:
-        df: Dataframe with Likes, Shares, Comments columns
+        df: Dataframe with Reactions, Shares, Comments columns
         
     Returns:
         Series with engagement scores
@@ -170,8 +170,8 @@ def calculate_engagement(df: pd.DataFrame) -> pd.Series:
         return pd.Series(dtype='float64')
     
     # Get columns or create Series of zeros with same index as df
-    if "Likes" in df.columns:
-        reactions = pd.to_numeric(df["Likes"], errors="coerce").fillna(0)
+    if "Reactions" in df.columns:
+        reactions = pd.to_numeric(df["Reactions"], errors="coerce").fillna(0)
     else:
         reactions = pd.Series(0, index=df.index)
     

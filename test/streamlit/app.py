@@ -366,13 +366,13 @@ else:
                     # Get engagement metrics safely
                     luong_tuong_tac = post.get('luong_tuong_tac', {})
                     if isinstance(luong_tuong_tac, dict):
-                        like = luong_tuong_tac.get('like', 0)
+                        reactions = luong_tuong_tac.get('reactions', 0)
                         share = luong_tuong_tac.get('share', 0)
                         comments = luong_tuong_tac.get('comments', 0)
                         views = luong_tuong_tac.get('views', 0)
                     else:
                         # Fallback if luong_tuong_tac is not a dict
-                        like = share = comments = views = 0
+                        reactions = share = comments = views = 0
                     
                     content = str(post.get('noi_dung_bai_dang', ''))
                     table_data.append({
@@ -381,7 +381,7 @@ else:
                         'Ngày đăng': date_formatted,
                         'Kênh': post.get('kenh', 'N/A'),
                         'Người đăng': post.get('nguoi_dang', 'N/A'),
-                        'Like': f"{like:,}",
+                        'Reactions': f"{reactions:,}",
                         'Share': f"{share:,}",
                         'Comments': f"{comments:,}",
                         'Views': f"{views:,}",
@@ -401,7 +401,7 @@ else:
                         'Ngày đăng': st.column_config.TextColumn('Ngày đăng', width='small'),
                         'Kênh': st.column_config.TextColumn('Kênh', width='small'),
                         'Người đăng': st.column_config.TextColumn('Người đăng', width='medium'),
-                        'Like': st.column_config.TextColumn('Like', width='small'),
+                        'Reactions': st.column_config.TextColumn('Reactions', width='small'),
                         'Share': st.column_config.TextColumn('Share', width='small'),
                         'Comments': st.column_config.TextColumn('Comments', width='small'),
                         'Views': st.column_config.TextColumn('Views', width='small'),
@@ -416,12 +416,12 @@ else:
                     # Get engagement metrics safely
                     luong_tuong_tac = post.get('luong_tuong_tac', {})
                     if isinstance(luong_tuong_tac, dict):
-                        like = luong_tuong_tac.get('like', 0)
+                        reactions = luong_tuong_tac.get('reactions', 0)
                         share = luong_tuong_tac.get('share', 0)
                         comments = luong_tuong_tac.get('comments', 0)
                         views = luong_tuong_tac.get('views', 0)
                     else:
-                        like = share = comments = views = 0
+                        reactions = share = comments = views = 0
                     
                     with st.expander(f"#{post.get('stt', 0)} - {post.get('nguoi_dang', 'N/A')} ({post.get('kenh', 'N/A')})"):
                         st.markdown(f"**Nội dung:**")
@@ -430,7 +430,7 @@ else:
                         
                         col1, col2, col3, col4 = st.columns(4)
                         with col1:
-                            st.metric("Like", f"{like:,}")
+                            st.metric("Reactions", f"{reactions:,}")
                         with col2:
                             st.metric("Share", f"{share:,}")
                         with col3:
@@ -502,7 +502,7 @@ else:
                         
                         # Normalize deleted values
                         metric_status = post.get('metric_status', {})
-                        likes = normalize_deleted_value(metric_status.get('likes', 'N/A'))
+                        reactions = normalize_deleted_value(metric_status.get('reactions', 'N/A'))
                         shares = normalize_deleted_value(metric_status.get('shares', 'N/A'))
                         comments = normalize_deleted_value(metric_status.get('comments', 'N/A'))
                         views = normalize_deleted_value(metric_status.get('views', 'N/A'))
@@ -513,7 +513,7 @@ else:
                             'Ngày đăng': date_formatted,
                             'Kênh': post.get('kenh', 'N/A'),
                             'Người đăng': post.get('nguoi_dang', 'N/A'),
-                            'Likes': likes,
+                            'Reactions': reactions,
                             'Shares': shares,
                             'Comments': comments,
                             'Views': views,
@@ -533,7 +533,7 @@ else:
                             'Ngày đăng': st.column_config.TextColumn('Ngày đăng', width='small'),
                             'Kênh': st.column_config.TextColumn('Kênh', width='small'),
                             'Người đăng': st.column_config.TextColumn('Người đăng', width='medium'),
-                            'Likes': st.column_config.TextColumn('Likes', width='small'),
+                            'Reactions': st.column_config.TextColumn('Reactions', width='small'),
                             'Shares': st.column_config.TextColumn('Shares', width='small'),
                             'Comments': st.column_config.TextColumn('Comments', width='small'),
                             'Views': st.column_config.TextColumn('Views', width='small'),
@@ -565,14 +565,14 @@ else:
                             
                             # Metrics - normalize deleted values (without Total)
                             metrics = post.get('metric_status', {})
-                            likes = normalize_deleted_value(metrics.get('likes', 'N/A'))
+                            reactions = normalize_deleted_value(metrics.get('reactions', 'N/A'))
                             shares = normalize_deleted_value(metrics.get('shares', 'N/A'))
                             comments = normalize_deleted_value(metrics.get('comments', 'N/A'))
                             views = normalize_deleted_value(metrics.get('views', 'N/A'))
                             
                             col1, col2, col3, col4 = st.columns(4)
                             with col1:
-                                st.metric("Likes", likes)
+                                st.metric("Reactions", reactions)
                             with col2:
                                 st.metric("Shares", shares)
                             with col3:

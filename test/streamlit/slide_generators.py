@@ -105,8 +105,8 @@ class Slide1Generator:
         compare_posts = compare_df[compare_df["Type"].isin(self.topic_types)].shape[0]
         post_pct = calculate_percentage_change(report_posts, compare_posts)
         
-        today_reactions = report_df["Likes"].sum()
-        yesterday_reactions = compare_df["Likes"].sum()
+        today_reactions = report_df["Reactions"].sum()
+        yesterday_reactions = compare_df["Reactions"].sum()
         reactions_pct = calculate_percentage_change(today_reactions, yesterday_reactions)
         
         today_shares = report_df["Shares"].sum()
@@ -157,8 +157,8 @@ class Slide1Generator:
                     "change_pct": engagement_pct
                 },
                 {
-                    "type": "likes",
-                    "label": "Lượt likes",
+                    "type": "reactions",
+                    "label": "Lượt reactions",
                     "today": int(today_reactions),
                     "yesterday": int(yesterday_reactions),
                     "change_pct": reactions_pct
@@ -789,7 +789,7 @@ class Slide5Generator:
         df_topics = report_df[report_df["Type"].isin(self.topic_types)].copy()
         
         # Ensure numeric columns
-        engagement_cols = ["Likes", "Shares", "Comments", "Views"]
+        engagement_cols = ["Reactions", "Shares", "Comments", "Views"]
         df_topics[engagement_cols] = df_topics[engagement_cols].apply(
             pd.to_numeric, errors="coerce"
         ).fillna(0)
@@ -810,7 +810,7 @@ class Slide5Generator:
         for idx, row in enumerate(df_top.itertuples(index=False), start=1):
             # Safely convert to int, handling NaN and float values
             try:
-                reactions = int(float(row.Likes)) if pd.notna(row.Likes) else 0
+                reactions = int(float(row.Reactions)) if pd.notna(row.Reactions) else 0
             except (ValueError, TypeError):
                 reactions = 0
             
@@ -844,7 +844,7 @@ class Slide5Generator:
                 "nguoi_dang": str(row.SiteName) if pd.notna(row.SiteName) else "",
                 "url_topic": str(row.UrlTopic) if pd.notna(row.UrlTopic) else "",
                 "luong_tuong_tac": {
-                    "like": reactions,
+                    "reactions": reactions,
                     "share": shares,
                     "comments": comments,
                     "views": views
@@ -873,7 +873,7 @@ class Slide6Generator:
         """
         self.topic_types = topic_types
         self.top_n = top_n
-        self.check_cols = ["Likes", "Shares", "Comments", "Views"]
+        self.check_cols = ["Reactions", "Shares", "Comments", "Views"]
         # Values that indicate deleted/removed posts
         self.deleted_indicators = ["deleted", "not exist or close group", "die", "removed"]
     
@@ -946,7 +946,7 @@ class Slide6Generator:
                 "nguoi_dang": str(row.SiteName) if pd.notna(row.SiteName) else "N/A",
                 "url_topic": str(getattr(row, 'UrlTopic', '')) if pd.notna(getattr(row, 'UrlTopic', None)) else "",
                 "metric_status": {
-                    "likes": str(row.Likes),
+                    "reactions": str(row.Reactions),
                     "shares": str(row.Shares),
                     "comments": str(row.Comments),
                     "views": str(row.Views)

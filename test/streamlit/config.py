@@ -75,5 +75,5 @@ LLM_SYSTEM_PROMPT = "Bạn là chuyên gia crisis & executive insight."
 # DATA COLUMNS
 # =====================
 TEXT_COLUMNS = ["Title", "Content", "Description"]
-METRIC_COLUMNS = ["Likes", "Shares", "Comments", "Views"]
+METRIC_COLUMNS = ["Reactions", "Shares", "Comments", "Views"]
 REQUIRED_COLUMNS = ["PublishedDate", "Type", "Sentiment", "Labels", "UrlTopic"]

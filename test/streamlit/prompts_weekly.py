@@ -25,15 +25,21 @@ YÊU CẦU BẮT BUỘC:
 - Câu đầu tiên mô tả quy mô & xu hướng so với các tuần trước
 - Các câu sau mô tả các chủ đề chính và phản ứng cộng đồng
 - Văn phong chuyên nghiệp, trung lập
+- CRITICAL: Mỗi câu PHẢI kết thúc bằng [Nguồn: URL] với URL clickable
 - Mỗi câu gắn DUY NHẤT 1 URL
 - KHÔNG lặp URL
 - KHÔNG gạch đầu dòng, KHÔNG tiêu đề
+- URL PHẢI là hyperlink có thể click được
 
-FORMAT:
-... [Nguồn: URL]
+FORMAT BẮT BUỘC:
+Câu 1 nội dung phân tích... [Nguồn: https://example.com/url1]
+Câu 2 nội dung phân tích... [Nguồn: https://example.com/url2]
+Câu 3 nội dung phân tích... [Nguồn: https://example.com/url3]
 
-DỮ LIỆU:
+DỮ LIỆU (chứa URL trong trường UrlTopic):
 {context_text}
+
+LƯU Ý: Bạn PHẢI sử dụng URL từ dữ liệu được cung cấp. KHÔNG bỏ qua URL.
 """
 
 
@@ -52,12 +58,19 @@ Phân tích xu hướng đề cập trong tuần, chỉ ra ngày có lượng th
 
 YÊU CẦU BẮT BUỘC:
 - 4–5 câu, văn xuôi
-- Mỗi câu kết thúc bằng [Nguồn: URL]
+- CRITICAL: Mỗi câu PHẢI kết thúc bằng [Nguồn: URL] với URL clickable
 - Mỗi URL chỉ dùng 1 lần
 - Không gạch đầu dòng
+- URL PHẢI là hyperlink có thể click được
 
-DỮ LIỆU:
+FORMAT BẮT BUỘC:
+Câu 1... [Nguồn: https://example.com/url1]
+Câu 2... [Nguồn: https://example.com/url2]
+
+DỮ LIỆU (chứa URL trong trường UrlTopic):
 {context_text}
+
+LƯU Ý: Bạn PHẢI sử dụng URL từ dữ liệu được cung cấp. KHÔNG bỏ qua URL.
 """
 
 
@@ -84,12 +97,19 @@ Viết insight phân tích sự phân bổ thảo luận theo kênh và nguồn 
 YÊU CẦU BẮT BUỘC:
 - Viết 4–5 câu, văn xuôi
 - Chỉ ra kênh chính và nguồn nổi bật
-- Mỗi câu kết thúc bằng [Nguồn: URL]
+- CRITICAL: Mỗi câu PHẢI kết thúc bằng [Nguồn: URL] với URL clickable
 - Mỗi URL chỉ dùng 1 lần
 - Không gạch đầu dòng
+- URL PHẢI là hyperlink có thể click được
 
-DỮ LIỆU:
+FORMAT BẮT BUỘC:
+Câu 1... [Nguồn: https://example.com/url1]
+Câu 2... [Nguồn: https://example.com/url2]
+
+DỮ LIỆU (chứa URL trong trường UrlTopic):
 {context_text}
+
+LƯU Ý: Bạn PHẢI sử dụng URL từ dữ liệu được cung cấp. KHÔNG bỏ qua URL.
 """
 
 
@@ -117,12 +137,19 @@ Viết insight phân tích sắc thái và các chủ đề nổi bật.
 YÊU CẦU BẮT BUỘC:
 - Viết 5–6 câu, văn xuôi
 - Phân tích tỷ lệ sentiment và các chủ đề chính
-- Mỗi câu kết thúc bằng [Nguồn: URL]
+- CRITICAL: Mỗi câu PHẢI kết thúc bằng [Nguồn: URL] với URL clickable
 - Mỗi URL chỉ dùng 1 lần
 - Không gạch đầu dòng
+- URL PHẢI là hyperlink có thể click được
 
-DỮ LIỆU:
+FORMAT BẮT BUỘC:
+Câu 1... [Nguồn: https://example.com/url1]
+Câu 2... [Nguồn: https://example.com/url2]
+
+DỮ LIỆU (chứa URL trong trường UrlTopic):
 {context_text}
+
+LƯU Ý: Bạn PHẢI sử dụng URL từ dữ liệu được cung cấp. KHÔNG bỏ qua URL.
 """
 
 
@@ -145,12 +172,19 @@ Viết insight phân tích các chủ đề tích cực về thương hiệu.
 YÊU CẦU BẮT BUỘC:
 - Viết 4–5 câu, văn xuôi
 - Nêu rõ các chủ đề tích cực chính và dẫn chứng cụ thể
-- Mỗi câu kết thúc bằng [Nguồn: URL]
+- CRITICAL: Mỗi câu PHẢI kết thúc bằng [Nguồn: URL] với URL clickable
 - Mỗi URL chỉ dùng 1 lần
 - Không gạch đầu dòng
+- URL PHẢI là hyperlink có thể click được
 
-DỮ LIỆU:
+FORMAT BẮT BUỘC:
+Câu 1... [Nguồn: https://example.com/url1]
+Câu 2... [Nguồn: https://example.com/url2]
+
+DỮ LIỆU (chứa URL trong trường UrlTopic):
 {context_text}
+
+LƯU Ý: Bạn PHẢI sử dụng URL từ dữ liệu được cung cấp. KHÔNG bỏ qua URL.
 """
 
 
@@ -173,10 +207,17 @@ Viết insight phân tích các chủ đề tiêu cực về thương hiệu.
 YÊU CẦU BẮT BUỘC:
 - Viết 4–5 câu, văn xuôi
 - Nêu rõ các chủ đề tiêu cực chính và dẫn chứng cụ thể
-- Mỗi câu kết thúc bằng [Nguồn: URL]
+- CRITICAL: Mỗi câu PHẢI kết thúc bằng [Nguồn: URL] với URL clickable
 - Mỗi URL chỉ dùng 1 lần
 - Không gạch đầu dòng
+- URL PHẢI là hyperlink có thể click được
 
-DỮ LIỆU:
+FORMAT BẮT BUỘC:
+Câu 1... [Nguồn: https://example.com/url1]
+Câu 2... [Nguồn: https://example.com/url2]
+
+DỮ LIỆU (chứa URL trong trường UrlTopic):
 {context_text}
+
+LƯU Ý: Bạn PHẢI sử dụng URL từ dữ liệu được cung cấp. KHÔNG bỏ qua URL.
 """

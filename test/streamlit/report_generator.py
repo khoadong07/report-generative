@@ -135,6 +135,20 @@ class ReportGenerator:
         df = self.data_loader.preprocess()
         print(f"      ✅ Loaded {len(df)} rows")
         
+        # Filter by brand/topic BEFORE time filtering
+        print(f"\n[1.5/5] Filtering data by brand: {self.brand_name}...")
+        if "Topic" not in df.columns:
+            raise ValueError("Column 'Topic' not found in data. Cannot filter by brand.")
+        
+        df = df[df["Topic"] == self.brand_name].copy()
+        print(f"      ✅ Filtered to {len(df)} rows for brand '{self.brand_name}'")
+        
+        if len(df) == 0:
+            raise ValueError(f"No data found for brand '{self.brand_name}'. Please check the brand name.")
+        
+        # Update data_loader's df with filtered data
+        self.data_loader.df = df
+        
         # Detect if using datetime or date-only format
         is_datetime_mode = len(self.report_date) > 10  # "YYYY-MM-DD HH:MM:SS" vs "YYYY-MM-DD"
         

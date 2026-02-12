@@ -43,6 +43,28 @@ def generate_complete_prompt(report_data):
     brand = metadata['brand']
     week1_period = metadata['week1_period']
     
+    # Check if interactions should be shown
+    show_interactions = report_data['slide_1'].get('show_interactions', True)
+    
+    # Determine layout based on show_interactions
+    if show_interactions:
+        layout_desc = """- 2-COLUMN LAYOUT:
+  LEFT COLUMN (50% width):
+    • Column chart comparing 4 weeks (show absolute values on columns + growth % vs previous week)
+  RIGHT COLUMN (50% width):
+    • Grid of 6 KPI cards (2 rows × 3 columns)
+    • Each card shows: metric name, value, % change vs previous week
+  BOTTOM (Full width):
+    • Insight box"""
+    else:
+        layout_desc = """- 2-COLUMN LAYOUT:
+  LEFT COLUMN (50% width):
+    • Column chart comparing 4 weeks (show absolute values on columns + growth % vs previous week)
+  RIGHT COLUMN (50% width):
+    • Single large KPI card for "Tổng đề cập" (prominent display with % change vs previous week)
+  BOTTOM (Full width):
+    • Insight box"""
+    
     prompt = f"""Create a professional 10-slide presentation for Weekly Brand Health Analysis:
 
 ═══════════════════════════════════════════════════════════════
@@ -50,20 +72,15 @@ BRAND: {brand}
 REPORT PERIOD: {week1_period} (7 days)
 REPORT TYPE: Weekly Analysis
 ═══════════════════════════════════════════════════════════════
-REPORT TYPE: Weekly Analysis
-═══════════════════════════════════════════════════════════════
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SLIDE 1 - TỔNG QUAN VỀ BRAND
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-LAYOUT:
+LAYOUT STRUCTURE:
 - Title: "{report_data['slide_1']['title']}"
 - Subtitle: "{report_data['slide_1']['subtitle']}"
-- 2 visualizations:
-  1. Grid of 6 KPI cards (current week metrics with % change vs previous week for "Tổng đề cập" and "Tổng lượt xem")
-  2. Column chart comparing 4 weeks (show absolute values on columns + growth % vs previous week)
-- Bottom: Insight box
+{layout_desc}
 
 CURRENT WEEK METRICS:
 """
@@ -74,6 +91,11 @@ CURRENT WEEK METRICS:
             prompt += f"- {metric['label']}: {format_number(metric['value'])} ({change_sign}{metric['change_percent']}% so với tuần trước)\n"
         else:
             prompt += f"- {metric['label']}: {format_number(metric['value'])}\n"
+    
+    if not show_interactions:
+        prompt += f"""
+NOTE: Only "Tổng đề cập" metric is displayed. Interaction metrics (Views, Reactions, Shares, Comments) are hidden as per user preference.
+"""
     
     prompt += f"""
 WEEKLY COMPARISON (Column Chart - với giá trị absolute và % tăng trưởng):
@@ -93,11 +115,14 @@ INSIGHT:
 SLIDE 2 - ĐƯỜNG BIỂU DIỄN XU HƯỚNG ĐỀ CẬP
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-LAYOUT:
+LAYOUT STRUCTURE:
 - Title: "{report_data['slide_2']['title']}"
 - Subtitle: "{report_data['slide_2']['subtitle']}"
-- Line chart showing 7-day trend
-- Bottom: Insight box
+- 1-COLUMN LAYOUT:
+  TOP (Full width):
+    • Line chart showing 7-day trend (X-axis: dates, Y-axis: mention count)
+  BOTTOM (Full width):
+    • Insight box
 
 TRENDLINE DATA (7 days):
 """
@@ -113,15 +138,39 @@ INSIGHT:
 SLIDE 3 - PHÂN BỐ LƯỢT ĐỀ CẬP THEO KÊNH
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-LAYOUT:
+LAYOUT STRUCTURE:
 - Title: "{report_data['slide_3']['title']}"
 - Subtitle: "{report_data['slide_3']['subtitle']}"
-- 2 visualizations:
-  1. Pie chart (channel distribution) - show both absolute count and percentage
-  2. Horizontal bar chart (top 10 sources)
-- Bottom: Insight box
+- 2-COLUMN LAYOUT:
+  LEFT COLUMN (50% width):
+    • Pie/Donut chart (channel distribution) - CLEAN, NO LABELS ON CHART
+    • Legend list positioned BELOW or BESIDE the chart
+      Format: [Color Block] [Channel Name]: [XX.X]%
+  RIGHT COLUMN (50% width):
+    • Horizontal bar chart showing top 10 sources (by SiteName)
+  BOTTOM (Full width):
+    • Insight box
 
-CHANNEL DISTRIBUTION (Pie Chart - hiển thị số lượng và %):
+PIE/DONUT CHART REQUIREMENTS (IMPORTANT):
+- NO labels on the chart itself (clean chart without text)
+- NO leader lines or connector lines
+- NO percentages displayed on slices
+- Use distinct, contrasting colors for each channel
+
+LEGEND LIST:
+- Display as a vertical list next to or below the pie chart
+- Format for each item: [Color Block] [Channel Name]: [XX.X]%
+- Example:
+  ■ Facebook: 45.2%
+  ■ YouTube: 30.5%
+  ■ TikTok: 15.8%
+  ■ Instagram: 8.5%
+- Color blocks should match the slice colors in the chart
+- Font size: Medium, readable
+- Alignment: Left-aligned
+- Spacing: Comfortable spacing between items
+
+CHANNEL DISTRIBUTION DATA:
 """
     
     # Calculate total for percentage
@@ -144,24 +193,55 @@ INSIGHT:
 SLIDE 4 - TOP NGUỒN CÓ LƯỢNG TƯƠNG TÁC CAO NHẤT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-LAYOUT:
+LAYOUT STRUCTURE:
 - Title: "{report_data['slide_4']['title']}"
 - Subtitle: "{report_data['slide_4']['subtitle']}"
 - Full-width table
 - NO insight section
 
-TABLE DATA:
+TABLE COLUMN NAMES (IMPORTANT - Use exact names):
 """
     
-    for row in report_data['slide_4']['table_rows']:
-        prompt += f"""
+    # Check if interactions are shown
+    show_interactions_slide4 = report_data['slide_4'].get('show_interactions', True)
+    
+    if show_interactions_slide4:
+        prompt += """
+1. STT
+2. Nguồn
+3. Tổng tương tác
+4. Reactions (NOT "React ions" or "Lượt reactions")
+5. Shares (NOT "Share s" or "Lượt chia sẻ")
+6. Comments (NOT "Co mm" or "Lượt bình luận")
+
+TABLE DATA:
+"""
+        # Full table with interaction columns
+        for row in report_data['slide_4']['table_rows']:
+            prompt += f"""
 Row {row['stt']}:
 - STT: {row['stt']}
 - Nguồn: {row['source_name']}
 - Tổng tương tác: {format_number(row['total_engagement'])}
-- Likes: {format_number(row['reactions'])}
+- Reactions: {format_number(row['reactions'])}
 - Shares: {format_number(row['shares'])}
 - Comments: {format_number(row['comments'])}
+"""
+    else:
+        prompt += """
+1. STT
+2. Nguồn
+3. Số lượng đề cập
+
+TABLE DATA:
+"""
+        # Simple table without interaction columns
+        for row in report_data['slide_4']['table_rows']:
+            prompt += f"""
+Row {row['stt']}:
+- STT: {row['stt']}
+- Nguồn: {row['source_name']}
+- Số lượng đề cập: {format_number(row['count'])}
 """
     
     prompt += f"""
@@ -169,18 +249,35 @@ Row {row['stt']}:
 SLIDE 5 - TOP BÀI ĐĂNG CÓ TƯƠNG TÁC CAO NHẤT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-LAYOUT:
+LAYOUT STRUCTURE:
 - Title: "{report_data['slide_5']['title']}"
 - Subtitle: "{report_data['slide_5']['subtitle']}"
 - Full-width table
 - NO insight section
 
-TABLE DATA:
+TABLE COLUMN NAMES (IMPORTANT - Use exact names):
 """
     
-    for row in report_data['slide_5']['table_rows']:
-        content_preview = row['content'][:100] + '...' if len(row['content']) > 100 else row['content']
-        prompt += f"""
+    # Check if interactions are shown
+    show_interactions_slide5 = report_data['slide_5'].get('show_interactions', True)
+    
+    if show_interactions_slide5:
+        prompt += """
+1. STT
+2. Nội dung
+3. Ngày đăng
+4. Kênh
+5. Nguồn
+6. Reactions (NOT "React ions" or "Lượt reactions")
+7. Shares (NOT "Share s" or "Lượt chia sẻ")
+8. Comments (NOT "Co mm" or "Lượt bình luận")
+
+TABLE DATA:
+"""
+        # Full table with interaction columns
+        for row in report_data['slide_5']['table_rows']:
+            content_preview = row['content'][:100] + '...' if len(row['content']) > 100 else row['content']
+            prompt += f"""
 Row {row['stt']}:
 - STT: {row['stt']}
 - Nội dung: {content_preview} [Link]({row['url']})
@@ -191,24 +288,63 @@ Row {row['stt']}:
 - Shares: {format_number(row['shares'])}
 - Comments: {format_number(row['comments'])}
 """
+    else:
+        prompt += """
+1. STT
+2. Nội dung
+3. Ngày đăng
+4. Kênh
+5. Nguồn
+6. URL
+
+TABLE DATA:
+"""
+        # Simple table without interaction columns
+        for row in report_data['slide_5']['table_rows']:
+            content_preview = row['content'][:100] + '...' if len(row['content']) > 100 else row['content']
+            prompt += f"""
+Row {row['stt']}:
+- STT: {row['stt']}
+- Nội dung: {content_preview} [Link]({row['url']})
+- Ngày đăng: {format_date(row['published_date'])}
+- Kênh: {row['channel']}
+- Nguồn: {row['site_name']}
+- URL: {row['url']}
+"""
     
     prompt += f"""
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SLIDE 6 - SẮC THÁI VÀ CỤM CHỦ ĐỀ ĐỀ CẬP NỔI BẬT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-LAYOUT:
+LAYOUT STRUCTURE:
 - Title: "{report_data['slide_6']['title']}"
 - Subtitle: "{report_data['slide_6']['subtitle']}"
-- 2 visualizations:
-  1. Two DONUT charts side-by-side (previous week vs current week sentiment) - show both absolute count and percentage
-     - Left Donut: Previous week with NSR = {report_data['slide_6']['previous_nsr']}% displayed in center
-     - Right Donut: Current week with NSR = {report_data['slide_6']['current_nsr']}% displayed in center
-     - Between the two donuts: Display NSR growth rate = {report_data['slide_6']['nsr_growth']:+.2f}%
-  2. Horizontal bar chart (top topics with sentiment breakdown)
-- Bottom: Insight box
+- 2-COLUMN LAYOUT:
+  LEFT COLUMN (50% width):
+    • Two SMALL DONUT charts side-by-side horizontally (previous week | current week)
+      - Left Donut: "Tuần trước" label above, NSR = {report_data['slide_6']['previous_nsr']}% in center
+      - Right Donut: "Tuần này" label above, NSR = {report_data['slide_6']['current_nsr']}% in center
+      - Between donuts: NSR growth rate = {report_data['slide_6']['nsr_growth']:+.2f}%
+      - Each donut shows sentiment percentages with colors:
+        * Positive: #00C055 (green)
+        * Neutral: #6b7280 (gray)
+        * Negative: #EC003F (red)
+    • NSR explanation note directly below the two donuts (small, gray, italic)
+      NSR (Net Sentiment Rate - Tỷ lệ sắc thái ròng) là chỉ số phản ánh mức độ quan tâm / hài lòng của thị trường theo thời gian. Dựa trên công thức tỷ lệ % giữa hiệu và tổng của Sắc thái Tích cực và Tiêu cực
+  RIGHT COLUMN (50% width):
+    • Stacked horizontal bar chart (top 10 topics with sentiment breakdown)
+      - Each bar shows: Negative (red) | Neutral (gray) | Positive (green)
+  BOTTOM (Full width):
+    • Insight box
 
-PREVIOUS WEEK SENTIMENT (Left Donut - hiển thị số lượng và %):
+DONUT CHART SIZING:
+- Make donuts SMALLER to fit side-by-side
+- Each donut: approximately 150-180px diameter
+- Gap between donuts: 20-30px
+- Label above each donut: "Tuần trước" / "Tuần này"
+
+PREVIOUS WEEK SENTIMENT (Left Donut - "Tuần trước"):
 NSR (Tuần trước) = {report_data['slide_6']['previous_nsr']}%
 """
     
@@ -219,7 +355,7 @@ NSR (Tuần trước) = {report_data['slide_6']['previous_nsr']}%
         prompt += f"- {sent['sentiment']}: {format_number(sent['count'])} lượt ({percentage:.1f}%)\n"
     
     prompt += f"""
-CURRENT WEEK SENTIMENT (Right Donut - hiển thị số lượng và %):
+CURRENT WEEK SENTIMENT (Right Donut - "Tuần này"):
 NSR (Tuần hiện tại) = {report_data['slide_6']['current_nsr']}%
 """
     # Calculate total for current week percentage
@@ -230,8 +366,16 @@ NSR (Tuần hiện tại) = {report_data['slide_6']['current_nsr']}%
     
     nsr_growth_sign = "+" if report_data['slide_6']['nsr_growth'] > 0 else ""
     prompt += f"""
-NSR GROWTH (Hiển thị giữa 2 donut charts):
+NSR GROWTH (Display between the two donut charts):
 {nsr_growth_sign}{report_data['slide_6']['nsr_growth']:.2f}% (so với tuần trước)
+
+NSR EXPLANATION NOTE STYLING:
+- Position: Directly below the two donut charts (still in left column)
+- Font size: Small (10-11px)
+- Color: Gray (#6b7280)
+- Style: Italic
+- Alignment: Left-aligned or center-aligned
+- Width: Full width of left column
 
 TOP TOPICS WITH SENTIMENT (Horizontal Bar Chart):
 """
@@ -246,11 +390,16 @@ INSIGHT:
 SLIDE 7 - CÁC CHỦ ĐỀ ĐỀ CẬP TÍCH CỰC
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-LAYOUT:
+LAYOUT STRUCTURE:
 - Title: "{report_data['slide_7']['title']}"
 - Subtitle: "{report_data['slide_7']['subtitle']}"
-- Horizontal bar chart
-- Bottom: Insight box
+- 1-COLUMN LAYOUT:
+  TOP (Full width):
+    • Horizontal bar chart showing top 10 positive topics
+    • Color: Success Green (#00C055)
+    • Sorted by count (descending)
+  BOTTOM (Full width):
+    • Insight box
 
 POSITIVE TOPICS (Horizontal Bar Chart):
 """
@@ -292,11 +441,16 @@ Row {row['stt']}:
 SLIDE 9 - CÁC CHỦ ĐỀ ĐỀ CẬP TIÊU CỰC
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-LAYOUT:
+LAYOUT STRUCTURE:
 - Title: "{report_data['slide_9']['title']}"
 - Subtitle: "{report_data['slide_9']['subtitle']}"
-- Horizontal bar chart
-- Bottom: Insight box
+- 1-COLUMN LAYOUT:
+  TOP (Full width):
+    • Horizontal bar chart showing top 10 negative topics
+    • Color: Danger Red (#EC003F)
+    • Sorted by count (descending)
+  BOTTOM (Full width):
+    • Insight box
 
 NEGATIVE TOPICS (Horizontal Bar Chart):
 """
@@ -351,24 +505,56 @@ TYPOGRAPHY:
 - Body Text: 14px, Regular
 - Font Family: Modern sans-serif (Inter, Roboto)
 
+NUMBER FORMATTING:
+- Thousands separator: Comma (,)
+  Examples: 2,000 | 15,500 | 1,234,567
+- Decimal separator: Period (.)
+  Examples: 2.3% | 15.7% | 0.5%
+- Percentages: One decimal place (e.g., 45.2%, not 45.23%)
+- Large numbers: Use comma separators (e.g., 1,000,000 not 1000000)
+
+LAYOUT PATTERNS SUMMARY:
+- Pattern A (2-Column + Insight): Slides 1, 3, 6
+  • Left column (50% width) + Right column (50% width)
+  • Full-width insight box at bottom
+  
+- Pattern B (1-Column + Insight): Slides 2, 7, 9
+  • Full-width chart at top
+  • Full-width insight box at bottom
+  
+- Pattern C (Table Only): Slides 4, 5, 8, 10
+  • Full-width table
+  • NO insight box
+
+SPACING & ALIGNMENT:
+- Column gap: 24px
+- Section padding: 16px
+- Slide margins: 32px
+- Insight box padding: 20px
+- Consistent vertical spacing between elements
+
 STYLE:
 - Corporate and professional
 - Clean and modern
 - Data-driven and analytical
 - Consistent spacing and alignment
+- Clear visual hierarchy
 
 ═══════════════════════════════════════════════════════════════
 END OF PROMPT
 ═══════════════════════════════════════════════════════════════
 
-INSTRUCTIONS:
+CRITICAL INSTRUCTIONS:
 1. Create all 10 slides with the exact data provided above
-2. Follow the design specifications precisely
-3. Ensure all charts are properly formatted and labeled
-4. Make insights readable with proper formatting
-5. Use the specified color palette consistently
-6. Ensure the presentation is professional and polished
-7. Preserve all source links as clickable hyperlinks
+2. Follow the LAYOUT STRUCTURE specifications precisely for each slide
+3. Respect the 2-column vs 1-column layout patterns
+4. Ensure all charts are properly formatted and labeled
+5. Make insights readable with proper formatting in full-width boxes
+6. Use the specified color palette consistently
+7. Ensure the presentation is professional and polished
+8. Preserve all source links as clickable hyperlinks
+9. Apply number formatting rules consistently across all slides
+10. Maintain consistent spacing and alignment throughout
 """
     
     return prompt

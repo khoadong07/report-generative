@@ -44,7 +44,8 @@ class WeeklyReportGenerator:
     
     def __init__(self, api_key: str, base_url: str, file_path: str = None, 
                  brand_name: str = None, week1_end: str = None, 
-                 week2_end: str = None, week3_end: str = None, week4_end: str = None):
+                 week2_end: str = None, week3_end: str = None, week4_end: str = None,
+                 show_interactions: bool = True):
         """
         Initialize weekly report generator
         
@@ -57,6 +58,7 @@ class WeeklyReportGenerator:
             week2_end: End datetime of week 2 (1 week before)
             week3_end: End datetime of week 3 (2 weeks before)
             week4_end: End datetime of week 4 (3 weeks before)
+            show_interactions: Show interaction metrics in Slide 1 (default: True)
         """
         self.file_path = file_path or FILE_PATH
         self.brand_name = brand_name or BRAND_NAME
@@ -64,6 +66,7 @@ class WeeklyReportGenerator:
         self.week2_end = week2_end
         self.week3_end = week3_end
         self.week4_end = week4_end
+        self.show_interactions = show_interactions
         
         # Initialize data loader
         self.data_loader = DataLoader(
@@ -139,11 +142,11 @@ class WeeklyReportGenerator:
         week4_end_dt = pd.to_datetime(self.week4_end)
         week4_start_dt = week4_end_dt - timedelta(days=7)
         
-        # Filter data for each week
-        week1_df = self.data_loader.filter_by_datetime_range(self.week1_end)
-        week2_df = self.data_loader.filter_by_datetime_range(self.week2_end)
-        week3_df = self.data_loader.filter_by_datetime_range(self.week3_end)
-        week4_df = self.data_loader.filter_by_datetime_range(self.week4_end)
+        # Filter data for each week (7 days)
+        week1_df = self.data_loader.filter_by_datetime_range(self.week1_end, days=7)
+        week2_df = self.data_loader.filter_by_datetime_range(self.week2_end, days=7)
+        week3_df = self.data_loader.filter_by_datetime_range(self.week3_end, days=7)
+        week4_df = self.data_loader.filter_by_datetime_range(self.week4_end, days=7)
         
         print(f"      ✅ Week 1 ({week1_start_dt.strftime('%d/%m')} → {week1_end_dt.strftime('%d/%m')}): {len(week1_df)} rows")
         print(f"      ✅ Week 2 ({week2_start_dt.strftime('%d/%m')} → {week2_end_dt.strftime('%d/%m')}): {len(week2_df)} rows")
@@ -168,7 +171,7 @@ class WeeklyReportGenerator:
             print("      [Slide 1] 📝 Calculating weekly KPIs...")
             result = self.slide1_gen.generate(
                 week1_df, week2_df, week3_df, week4_df,
-                self.brand_name, week1_display
+                self.brand_name, week1_display, self.show_interactions
             )
             print("      [Slide 1] ✅ Completed")
             return ('slide_1', result)
@@ -245,11 +248,11 @@ class WeeklyReportGenerator:
         
         # Generate data-only slides (no LLM)
         print("      [Slide 4] 📊 Generating top sources by engagement...")
-        slide4_data = self.slide4_gen.generate(week1_df, self.brand_name, week1_display)
+        slide4_data = self.slide4_gen.generate(week1_df, self.brand_name, week1_display, self.show_interactions)
         print("      [Slide 4] ✅ Completed")
         
         print("      [Slide 5] 📊 Generating top posts by engagement...")
-        slide5_data = self.slide5_gen.generate(week1_df, self.brand_name, week1_display)
+        slide5_data = self.slide5_gen.generate(week1_df, self.brand_name, week1_display, self.show_interactions)
         print("      [Slide 5] ✅ Completed")
         
         print("      [Slide 8] 📊 Generating top positive posts...")

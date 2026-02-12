@@ -110,6 +110,16 @@ with st.sidebar:
     """)
 
     st.divider()
+    
+    st.subheader("Display Options")
+    
+    show_interactions = st.checkbox(
+        "Hiển thị Interactions",
+        value=True,
+        help="Bật/tắt hiển thị các metrics tương tác (Views, Reactions, Shares, Comments) trong Slide 1. Nếu tắt, chỉ hiển thị Tổng đề cập và chart so sánh 4 tuần."
+    )
+
+    st.divider()
 
     if API_KEY and BASE_URL:
         st.success("API credentials loaded")
@@ -168,7 +178,8 @@ else:
                 week1_end=week1_end.strftime("%Y-%m-%d %H:%M:%S"),
                 week2_end=week2_end.strftime("%Y-%m-%d %H:%M:%S"),
                 week3_end=week3_end.strftime("%Y-%m-%d %H:%M:%S"),
-                week4_end=week4_end.strftime("%Y-%m-%d %H:%M:%S")
+                week4_end=week4_end.strftime("%Y-%m-%d %H:%M:%S"),
+                show_interactions=show_interactions
             )
 
             status.text("Generating weekly report data (parallel processing ~2 minutes)...")
@@ -340,22 +351,40 @@ else:
             st.subheader(slide4['title'])
             st.caption(slide4['subtitle'])
             
-            st.markdown("### 📊 Top Sources by Total Engagement")
-            df_table = pd.DataFrame(slide4['table_rows'])
-            df_table = df_table.rename(columns={
-                'stt': 'Rank',
-                'source_name': 'Source',
-                'total_engagement': 'Total Engagement',
-                'reactions': 'Likes',
-                'shares': 'Shares',
-                'comments': 'Comments'
-            })
+            # Check if interactions are shown
+            show_interactions_slide4 = slide4.get('show_interactions', True)
             
-            # Show bar chart
-            st.bar_chart(df_table.set_index('Source')['Total Engagement'])
-            
-            # Show detailed table
-            st.dataframe(df_table, use_container_width=True, hide_index=True)
+            if show_interactions_slide4:
+                st.markdown("### 📊 Top Sources by Total Engagement")
+                df_table = pd.DataFrame(slide4['table_rows'])
+                df_table = df_table.rename(columns={
+                    'stt': 'Rank',
+                    'source_name': 'Source',
+                    'total_engagement': 'Total Engagement',
+                    'reactions': 'Reactions',
+                    'shares': 'Shares',
+                    'comments': 'Comments'
+                })
+                
+                # Show bar chart
+                st.bar_chart(df_table.set_index('Source')['Total Engagement'])
+                
+                # Show detailed table
+                st.dataframe(df_table, use_container_width=True, hide_index=True)
+            else:
+                st.markdown("### 📊 Top Sources by Mention Count")
+                df_table = pd.DataFrame(slide4['table_rows'])
+                df_table = df_table.rename(columns={
+                    'stt': 'Rank',
+                    'source_name': 'Source',
+                    'count': 'Mention Count'
+                })
+                
+                # Show bar chart
+                st.bar_chart(df_table.set_index('Source')['Mention Count'])
+                
+                # Show detailed table
+                st.dataframe(df_table, use_container_width=True, hide_index=True)
         
         # SLIDE 5: Top Posts
         with tab5:
@@ -363,17 +392,28 @@ else:
             st.subheader(slide5['title'])
             st.caption(slide5['subtitle'])
             
-            st.markdown("### 💬 Top Posts by Engagement")
-            for row in slide5['table_rows']:
-                with st.expander(f"#{row['stt']} - {row['site_name']} ({row['channel']})"):
-                    st.markdown(f"**Content:** {row['content'][:200]}...")
-                    st.markdown(f"**Published:** {row['published_date']}")
-                    st.markdown(f"**Link:** [{row['url']}]({row['url']})")
-                    
-                    col1, col2, col3 = st.columns(3)
-                    col1.metric("Reactions", f"{row['reactions']:,}")
-                    col2.metric("Shares", f"{row['shares']:,}")
-                    col3.metric("Comments", f"{row['comments']:,}")
+            # Check if interactions are shown
+            show_interactions_slide5 = slide5.get('show_interactions', True)
+            
+            if show_interactions_slide5:
+                st.markdown("### 💬 Top Posts by Engagement")
+                for row in slide5['table_rows']:
+                    with st.expander(f"#{row['stt']} - {row['site_name']} ({row['channel']})"):
+                        st.markdown(f"**Content:** {row['content'][:200]}...")
+                        st.markdown(f"**Published:** {row['published_date']}")
+                        st.markdown(f"**Link:** [{row['url']}]({row['url']})")
+                        
+                        col1, col2, col3 = st.columns(3)
+                        col1.metric("Reactions", f"{row['reactions']:,}")
+                        col2.metric("Shares", f"{row['shares']:,}")
+                        col3.metric("Comments", f"{row['comments']:,}")
+            else:
+                st.markdown("### 💬 Top Posts")
+                for row in slide5['table_rows']:
+                    with st.expander(f"#{row['stt']} - {row['site_name']} ({row['channel']})"):
+                        st.markdown(f"**Content:** {row['content'][:200]}...")
+                        st.markdown(f"**Published:** {row['published_date']}")
+                        st.markdown(f"**Link:** [{row['url']}]({row['url']})")
         
         # SLIDE 6: Sentiment
         with tab6:
