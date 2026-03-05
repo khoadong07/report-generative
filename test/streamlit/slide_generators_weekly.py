@@ -30,30 +30,34 @@ class WeeklySlide1Generator:
                  week3_df: pd.DataFrame, week4_df: pd.DataFrame,
                  brand: str, week1_display: str, show_interactions: bool = True) -> Dict[str, Any]:
         """Generate slide 1 data"""
+        from data_loader import calculate_percentage_change
+        
         # Calculate metrics for current week
         total_mentions = len(week1_df)
-        total_engagement = week1_df["Reactions"].sum() + week1_df["Shares"].sum() + week1_df["Comments"].sum()
-        total_views = week1_df["Views"].sum()
-        total_reactions = week1_df["Reactions"].sum()
-        total_shares = week1_df["Shares"].sum()
-        total_comments = week1_df["Comments"].sum()
-        
-        # Calculate metrics for previous week (week2)
         prev_total_mentions = len(week2_df)
-        prev_total_engagement = week2_df["Reactions"].sum() + week2_df["Shares"].sum() + week2_df["Comments"].sum()
-        prev_total_views = week2_df["Views"].sum()
-        prev_total_reactions = week2_df["Reactions"].sum()
-        prev_total_shares = week2_df["Shares"].sum()
-        prev_total_comments = week2_df["Comments"].sum()
-        
-        # Calculate percentage changes for all metrics
-        from data_loader import calculate_percentage_change
         mentions_change = calculate_percentage_change(total_mentions, prev_total_mentions)
-        engagement_change = calculate_percentage_change(total_engagement, prev_total_engagement)
-        views_change = calculate_percentage_change(total_views, prev_total_views)
-        reactions_change = calculate_percentage_change(total_reactions, prev_total_reactions)
-        shares_change = calculate_percentage_change(total_shares, prev_total_shares)
-        comments_change = calculate_percentage_change(total_comments, prev_total_comments)
+        
+        # Only calculate interaction metrics if needed
+        if show_interactions:
+            total_engagement = week1_df["Reactions"].sum() + week1_df["Shares"].sum() + week1_df["Comments"].sum()
+            total_views = week1_df["Views"].sum()
+            total_reactions = week1_df["Reactions"].sum()
+            total_shares = week1_df["Shares"].sum()
+            total_comments = week1_df["Comments"].sum()
+            
+            # Calculate metrics for previous week (week2)
+            prev_total_engagement = week2_df["Reactions"].sum() + week2_df["Shares"].sum() + week2_df["Comments"].sum()
+            prev_total_views = week2_df["Views"].sum()
+            prev_total_reactions = week2_df["Reactions"].sum()
+            prev_total_shares = week2_df["Shares"].sum()
+            prev_total_comments = week2_df["Comments"].sum()
+            
+            # Calculate percentage changes for interaction metrics
+            engagement_change = calculate_percentage_change(total_engagement, prev_total_engagement)
+            views_change = calculate_percentage_change(total_views, prev_total_views)
+            reactions_change = calculate_percentage_change(total_reactions, prev_total_reactions)
+            shares_change = calculate_percentage_change(total_shares, prev_total_shares)
+            comments_change = calculate_percentage_change(total_comments, prev_total_comments)
         
         # Weekly comparison data with growth rates
         week4_mentions = len(week4_df)
@@ -298,32 +302,56 @@ class WeeklySlide4Generator:
         df_topics["engagement"] = calculate_engagement(df_topics)
         
         if show_interactions:
-            # Full table with interaction columns
-            top_sources = df_topics.groupby("SiteName").agg({
-                "engagement": "sum",
-                "Reactions": "sum",
-                "Shares": "sum",
-                "Comments": "sum"
-            }).reset_index()
+            # Check if interaction columns exist
+            has_reactions = "Reactions" in df_topics.columns
+            has_shares = "Shares" in df_topics.columns
+            has_comments = "Comments" in df_topics.columns
             
-            top_sources = top_sources.sort_values("engagement", ascending=False).head(self.top_n)
-            
-            table_rows = []
-            for idx, row in enumerate(top_sources.itertuples(), 1):
-                table_rows.append({
-                    "stt": idx,
-                    "source_name": row.SiteName,
-                    "total_engagement": int(row.engagement),
-                    "reactions": int(row.Reactions),
-                    "shares": int(row.Shares),
-                    "comments": int(row.Comments)
-                })
+            if has_reactions and has_shares and has_comments:
+                # Full table with interaction columns
+                top_sources = df_topics.groupby("SiteName").agg({
+                    "engagement": "sum",
+                    "Reactions": "sum",
+                    "Shares": "sum",
+                    "Comments": "sum"
+                }).reset_index()
+                
+                top_sources = top_sources.sort_values("engagement", ascending=False).head(self.top_n)
+                
+                table_rows = []
+                for idx, row in enumerate(top_sources.itertuples(), 1):
+                    table_rows.append({
+                        "stt": idx,
+                        "source_name": row.SiteName,
+                        "total_engagement": int(row.engagement),
+                        "reactions": int(row.Reactions),
+                        "shares": int(row.Shares),
+                        "comments": int(row.Comments)
+                    })
+            else:
+                # Fallback to simple count if interaction columns don't exist
+                top_sources = df_topics.groupby("SiteName").size().reset_index(name="count")
+                top_sources = top_sources.sort_values("count", ascending=False).head(self.top_n)
+                
+                table_rows = []
+                for idx, row in enumerate(top_sources.itertuples(), 1):
+                    table_rows.append({
+                        "stt": idx,
+                        "source_name": row.SiteName,
+                        "count": int(row.count)
+                    })
         else:
             # Simple table without interaction columns (only count)
             top_sources = df_topics.groupby("SiteName").size().reset_index(name="count")
             top_sources = top_sources.sort_values("count", ascending=False).head(self.top_n)
             
             table_rows = []
+            for idx, row in enumerate(top_sources.itertuples(), 1):
+                table_rows.append({
+                    "stt": idx,
+                    "source_name": row.SiteName,
+                    "count": int(row.count)
+                })
             for idx, row in enumerate(top_sources.itertuples(), 1):
                 table_rows.append({
                     "stt": idx,
@@ -352,26 +380,51 @@ class WeeklySlide5Generator:
         df_topics = week1_df[week1_df["Type"].isin(self.topic_types)].copy()
         
         if show_interactions:
-            # Sort by Comments and include interaction columns
-            df_topics = df_topics.sort_values("Comments", ascending=False).head(self.top_n)
+            # Check if interaction columns exist
+            has_reactions = "Reactions" in df_topics.columns
+            has_shares = "Shares" in df_topics.columns
+            has_comments = "Comments" in df_topics.columns
             
-            table_rows = []
-            for idx, row in enumerate(df_topics.itertuples(), 1):
-                content = str(row.Content) if pd.notna(row.Content) else str(row.Title)
-                table_rows.append({
-                    "stt": idx,
-                    "content": content,
-                    "published_date": str(row.PublishedDate),
-                    "channel": str(row.Channel),
-                    "site_name": str(row.SiteName),
-                    "reactions": int(row.Reactions),
-                    "shares": int(row.Shares),
-                    "comments": int(row.Comments),
-                    "url": str(row.UrlTopic)
-                })
+            if has_comments:
+                # Sort by Comments and include interaction columns
+                df_topics = df_topics.sort_values("Comments", ascending=False).head(self.top_n)
+                
+                table_rows = []
+                for idx, row in enumerate(df_topics.itertuples(), 1):
+                    content = str(row.Content) if pd.notna(row.Content) else str(row.Title)
+                    row_data = {
+                        "stt": idx,
+                        "content": content,
+                        "published_date": str(row.PublishedDate),
+                        "channel": str(row.Channel),
+                        "site_name": str(row.SiteName),
+                        "url": str(row.UrlTopic)
+                    }
+                    # Only add interaction columns if they exist
+                    if has_reactions:
+                        row_data["reactions"] = int(row.Reactions)
+                    if has_shares:
+                        row_data["shares"] = int(row.Shares)
+                    if has_comments:
+                        row_data["comments"] = int(row.Comments)
+                    table_rows.append(row_data)
+            else:
+                # Fallback if Comments column doesn't exist
+                df_topics = df_topics.head(self.top_n)
+                
+                table_rows = []
+                for idx, row in enumerate(df_topics.itertuples(), 1):
+                    content = str(row.Content) if pd.notna(row.Content) else str(row.Title)
+                    table_rows.append({
+                        "stt": idx,
+                        "content": content,
+                        "published_date": str(row.PublishedDate),
+                        "channel": str(row.Channel),
+                        "site_name": str(row.SiteName),
+                        "url": str(row.UrlTopic)
+                    })
         else:
             # Simple table without interaction columns
-            # Can sort by any available metric or just take top N
             df_topics = df_topics.head(self.top_n)
             
             table_rows = []
