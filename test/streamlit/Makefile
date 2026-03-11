@@ -31,12 +31,14 @@ help:
 # Build Docker image
 build:
 	@echo "🔨 Building Docker image..."
-	docker-compose build
+	@cp .env deployment/.env 2>/dev/null || echo "Warning: .env not found, using environment variables"
+	docker-compose -f deployment/docker-compose.yml build
 
 # Run container (development)
 run:
 	@echo "🚀 Starting Streamlit app (development)..."
-	docker-compose up -d
+	@cp .env deployment/.env 2>/dev/null || echo "Warning: .env not found, using environment variables"
+	docker-compose -f deployment/docker-compose.yml up -d
 	@echo "✅ App running at http://localhost:8501"
 
 # Run container (production)
@@ -48,47 +50,47 @@ run-prod:
 # Stop container
 stop:
 	@echo "🛑 Stopping container..."
-	docker-compose down
+	docker-compose -f deployment/docker-compose.yml down
 
 # Restart container
 restart:
 	@echo "🔄 Restarting container..."
-	docker-compose restart
+	docker-compose -f deployment/docker-compose.yml restart
 
 # View logs
 logs:
-	docker-compose logs
+	docker-compose -f deployment/docker-compose.yml logs
 
 # Follow logs
 logs-f:
-	docker-compose logs -f
+	docker-compose -f deployment/docker-compose.yml logs -f
 
 # Open shell in container
 shell:
-	docker-compose exec streamlit-app /bin/bash
+	docker-compose -f deployment/docker-compose.yml exec streamlit-app /bin/bash
 
 # Clean up
 clean:
 	@echo "🧹 Cleaning up..."
-	docker-compose down
+	docker-compose -f deployment/docker-compose.yml down
 	docker rmi slide-prompt-generator:latest || true
 
 # Clean everything
 clean-all:
 	@echo "🧹 Cleaning everything..."
-	docker-compose down -v
+	docker-compose -f deployment/docker-compose.yml down -v
 	docker rmi slide-prompt-generator:latest || true
 	rm -rf uploads/*
 
 # Test
 test:
 	@echo "🧪 Testing application..."
-	docker-compose exec streamlit-app python -m pytest || echo "No tests found"
+	docker-compose -f deployment/docker-compose.yml exec streamlit-app python -m pytest || echo "No tests found"
 
 # Check status
 status:
 	@echo "📊 Container status:"
-	docker-compose ps
+	docker-compose -f deployment/docker-compose.yml ps
 
 # View resource usage
 stats:
@@ -105,52 +107,48 @@ rebuild: clean build run
 # Build Weekly Docker image
 build-weekly:
 	@echo "🔨 Building Weekly Docker image..."
-	docker-compose -f docker-compose.weekly.yml build
+	@cp .env deployment/.env 2>/dev/null || echo "Warning: .env not found, using environment variables"
+	docker-compose -f deployment/docker-compose.weekly.yml build
 
 # Run Weekly container (development)
 run-weekly:
 	@echo "🚀 Starting Weekly Streamlit app (development)..."
-	docker-compose -f docker-compose.weekly.yml up -d
-	@echo "✅ Weekly app running at http://localhost:8523"
-
-# Run Weekly container (production)
-run-weekly-prod:
-	@echo "🚀 Starting Weekly Streamlit app (production)..."
-	docker-compose -f docker-compose.prod.weekly.yml up -d
+	@cp .env deployment/.env 2>/dev/null || echo "Warning: .env not found, using environment variables"
+	docker-compose -f deployment/docker-compose.weekly.yml up -d
 	@echo "✅ Weekly app running at http://localhost:8523"
 
 # Stop Weekly container
 stop-weekly:
 	@echo "🛑 Stopping Weekly container..."
-	docker-compose -f docker-compose.weekly.yml down
+	docker-compose -f deployment/docker-compose.weekly.yml down
 
 # Restart Weekly container
 restart-weekly:
 	@echo "🔄 Restarting Weekly container..."
-	docker-compose -f docker-compose.weekly.yml restart
+	docker-compose -f deployment/docker-compose.weekly.yml restart
 
 # View Weekly logs
 logs-weekly:
-	docker-compose -f docker-compose.weekly.yml logs
+	docker-compose -f deployment/docker-compose.weekly.yml logs
 
 # Follow Weekly logs
 logs-weekly-f:
-	docker-compose -f docker-compose.weekly.yml logs -f
+	docker-compose -f deployment/docker-compose.weekly.yml logs -f
 
 # Open shell in Weekly container
 shell-weekly:
-	docker-compose -f docker-compose.weekly.yml exec streamlit-weekly /bin/bash
+	docker-compose -f deployment/docker-compose.weekly.yml exec streamlit-weekly /bin/bash
 
 # Clean up Weekly
 clean-weekly:
 	@echo "🧹 Cleaning up Weekly..."
-	docker-compose -f docker-compose.weekly.yml down
+	docker-compose -f deployment/docker-compose.weekly.yml down
 	docker rmi streamlit_streamlit-weekly:latest || true
 
 # Check Weekly status
 status-weekly:
 	@echo "📊 Weekly container status:"
-	docker-compose -f docker-compose.weekly.yml ps
+	docker-compose -f deployment/docker-compose.weekly.yml ps
 
 # Rebuild and run Weekly
 rebuild-weekly: clean-weekly build-weekly run-weekly

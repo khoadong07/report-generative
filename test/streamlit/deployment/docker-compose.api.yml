@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  slide-prompt-api:
+    build:
+      context: ..
+      dockerfile: deployment/docker/Dockerfile.api
+    container_name: slide-prompt-api
+    ports:
+      - "8524:8000"
+    environment:
+      - PORT=8000
+      - API_KEY=${API_KEY}
+      - BASE_URL=${BASE_URL}
+    env_file:
+      - .env
+    volumes:
+      # Mount uploads directory for file uploads
+      - ../uploads:/app/uploads
+      # Mount logs directory (optional)
+      - ../logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - slide-prompt-network
+
+  # Optional: Add nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: slide-prompt-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.api.conf:/etc/nginx/nginx.conf:ro
+      # Add SSL certificates if needed
+      # - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - slide-prompt-api
+    restart: unless-stopped
+    networks:
+      - slide-prompt-network
+
+networks:
+  slide-prompt-network:
+    driver: bridge
+
+volumes:
+  uploads:
+  logs:

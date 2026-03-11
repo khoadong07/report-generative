@@ -1,46 +1,143 @@
-# Slide Prompt Generator - Streamlit App
+# Slide Prompt Generator
 
-Web interface để generate slide prompts cho Manuss, Gamma, Beautiful.ai
+Web interface và API để generate slide prompts cho Manuss, Gamma, Beautiful.ai
 
 **Hỗ trợ 2 loại báo cáo:**
 - **Daily Report** (6 slides) - Báo cáo theo ngày với cửa sổ 24 giờ
 - **Weekly Report** (12 slides) - Báo cáo theo tuần với cửa sổ 7 ngày
 
-## 🚀 Quick Start
+## 🚀 Quick Start với Docker
 
-### 1. Cài đặt dependencies
+### 1. Cấu hình API credentials
 
-```bash
-cd test/streamlit
-pip install -r requirements.txt
-```
-
-### 2. Cấu hình API credentials
-
-Tạo file `.env` trong folder `test/streamlit/`:
+Tạo file `.env` trong thư mục gốc của dự án:
 
 ```bash
 API_KEY=your_api_key_here
 BASE_URL=your_base_url_here
 ```
 
-Hoặc copy từ file `.env` ở parent directory.
+### 2. Chạy Daily services (Streamlit + API)
 
-### 3. Chạy ứng dụng
-
-**Daily Report (6 slides):**
 ```bash
-streamlit run app.py
+# Tạo thư mục cần thiết
+mkdir -p uploads logs
+
+# Chạy cả Streamlit và API
+docker-compose -f deployment/docker-compose.yml up --build
+
+# Hoặc chạy background
+docker-compose -f deployment/docker-compose.yml up -d --build
 ```
 
-**Weekly Report (12 slides):**
+**Services sẽ chạy tại:**
+- 📊 **Streamlit App**: http://localhost:8522
+- 🚀 **FastAPI Server**: http://localhost:8524  
+- 📚 **API Documentation**: http://localhost:8524/docs
+
+### 3. Chạy Weekly service
+
 ```bash
-streamlit run app_weekly.py
+# Chạy weekly service
+docker-compose -f deployment/docker-compose.weekly.yml up --build
 ```
 
-Ứng dụng sẽ mở tại: http://localhost:8501
+### 4. Dừng services
 
-## 📋 Cách sử dụng
+```bash
+# Dừng tất cả services
+docker-compose -f deployment/docker-compose.yml down
+
+# Dừng và xóa volumes
+docker-compose down -v
+
+# Dừng và xóa images
+docker-compose down --rmi all
+```
+
+### 5. Xem logs
+
+```bash
+# Xem logs tất cả services
+docker-compose logs -f
+
+# Xem logs service cụ thể
+docker-compose logs -f streamlit-app
+docker-compose logs -f api-server
+```
+
+## 📁 Cấu trúc Project
+
+```
+├── README.md                           # Hướng dẫn sử dụng
+├── .env.example                        # Template cho environment variables
+├── docker-compose.yml                  # Daily services (Streamlit + API)
+├── docker-compose.weekly.yml           # Weekly service
+├── docker-compose.api.yml              # API only service
+│
+├── app.py                              # Streamlit Daily app
+├── app_weekly.py                       # Streamlit Weekly app
+├── api_server.py                       # FastAPI server
+│
+├── generate_slide_prompt.py            # Daily prompt generator
+├── generate_slide_prompt_weekly.py     # Weekly prompt generator
+├── report_generator.py                 # Daily report generator
+├── report_generator_weekly.py          # Weekly report generator
+├── slide_generators.py                 # Daily slide generators
+├── slide_generators_weekly.py          # Weekly slide generators
+├── prompts.py                          # Daily LLM prompts
+├── prompts_weekly.py                   # Weekly LLM prompts
+│
+├── llm_client.py                       # OpenAI client wrapper
+├── data_loader.py                      # Excel data loader
+├── config.py                           # Configuration constants
+│
+├── Dockerfile                          # Daily Streamlit container
+├── Dockerfile.api                      # API container
+├── Dockerfile.weekly                   # Weekly Streamlit container
+├── requirements.txt                    # Daily dependencies
+├── requirements_api.txt                # API dependencies
+│
+├── nginx.conf                          # Nginx config for Streamlit
+├── nginx.api.conf                      # Nginx config for API
+├── uploads/                            # File upload directory
+└── logs/                               # Application logs
+```
+
+## 🐳 Docker Commands
+
+### Daily Services (Streamlit + API)
+```bash
+# Start both services
+docker-compose up --build
+
+# Start in background
+docker-compose up -d --build
+
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs -f
+```
+
+### Weekly Service
+```bash
+# Start weekly service
+docker-compose -f docker-compose.weekly.yml up --build
+
+# Stop weekly service
+docker-compose -f docker-compose.weekly.yml down
+```
+
+### API Only
+```bash
+# Start API only
+docker-compose -f docker-compose.api.yml up --build
+
+# Stop API only
+docker-compose -f docker-compose.api.yml down
+```
 
 ### Daily Report (6 slides)
 

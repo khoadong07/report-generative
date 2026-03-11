@@ -1,3 +1,7 @@
+# Environment variables
+.env
+deployment/.env
+
 # Python
 __pycache__/
 *.py[cod]
@@ -31,41 +35,17 @@ env/
 .idea/
 *.swp
 *.swo
-*~
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Git
-.git/
-.gitignore
+# Logs
+logs/
+*.log
+
+# Uploads
+uploads/
 
 # Docker
-Dockerfile*
-docker-compose*.yml
 .dockerignore
-
-# Logs
-*.log
-logs/
-
-# Temporary files
-*.tmp
-*.temp
-.cache/
-
-# Test files
-test_*.py
-*_test.py
-
-# Documentation
-*.md
-docs/
-
-# Scripts
-*.sh
-
-# Large data files (keep uploads structure but ignore content)
-uploads/*
-!uploads/.gitkeep

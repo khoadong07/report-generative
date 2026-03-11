@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  streamlit-weekly:
+    build:
+      context: ..
+      dockerfile: deployment/docker/Dockerfile.weekly
+    container_name: slide-prompt-generator-weekly
+    ports:
+      - "8523:8501"
+    environment:
+      - API_KEY=${API_KEY}
+      - BASE_URL=${BASE_URL}
+    env_file:
+      - .env
+    volumes:
+      # Mount uploads directory for persistence
+      - ../uploads:/app/uploads
+      # Mount .env for easy updates (optional)
+      - .env:/app/.env:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
