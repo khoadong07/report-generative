@@ -184,8 +184,13 @@ class ReportGenerator:
             report_display = report_dt.strftime("%d/%m/%Y %H:%M")
             compare_display = compare_dt.strftime("%d/%m/%Y %H:%M")
             
-            # Format for subtitle (show 24h range)
+            # Format for subtitle (show both 24h ranges)
             datetime_range_display = f"{compare_display} → {report_display}"
+            
+            # Create compare range for subtitle (previous 24h window)
+            compare_start_dt = compare_dt - timedelta(hours=24)
+            compare_start_display = compare_start_dt.strftime("%d/%m/%Y %H:%M")
+            compare_range_display = f"{compare_start_display} → {compare_display}"
             
             print(f"      ✅ Report window: {datetime_range_display} (24h)")
             print(f"      ✅ Report data: {len(report_df)} rows")
@@ -200,6 +205,7 @@ class ReportGenerator:
             report_display = self.report_date
             compare_display = self.compare_date
             datetime_range_display = report_display
+            compare_range_display = compare_display  # For date-only mode, keep simple
             
             print(f"      ✅ Report date ({self.report_date}): {len(report_df)} rows")
             print(f"      ✅ Compare date ({self.compare_date}): {len(compare_df)} rows")
@@ -231,7 +237,7 @@ class ReportGenerator:
             print("      [Slide 1] 🤖 Calling LLM for insights...")
             result = self.slide1_gen.generate(
                 report_df, compare_df,
-                self.brand_name, datetime_range_display, compare_display
+                self.brand_name, datetime_range_display, compare_range_display
             )
             print("      [Slide 1] ✅ Completed")
             return ('slide_1', result)
@@ -250,7 +256,7 @@ class ReportGenerator:
             print("      [Slide 3] 🤖 Calling LLM for insights...")
             result = self.slide3_gen.generate(
                 report_df, compare_df,
-                self.brand_name, datetime_range_display, compare_display
+                self.brand_name, datetime_range_display, compare_range_display
             )
             print("      [Slide 3] ✅ Completed")
             return ('slide_3', result)
@@ -315,7 +321,7 @@ class ReportGenerator:
             "report_metadata": {
                 "brand": self.brand_name,
                 "report_date": datetime_range_display,  # Show 24h range
-                "compare_date": compare_display,
+                "compare_date": compare_range_display if is_datetime_mode else compare_display,
                 "generated_at": pd.Timestamp.now().isoformat(),
                 "generation_mode": "parallel",
                 "show_interactions": self.show_interactions,

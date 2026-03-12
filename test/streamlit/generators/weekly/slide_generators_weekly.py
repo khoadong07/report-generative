@@ -32,13 +32,12 @@ class WeeklySlide1Generator:
         """Generate slide 1 data"""
         from core.data_loader import calculate_percentage_change
         
-        # Calculate metrics for current week
-        total_mentions = len(week1_df)
-        prev_total_mentions = len(week2_df)
-        mentions_change = calculate_percentage_change(total_mentions, prev_total_mentions)
-        
-        # Only calculate interaction metrics if needed
         if show_interactions:
+            # Full metrics including interactions (existing logic)
+            total_mentions = len(week1_df)
+            prev_total_mentions = len(week2_df)
+            mentions_change = calculate_percentage_change(total_mentions, prev_total_mentions)
+            
             total_engagement = week1_df["Reactions"].sum() + week1_df["Shares"].sum() + week1_df["Comments"].sum()
             total_views = week1_df["Views"].sum()
             total_reactions = week1_df["Reactions"].sum()
@@ -58,42 +57,7 @@ class WeeklySlide1Generator:
             reactions_change = calculate_percentage_change(total_reactions, prev_total_reactions)
             shares_change = calculate_percentage_change(total_shares, prev_total_shares)
             comments_change = calculate_percentage_change(total_comments, prev_total_comments)
-        
-        # Weekly comparison data with growth rates
-        week4_mentions = len(week4_df)
-        week3_mentions = len(week3_df)
-        week2_mentions = len(week2_df)
-        week1_mentions = len(week1_df)
-        
-        weekly_comparison = [
-            {
-                "week": "3 tuần trước", 
-                "total_mentions": week4_mentions,
-                "growth_rate": None  # No previous week for comparison
-            },
-            {
-                "week": "2 tuần trước", 
-                "total_mentions": week3_mentions,
-                "growth_rate": calculate_percentage_change(week3_mentions, week4_mentions)
-            },
-            {
-                "week": "Tuần trước", 
-                "total_mentions": week2_mentions,
-                "growth_rate": calculate_percentage_change(week2_mentions, week3_mentions)
-            },
-            {
-                "week": "Tuần hiện tại", 
-                "total_mentions": week1_mentions,
-                "growth_rate": calculate_percentage_change(week1_mentions, week2_mentions)
-            }
-        ]
-        
-        # Generate insight
-        insight = self._generate_insight(week1_df, brand, week1_display, weekly_comparison)
-        
-        # Build metrics list based on show_interactions flag
-        if show_interactions:
-            # Full metrics including interactions
+            
             current_week_metrics = [
                 {
                     "label": "Tổng đề cập", 
@@ -127,14 +91,88 @@ class WeeklySlide1Generator:
                 }
             ]
         else:
-            # Only show total mentions (no interactions)
+            # Basic metrics only: Tổng bài đăng, Tổng bình luận, Tổng thảo luận
+            # 1. Tổng bài đăng (Type ending with 'Topic')
+            week1_posts = len(week1_df[week1_df['Type'].str.endswith('Topic', na=False)])
+            week2_posts = len(week2_df[week2_df['Type'].str.endswith('Topic', na=False)])
+            posts_change = calculate_percentage_change(week1_posts, week2_posts)
+            
+            # 2. Tổng bình luận (Type ending with 'Comment')
+            week1_comments = len(week1_df[week1_df['Type'].str.endswith('Comment', na=False)])
+            week2_comments = len(week2_df[week2_df['Type'].str.endswith('Comment', na=False)])
+            comments_change = calculate_percentage_change(week1_comments, week2_comments)
+            
+            # 3. Tổng thảo luận = Tổng bài đăng + Tổng bình luận
+            total_mentions = week1_posts + week1_comments
+            prev_total_mentions = week2_posts + week2_comments
+            mentions_change = calculate_percentage_change(total_mentions, prev_total_mentions)
+            
             current_week_metrics = [
                 {
-                    "label": "Tổng đề cập", 
+                    "label": "Tổng bài đăng", 
+                    "value": week1_posts,
+                    "change_percent": posts_change
+                },
+                {
+                    "label": "Tổng bình luận", 
+                    "value": week1_comments,
+                    "change_percent": comments_change
+                },
+                {
+                    "label": "Tổng thảo luận", 
                     "value": total_mentions,
                     "change_percent": mentions_change
                 }
             ]
+        
+        # Weekly comparison data with growth rates (using same logic as current week)
+        if show_interactions:
+            # Use total records for weekly comparison when showing interactions
+            week4_mentions = len(week4_df)
+            week3_mentions = len(week3_df)
+            week2_mentions = len(week2_df)
+            week1_mentions = len(week1_df)
+        else:
+            # Use posts + comments for weekly comparison when not showing interactions
+            week4_posts = len(week4_df[week4_df['Type'].str.endswith('Topic', na=False)])
+            week4_comments = len(week4_df[week4_df['Type'].str.endswith('Comment', na=False)])
+            week4_mentions = week4_posts + week4_comments
+            
+            week3_posts = len(week3_df[week3_df['Type'].str.endswith('Topic', na=False)])
+            week3_comments = len(week3_df[week3_df['Type'].str.endswith('Comment', na=False)])
+            week3_mentions = week3_posts + week3_comments
+            
+            week2_posts = len(week2_df[week2_df['Type'].str.endswith('Topic', na=False)])
+            week2_comments = len(week2_df[week2_df['Type'].str.endswith('Comment', na=False)])
+            week2_mentions = week2_posts + week2_comments
+            
+            week1_mentions = total_mentions  # Already calculated above
+        
+        weekly_comparison = [
+            {
+                "week": "3 tuần trước", 
+                "total_mentions": week4_mentions,
+                "growth_rate": None  # No previous week for comparison
+            },
+            {
+                "week": "2 tuần trước", 
+                "total_mentions": week3_mentions,
+                "growth_rate": calculate_percentage_change(week3_mentions, week4_mentions)
+            },
+            {
+                "week": "Tuần trước", 
+                "total_mentions": week2_mentions,
+                "growth_rate": calculate_percentage_change(week2_mentions, week3_mentions)
+            },
+            {
+                "week": "Tuần hiện tại", 
+                "total_mentions": week1_mentions,
+                "growth_rate": calculate_percentage_change(week1_mentions, week2_mentions)
+            }
+        ]
+        
+        # Generate insight
+        insight = self._generate_insight(week1_df, brand, week1_display, weekly_comparison)
         
         return {
             "title": f"Tổng quan về {brand}",

@@ -487,7 +487,7 @@ SLIDE 1 - BRAND OVERVIEW
 LAYOUT:
 - Title: "{slide1['title']}"
 - Subtitle: "{slide1['subtitle']}"
-- 7 KPI cards in grid layout (4 top row, 3 bottom row)
+- {len(slide1['kpis'])} KPI cards in {"grid layout (4 top row, 3 bottom row)" if show_interactions else "single row layout (centered)"}
 - Each card shows: metric name, large number, percentage change with arrow
 - Bottom section: Insight box with light blue background
 
@@ -1038,7 +1038,7 @@ END OF PROMPT
 ═══════════════════════════════════════════════════════════════
 
 INSTRUCTIONS:
-1. Create all 6 slides with the exact data provided above
+1. Create all {total_slides} slides with the exact data provided above
 2. Follow the design specifications precisely
 3. Ensure all charts are properly formatted and labeled
 4. Make insights readable with proper formatting

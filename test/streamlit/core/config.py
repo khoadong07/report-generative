@@ -67,7 +67,7 @@ COMMENT_TYPES = [
 # =====================
 # LLM CONFIG
 # =====================
-LLM_MODEL = "Qwen3-30B-A3B-Instruct-2507"
+LLM_MODEL = "google/gemma-3-27b-it"
 LLM_TEMPERATURE = 0.2
 LLM_SYSTEM_PROMPT = "Bạn là chuyên gia crisis & executive insight."
 

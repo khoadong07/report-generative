@@ -12,6 +12,7 @@ try:
     from test.llm_client import LLMClient
     from test.prompts import (
         get_overview_insight_prompt,
+        get_overview_insight_prompt_basic,
         get_trendline_insight_prompt,
         get_channel_breakdown_prompt,
         get_sentiment_insight_prompt
@@ -21,6 +22,7 @@ except ImportError:
     from core.llm_client import LLMClient
     from generators.daily.prompts import (
         get_overview_insight_prompt,
+        get_overview_insight_prompt_basic,
         get_trendline_insight_prompt,
         get_channel_breakdown_prompt,
         get_sentiment_insight_prompt
@@ -206,31 +208,29 @@ class Slide1Generator:
         """Generate slide 1 with only basic metrics using Topic/Comment pattern"""
         print("      📊 Calculating basic metrics (no interactions)...")
         
-        # 1. Tổng thảo luận (tất cả records)
-        report_total_buzz = report_df.shape[0]
-        compare_total_buzz = compare_df.shape[0]
-        buzz_pct = calculate_percentage_change(report_total_buzz, compare_total_buzz)
-        
-        # 2. Tổng bài đăng (Type ending with 'Topic')
+        # 1. Tổng bài đăng (Type ending with 'Topic')
         report_posts = len(report_df[report_df['Type'].str.endswith('Topic', na=False)])
         compare_posts = len(compare_df[compare_df['Type'].str.endswith('Topic', na=False)])
         post_pct = calculate_percentage_change(report_posts, compare_posts)
         
-        # 3. Tổng bình luận - tính theo logic mới (Topic/Comment pattern)
-        report_comments = self._count_comments_by_posts(report_df)
-        compare_comments = self._count_comments_by_posts(compare_df)
+        # 2. Tổng bình luận (Type ending with 'Comment')
+        report_comments = len(report_df[report_df['Type'].str.endswith('Comment', na=False)])
+        compare_comments = len(compare_df[compare_df['Type'].str.endswith('Comment', na=False)])
         comments_pct = calculate_percentage_change(report_comments, compare_comments)
         
-        print(f"      → Tổng thảo luận: {report_total_buzz} ({buzz_pct:+.1f}%)")
+        # 3. Tổng thảo luận = Tổng bài đăng + Tổng bình luận
+        report_total_buzz = report_posts + report_comments
+        compare_total_buzz = compare_posts + compare_comments
+        buzz_pct = calculate_percentage_change(report_total_buzz, compare_total_buzz)
+        
         print(f"      → Tổng bài đăng: {report_posts} ({post_pct:+.1f}%)")
         print(f"      → Tổng bình luận: {report_comments} ({comments_pct:+.1f}%)")
+        print(f"      → Tổng thảo luận: {report_total_buzz} ({buzz_pct:+.1f}%)")
         
-        # Generate insight (simplified)
-        insight = self._generate_basic_insight(
-            brand, report_date, compare_date,
-            report_total_buzz, compare_total_buzz, buzz_pct,
-            report_posts, compare_posts, post_pct,
-            report_comments, compare_comments, comments_pct
+        # Generate insight using LLM (same as with interactions)
+        insight = self._generate_insight(
+            report_df, brand, report_date, compare_date,
+            report_total_buzz, compare_total_buzz, buzz_pct
         )
         
         return {
@@ -238,13 +238,6 @@ class Slide1Generator:
             "subtitle": f"Ngày {report_date} (so sánh với {compare_date})",
             "show_interactions": False,
             "data": [
-                {
-                    "type": "buzz",
-                    "label": "Tổng thảo luận",
-                    "today": report_total_buzz,
-                    "yesterday": compare_total_buzz,
-                    "change_pct": buzz_pct
-                },
                 {
                     "type": "post",
                     "label": "Tổng bài đăng",
@@ -258,6 +251,13 @@ class Slide1Generator:
                     "today": report_comments,
                     "yesterday": compare_comments,
                     "change_pct": comments_pct
+                },
+                {
+                    "type": "buzz",
+                    "label": "Tổng thảo luận",
+                    "today": report_total_buzz,
+                    "yesterday": compare_total_buzz,
+                    "change_pct": buzz_pct
                 }
             ],
             "insight": insight
@@ -372,11 +372,20 @@ URL: {row.get('UrlTopic', '')}
         
         # Generate prompt and call LLM
         print("         → Building prompt...")
-        prompt = get_overview_insight_prompt(
-            brand, report_date, compare_date,
-            report_total_buzz, compare_total_buzz,
-            buzz_pct, context_text
-        )
+        if hasattr(self, 'show_interactions') and not self.show_interactions:
+            # Use basic prompt for no interactions mode
+            prompt = get_overview_insight_prompt_basic(
+                brand, report_date, compare_date,
+                report_total_buzz, compare_total_buzz,
+                buzz_pct, context_text
+            )
+        else:
+            # Use full prompt for interactions mode
+            prompt = get_overview_insight_prompt(
+                brand, report_date, compare_date,
+                report_total_buzz, compare_total_buzz,
+                buzz_pct, context_text
+            )
         
         print("         → Calling LLM API...")
         insight = self.llm_client.generate_insight(prompt)
