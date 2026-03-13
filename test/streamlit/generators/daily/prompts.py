@@ -307,6 +307,7 @@ Viết insight phân tích sự phân bổ thảo luận theo kênh truyền th�
 
 YÊU CẦU BẮT BUỘC:
 - Viết 4–5 câu, văn xuôi
+- BẮT ĐẦU NGAY VỚI NỘI DUNG INSIGHT, KHÔNG viết câu dẫn như "Dưới đây là insight..." hoặc "Phân tích cho thấy..."
 - Chỉ ra kênh chính và xu hướng
 - Giải thích nguyên nhân và tác động
 - CRITICAL: Mỗi câu PHẢI kết thúc bằng hyperlink dạng [Nguồn](URL)
@@ -317,6 +318,9 @@ YÊU CẦU BẮT BUỘC:
 
 FORMAT BẮT BUỘC (Markdown hyperlink):
 Câu insight... [Nguồn](URL_THẬT_TỪ_DỮ_LIỆU)
+
+LƯU Ý QUAN TRỌNG:
+- KHÔNG bắt đầu bằng câu dẫn hoặc giới thiệu
 
 VÍ DỤ FORMAT:
 Facebook chiếm 65% tổng thảo luận về thương hiệu trong ngày. [Nguồn](https://facebook.com/posts/123456)
@@ -372,6 +376,7 @@ Viết insight phân tích Sentiment tổng quan và phân bố theo từng kên
 
 YÊU CẦU BẮT BUỘC:
 - Viết 5–6 câu, văn xuôi
+- BẮT ĐẦU NGAY VỚI NỘI DUNG INSIGHT, KHÔNG viết câu dẫn như "Dưới đây là insight..." hoặc "Phân tích cho thấy..."
 - Câu 1-2: Phân tích tỷ lệ Negative / Neutral / Positive tổng quan
 - Câu 3-4: Phân tích sentiment trên từng kênh chính (Facebook, Tiktok, Youtube, etc.)
 - Câu 5-6: Nêu rõ nội dung chính của các bài đăng negative (quan trọng nhất)
@@ -391,6 +396,7 @@ LƯU Ý QUAN TRỌNG:
 - Sao chép chính xác URL từ danh sách "URL HỢP LỆ"
 - KHÔNG sử dụng placeholder như URL_X, URL_Y
 - Format hyperlink: [Nguồn](URL) để tạo link có thể click được
+- KHÔNG bắt đầu bằng câu dẫn hoặc giới thiệu
 """
 
 
@@ -433,6 +439,7 @@ Viết insight cho slide Channel Breakdown.
 
 YÊU CẦU BẮT BUỘC:
 - Viết đúng 6–7 câu, văn xuôi
+- BẮT ĐẦU NGAY VỚI NỘI DUNG INSIGHT, KHÔNG viết câu dẫn như "Dưới đây là insight..." hoặc "Phân tích cho thấy..."
 - CRITICAL: Mỗi câu PHẢI kết thúc bằng hyperlink dạng [Nguồn](URL)
 - CHỈ sử dụng URL có trong danh sách "URL HỢP LỆ" ở trên
 - KHÔNG tạo URL giả như example.com
@@ -448,4 +455,5 @@ LƯU Ý QUAN TRỌNG:
 - Sao chép chính xác URL từ danh sách "URL HỢP LỆ"
 - KHÔNG sử dụng placeholder như URL_X, URL_Y
 - Format hyperlink: [Nguồn](URL) để tạo link có thể click được
+- KHÔNG bắt đầu bằng câu dẫn hoặc giới thiệu
 """
