@@ -426,33 +426,17 @@ class Slide2Generator:
         Returns:
             Slide 2 data dictionary
         """
-        print("      🔍 DEBUG: Slide2Generator with empty dataframe fix loaded")
+        print("      🔍 Slide2: Using full date range from dataset")
         report_day = parse_date_flexible(report_date).date()
-        start_day = report_day - timedelta(days=self.lookback_days - 1)
         
-        # Filter data for window
-        df_window = df[
-            (df["PublishedDay"] >= start_day) &
-            (df["PublishedDay"] <= report_day)
-        ].copy()
-        
-        # Calculate trendline
-        trend_df = (
-            df_window
-            .groupby("PublishedDay")
-            .size()
-            .reset_index(name="buzz")
-            .sort_values("PublishedDay")
-        )
-        
-        # Check if we have data
-        if len(trend_df) == 0:
-            print("      ⚠️  Warning: No data in 7-day window, returning empty trendline")
+        # Lấy toàn bộ data từ ngày đầu đến ngày cuối trong dataset
+        if len(df) == 0:
+            print("      ⚠️  Warning: Empty dataframe, returning empty trendline")
             return {
                 "title": f"Trendline | Diễn biến thảo luận",
-                "subtitle": f"Khoảng thời gian: {start_day} → {report_day}",
+                "subtitle": f"Không có dữ liệu",
                 "window": {
-                    "start_date": str(start_day),
+                    "start_date": str(report_day),
                     "end_date": str(report_day)
                 },
                 "trendline": [],
@@ -466,8 +450,28 @@ class Slide2Generator:
                     "buzz": 0,
                     "is_still_hot": False
                 },
-                "insight": f"Không có dữ liệu thảo luận trong khoảng thời gian {start_day} đến {report_day}. Vui lòng kiểm tra lại dữ liệu nguồn hoặc chọn khoảng thời gian khác có dữ liệu."
+                "insight": f"Không có dữ liệu thảo luận. Vui lòng kiểm tra lại dữ liệu nguồn."
             }
+        
+        # Lấy ngày đầu và ngày cuối từ toàn bộ dataset
+        start_day = df["PublishedDay"].min()
+        end_day = df["PublishedDay"].max()
+        
+        print(f"      📅 Date range: {start_day} → {end_day} ({(end_day - start_day).days + 1} days)")
+        
+        # Sử dụng toàn bộ data (không filter theo lookback_days nữa)
+        df_window = df.copy()
+        
+        # Calculate trendline từ toàn bộ data
+        trend_df = (
+            df_window
+            .groupby("PublishedDay")
+            .size()
+            .reset_index(name="buzz")
+            .sort_values("PublishedDay")
+        )
+        
+        print(f"      📊 Trendline: {len(trend_df)} data points")
         
         trendline_data = [
             {
@@ -477,16 +481,20 @@ class Slide2Generator:
             for _, row in trend_df.iterrows()
         ]
         
-        # Detect peak day
+        # Detect peak day (ngày có buzz cao nhất)
         peak_row = trend_df.loc[trend_df["buzz"].idxmax()]
         peak_day = peak_row["PublishedDay"]
         peak_buzz = int(peak_row["buzz"])
         
+        # Current buzz (buzz của report_day nếu có trong data)
         current_buzz = int(
             trend_df.loc[trend_df["PublishedDay"] == report_day, "buzz"].iloc[0]
         ) if report_day in trend_df["PublishedDay"].values else 0
         
         is_still_hot = current_buzz >= 0.5 * peak_buzz
+        
+        print(f"      🔥 Peak day: {peak_day} ({peak_buzz} posts)")
+        print(f"      📍 Report day: {report_day} ({current_buzz} posts)")
         
         # Generate insight
         insight, peak_links = self._generate_insight(
@@ -496,10 +504,10 @@ class Slide2Generator:
         
         return {
             "title": f"Trendline | Diễn biến thảo luận",
-            "subtitle": f"Khoảng thời gian: {start_day} → {report_day}",
+            "subtitle": f"Khoảng thời gian: {start_day} → {end_day}",
             "window": {
                 "start_date": str(start_day),
-                "end_date": str(report_day)
+                "end_date": str(end_day)
             },
             "trendline": trendline_data,
             "peak_day": {
