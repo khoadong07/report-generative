@@ -65,7 +65,7 @@ def load_excel(file_bytes: bytes) -> pd.DataFrame:
 
 # ── SIDEBAR ──────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.title("�� Weekly Report")
+    st.title("Weekly Report")
     if not (API_KEY and BASE_URL):
         st.error("Thiếu API credentials trong .env"); st.stop()
     st.success("API credentials ✓", icon="✅")

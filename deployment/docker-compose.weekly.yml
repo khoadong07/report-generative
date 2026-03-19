@@ -14,9 +14,7 @@ services:
     env_file:
       - .env
     volumes:
-      # Mount uploads directory for persistence
       - ../uploads:/app/uploads
-      # Mount .env for easy updates (optional)
       - .env:/app/.env:ro
     restart: unless-stopped
     healthcheck:
