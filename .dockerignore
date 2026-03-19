@@ -1,10 +1,5 @@
-# Git
-.git
-.gitignore
-.gitattributes
-
 # Python
-__pycache__
+__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -24,14 +19,12 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-pip-log.txt
-pip-delete-this-directory.txt
 
 # Virtual environments
+.venv/
 venv/
 ENV/
 env/
-.venv
 
 # IDE
 .vscode/
@@ -39,35 +32,40 @@ env/
 *.swp
 *.swo
 *~
-.DS_Store
-*.sublime-project
-*.sublime-workspace
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-
-# Streamlit
-.streamlit/cache/
-.streamlit/secrets.toml
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Logs
 *.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Test files
+test_*.py
+*_test.py
 
 # Documentation
 *.md
 docs/
 
-# CI/CD
-.github/
-.gitlab-ci.yml
-.travis.yml
+# Scripts
+*.sh
 
-# Misc
-*.tmp
-*.temp
-node_modules/
+# Large data files (keep uploads structure but ignore content)
+uploads/*
+!uploads/.gitkeep

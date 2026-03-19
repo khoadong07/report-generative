@@ -1,154 +1,156 @@
-.PHONY: help build up down restart logs status health backup clean update shell ssl-generate ssl-check
+.PHONY: help build run stop restart logs clean shell test build-weekly run-weekly stop-weekly logs-weekly
 
-# Colors
-BLUE := \033[0;34m
-GREEN := \033[0;32m
-RED := \033[0;31m
-NC := \033[0m # No Color
-
+# Default target
 help:
-	@echo "$(BLUE)Social Listening Report Generator - Makefile$(NC)"
+	@echo "Available commands:"
 	@echo ""
-	@echo "$(GREEN)Development Commands:$(NC)"
-	@echo "  make dev-up          Start development environment"
-	@echo "  make dev-down        Stop development environment"
-	@echo "  make dev-logs        View development logs"
+	@echo "Daily Report (default):"
+	@echo "  make build       - Build Docker image"
+	@echo "  make run         - Run container (development)"
+	@echo "  make run-prod    - Run container (production with nginx)"
+	@echo "  make stop        - Stop container"
+	@echo "  make restart     - Restart container"
+	@echo "  make logs        - View container logs"
+	@echo "  make logs-f      - Follow container logs"
+	@echo "  make shell       - Open shell in container"
+	@echo "  make clean       - Remove container and image"
+	@echo "  make clean-all   - Remove everything including volumes"
+	@echo "  make test        - Test the application"
 	@echo ""
-	@echo "$(GREEN)Production Commands:$(NC)"
-	@echo "  make build           Build Docker images"
-	@echo "  make up              Start production services"
-	@echo "  make down            Stop production services"
-	@echo "  make restart         Restart services"
-	@echo "  make logs            View service logs"
-	@echo "  make status          Show service status"
-	@echo "  make health          Check service health"
-	@echo ""
-	@echo "$(GREEN)Maintenance Commands:$(NC)"
-	@echo "  make backup          Backup data and reports"
-	@echo "  make clean           Clean up containers and images"
-	@echo "  make update          Update and restart services"
-	@echo "  make shell           Open shell in app container"
-	@echo ""
-	@echo "$(GREEN)SSL Commands:$(NC)"
-	@echo "  make ssl-generate    Generate self-signed SSL certificate"
-	@echo "  make ssl-check       Check SSL certificate validity"
-	@echo ""
-	@echo "$(GREEN)Utility Commands:$(NC)"
-	@echo "  make install         Install dependencies"
-	@echo "  make lint            Run code linting"
-	@echo "  make format          Format code"
+	@echo "Weekly Report:"
+	@echo "  make build-weekly   - Build Weekly Docker image"
+	@echo "  make run-weekly     - Run Weekly container (development)"
+	@echo "  make run-weekly-prod - Run Weekly container (production)"
+	@echo "  make stop-weekly    - Stop Weekly container"
+	@echo "  make restart-weekly - Restart Weekly container"
+	@echo "  make logs-weekly    - View Weekly container logs"
+	@echo "  make logs-weekly-f  - Follow Weekly container logs"
+	@echo "  make shell-weekly   - Open shell in Weekly container"
+	@echo "  make clean-weekly   - Remove Weekly container and image"
 
-# Development
-dev-up:
-	@echo "$(BLUE)Starting development environment...$(NC)"
-	docker-compose up -d
-	@echo "$(GREEN)✓ Development environment started$(NC)"
-	@echo "Access at: http://localhost:8501"
-
-dev-down:
-	@echo "$(BLUE)Stopping development environment...$(NC)"
-	docker-compose down
-	@echo "$(GREEN)✓ Development environment stopped$(NC)"
-
-dev-logs:
-	docker-compose logs -f app
-
-# Production
+# Build Docker image
 build:
-	@echo "$(BLUE)Building Docker images...$(NC)"
-	docker-compose -f docker-compose.prod.yml build --no-cache
-	@echo "$(GREEN)✓ Images built successfully$(NC)"
+	@echo "🔨 Building Docker image..."
+	@cp .env deployment/.env 2>/dev/null || echo "Warning: .env not found, using environment variables"
+	docker-compose -f deployment/docker-compose.yml build
 
-up:
-	@echo "$(BLUE)Starting production services...$(NC)"
+# Run container (development)
+run:
+	@echo "🚀 Starting Streamlit app (development)..."
+	@cp .env deployment/.env 2>/dev/null || echo "Warning: .env not found, using environment variables"
+	docker-compose -f deployment/docker-compose.yml up -d
+	@echo "✅ App running at http://localhost:8501"
+
+# Run container (production)
+run-prod:
+	@echo "🚀 Starting Streamlit app (production)..."
 	docker-compose -f docker-compose.prod.yml up -d
-	@sleep 3
-	@make status
-	@echo "$(GREEN)✓ Services started$(NC)"
+	@echo "✅ App running at http://localhost:80"
 
-down:
-	@echo "$(BLUE)Stopping production services...$(NC)"
-	docker-compose -f docker-compose.prod.yml down
-	@echo "$(GREEN)✓ Services stopped$(NC)"
+# Stop container
+stop:
+	@echo "🛑 Stopping container..."
+	docker-compose -f deployment/docker-compose.yml down
 
+# Restart container
 restart:
-	@echo "$(BLUE)Restarting services...$(NC)"
-	docker-compose -f docker-compose.prod.yml restart
-	@sleep 3
-	@make status
-	@echo "$(GREEN)✓ Services restarted$(NC)"
+	@echo "🔄 Restarting container..."
+	docker-compose -f deployment/docker-compose.yml restart
 
+# View logs
 logs:
-	docker-compose -f docker-compose.prod.yml logs -f
+	docker-compose -f deployment/docker-compose.yml logs
 
-status:
-	@echo "$(BLUE)Service Status:$(NC)"
-	docker-compose -f docker-compose.prod.yml ps
+# Follow logs
+logs-f:
+	docker-compose -f deployment/docker-compose.yml logs -f
 
-health:
-	@echo "$(BLUE)Checking service health...$(NC)"
-	@docker-compose -f docker-compose.prod.yml exec app curl -s http://localhost:8501/_stcore/health > /dev/null && echo "$(GREEN)✓ App is healthy$(NC)" || echo "$(RED)✗ App is unhealthy$(NC)"
-	@docker-compose -f docker-compose.prod.yml exec nginx curl -s http://localhost > /dev/null && echo "$(GREEN)✓ Nginx is healthy$(NC)" || echo "$(RED)✗ Nginx is unhealthy$(NC)"
-
-# Maintenance
-backup:
-	@echo "$(BLUE)Backing up data...$(NC)"
-	@bash deploy.sh backup
-	@echo "$(GREEN)✓ Backup completed$(NC)"
-
-clean:
-	@echo "$(BLUE)Cleaning up...$(NC)"
-	docker container prune -f
-	docker image prune -f
-	docker volume prune -f
-	@echo "$(GREEN)✓ Cleanup completed$(NC)"
-
-update:
-	@echo "$(BLUE)Updating application...$(NC)"
-	git pull origin main
-	@make build
-	@make restart
-	@echo "$(GREEN)✓ Update completed$(NC)"
-
+# Open shell in container
 shell:
-	@echo "$(BLUE)Opening shell in app container...$(NC)"
-	docker-compose -f docker-compose.prod.yml exec app /bin/bash
+	docker-compose -f deployment/docker-compose.yml exec streamlit-app /bin/bash
 
-# SSL
-ssl-generate:
-	@echo "$(BLUE)Generating SSL certificate...$(NC)"
-	@mkdir -p ssl
-	@openssl req -x509 -newkey rsa:4096 \
-		-keyout ssl/key.pem \
-		-out ssl/cert.pem \
-		-days 365 \
-		-nodes \
-		-subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
-	@chmod 600 ssl/key.pem
-	@chmod 644 ssl/cert.pem
-	@echo "$(GREEN)✓ SSL certificate generated$(NC)"
-	@echo "Certificate: ssl/cert.pem"
-	@echo "Key: ssl/key.pem"
+# Clean up
+clean:
+	@echo "🧹 Cleaning up..."
+	docker-compose -f deployment/docker-compose.yml down
+	docker rmi slide-prompt-generator:latest || true
 
-ssl-check:
-	@echo "$(BLUE)Checking SSL certificate...$(NC)"
-	@openssl x509 -in ssl/cert.pem -text -noout
+# Clean everything
+clean-all:
+	@echo "🧹 Cleaning everything..."
+	docker-compose -f deployment/docker-compose.yml down -v
+	docker rmi slide-prompt-generator:latest || true
+	rm -rf uploads/*
 
-# Utilities
-install:
-	@echo "$(BLUE)Installing dependencies...$(NC)"
-	pip install -r requirements.txt
-	@echo "$(GREEN)✓ Dependencies installed$(NC)"
+# Test
+test:
+	@echo "🧪 Testing application..."
+	docker-compose -f deployment/docker-compose.yml exec streamlit-app python -m pytest || echo "No tests found"
 
-lint:
-	@echo "$(BLUE)Running linting...$(NC)"
-	pylint app.py main.py data_loader.py slides.py prompt_builder.py prompt_template.py
-	@echo "$(GREEN)✓ Linting completed$(NC)"
+# Check status
+status:
+	@echo "📊 Container status:"
+	docker-compose -f deployment/docker-compose.yml ps
 
-format:
-	@echo "$(BLUE)Formatting code...$(NC)"
-	black app.py main.py data_loader.py slides.py prompt_builder.py prompt_template.py
-	@echo "$(GREEN)✓ Code formatted$(NC)"
+# View resource usage
+stats:
+	docker stats slide-prompt-generator
 
-# Default
-.DEFAULT_GOAL := help
+# Rebuild and run
+rebuild: clean build run
+	@echo "✅ Rebuild complete"
+
+# ============================================
+# WEEKLY REPORT COMMANDS
+# ============================================
+
+# Build Weekly Docker image
+build-weekly:
+	@echo "🔨 Building Weekly Docker image..."
+	@cp .env deployment/.env 2>/dev/null || echo "Warning: .env not found, using environment variables"
+	docker-compose -f deployment/docker-compose.weekly.yml build
+
+# Run Weekly container (development)
+run-weekly:
+	@echo "🚀 Starting Weekly Streamlit app (development)..."
+	@cp .env deployment/.env 2>/dev/null || echo "Warning: .env not found, using environment variables"
+	docker-compose -f deployment/docker-compose.weekly.yml up -d
+	@echo "✅ Weekly app running at http://localhost:8523"
+
+# Stop Weekly container
+stop-weekly:
+	@echo "🛑 Stopping Weekly container..."
+	docker-compose -f deployment/docker-compose.weekly.yml down
+
+# Restart Weekly container
+restart-weekly:
+	@echo "🔄 Restarting Weekly container..."
+	docker-compose -f deployment/docker-compose.weekly.yml restart
+
+# View Weekly logs
+logs-weekly:
+	docker-compose -f deployment/docker-compose.weekly.yml logs
+
+# Follow Weekly logs
+logs-weekly-f:
+	docker-compose -f deployment/docker-compose.weekly.yml logs -f
+
+# Open shell in Weekly container
+shell-weekly:
+	docker-compose -f deployment/docker-compose.weekly.yml exec streamlit-weekly /bin/bash
+
+# Clean up Weekly
+clean-weekly:
+	@echo "🧹 Cleaning up Weekly..."
+	docker-compose -f deployment/docker-compose.weekly.yml down
+	docker rmi streamlit_streamlit-weekly:latest || true
+
+# Check Weekly status
+status-weekly:
+	@echo "📊 Weekly container status:"
+	docker-compose -f deployment/docker-compose.weekly.yml ps
+
+# Rebuild and run Weekly
+rebuild-weekly: clean-weekly build-weekly run-weekly
+	@echo "✅ Weekly rebuild complete"
+

@@ -1,223 +1,352 @@
-# Social Listening Report Generator
+# Slide Prompt Generator
 
-A Python-based tool that generates comprehensive social listening analysis reports from Excel data. The script processes social media mentions, analyzes sentiment, topics, channels, and brands to produce structured markdown reports with insights and strategic recommendations.
+Web interface và API để generate slide prompts cho Manuss, Gamma, Beautiful.ai
 
-## Overview
+**Hỗ trợ 2 loại báo cáo:**
+- **Daily Report** (6 slides) - Báo cáo theo ngày với cửa sổ 24 giờ
+- **Weekly Report** (12 slides) - Báo cáo theo tuần với cửa sổ 7 ngày
 
-This tool automates the creation of 13-slide social listening reports by:
-- Loading and preprocessing social media data from Excel files
-- Extracting key metrics and statistics for each slide
-- Generating sample data records as evidence for insights
-- Rendering a complete markdown report with analysis framework
+## 🚀 Quick Start với Docker
 
-## Features
+### 1. Cấu hình API credentials
 
-- **Data Loading**: Supports local Excel files and remote URLs
-- **Multi-dimensional Analysis**: Analyzes data across brands, channels, topics, and sentiment
-- **Sample Data Integration**: Includes actual data samples as evidence for each analysis section
-- **Structured Output**: Generates markdown reports following the INSIGHT FRAMEWORK (WHAT, WHY, SO WHAT)
-- **Automated File Management**: Saves reports with timestamps and brand names
-
-## Installation
-
-### Prerequisites
-- Python 3.7+
-- Required packages: `pandas`, `requests`
-
-### Setup
-
-1. Clone or download the project
-2. Create a virtual environment (optional but recommended):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. Install dependencies:
-   ```bash
-   pip install pandas requests openpyxl
-   ```
-
-## Usage
-
-### Basic Usage
-
-Run the script with an Excel file:
+Tạo file `.env` trong thư mục gốc của dự án:
 
 ```bash
-python main.py data.xlsx
+API_KEY=your_api_key_here
+BASE_URL=your_base_url_here
 ```
 
-This will:
-1. Load data from `data.xlsx`
-2. Generate a complete report
-3. Save the report to `reports/` directory with timestamp
-4. Display the report in console
-
-### Advanced Usage
-
-Specify a custom output directory:
+### 2. Chạy Daily services (Streamlit + API)
 
 ```bash
-python main.py data.xlsx ./my_reports
+# Tạo thư mục cần thiết
+mkdir -p uploads logs
+
+# Chạy cả Streamlit và API
+docker-compose -f deployment/docker-compose.yml up --build
+
+# Hoặc chạy background
+docker-compose -f deployment/docker-compose.yml up -d --build
 ```
 
-### Using Remote Data
+**Services sẽ chạy tại:**
+- 📊 **Streamlit App**: http://localhost:8522
+- 🚀 **FastAPI Server**: http://localhost:8524  
+- 📚 **API Documentation**: http://localhost:8524/docs
 
-You can also load data from a URL:
+### 3. Chạy Weekly service
 
 ```bash
-python main.py "https://example.com/data.xlsx"
+# Chạy weekly service
+docker-compose -f deployment/docker-compose.weekly.yml up --build
 ```
 
-## Input Data Format
-
-The Excel file should contain the following columns:
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `PublishedDate` | datetime | Date when the mention was published |
-| `Channel` | string | Social media channel (e.g., Facebook, Twitter, Instagram) |
-| `Topic` | string | Brand or main topic being discussed |
-| `Labels1` | string | Specific topic/category label |
-| `Sentiment` | string | Sentiment classification (Positive, Negative, Neutral) |
-| `Title` | string | Title or headline of the mention |
-| `Content` | string | Main content/text of the mention |
-| `Description` | string | Additional description |
-| `Type` | string | Type of content (e.g., Post, Comment, Review) |
-
-## Output
-
-The script generates a markdown report with 13 slides:
-
-1. **Report Overview** - Study period, data source, total metrics
-2. **Share of Voice (SOV)** - Brand comparison and market share
-3. **Buzz Evolution** - Daily mention trends
-4. **Highlight Buzz** - Notable mentions and content
-5. **Sentiment Overview** - Positive/Negative/Neutral breakdown
-6. **Channel Mix** - Distribution across social channels
-7. **Sentiment by Channel** - Sentiment analysis per channel
-8. **Top Topics** - Most discussed topics/themes
-9. **Topic Trends** - Topic evolution over time
-10. **Topics by Channel** - Topic distribution across channels
-11. **Sentiment by Brand** - Comparative sentiment analysis
-12. **Topics by Brand** - Topic distribution across brands
-13. **Conclusions & Strategic Implications** - Key insights and recommendations
-
-### Report Structure
-
-Each slide includes:
-- **Data Tables**: Quantitative metrics and statistics
-- **Sample Records**: Actual data examples as evidence
-- **Insight Framework**: WHAT (findings), WHY (reasons), SO WHAT (implications)
-
-### Output Location
-
-Reports are saved to: `reports/{PRIMARY_BRAND}_report_{TIMESTAMP}.md`
-
-Example: `reports/Vinfast_report_20260130_214437.md`
-
-## Module Documentation
-
-### `main.py`
-Main entry point that orchestrates the report generation pipeline.
-
-**Key Functions:**
-- `generate_report(file_path)` - Loads data and generates complete report
-- `save_report(report_content, primary_brand, output_dir)` - Saves report to file
-- `main()` - CLI entry point
-
-### `data_loader.py`
-Handles data loading and preprocessing.
-
-**Key Functions:**
-- `load_data_from_file(file_path)` - Loads Excel data from file or URL, processes dates
-
-### `slides.py`
-Extracts and structures data for each slide.
-
-**Key Class:**
-- `SlideDataExtractor` - Extracts metrics and sample data for all 12 slides
-  - `slide_1_overview()` - General statistics
-  - `slide_2_sov()` - Share of voice analysis
-  - `slide_3_daily_buzz()` - Daily trends
-  - `slide_4_highlight_buzz()` - Notable mentions
-  - `slide_5_sentiment_overview()` - Sentiment distribution
-  - `slide_6_channel_mix()` - Channel analysis
-  - `slide_7_sentiment_by_channel()` - Sentiment per channel
-  - `slide_8_top_topics()` - Topic ranking
-  - `slide_9_topic_trend()` - Topic trends
-  - `slide_10_topic_by_channel()` - Topics per channel
-  - `slide_11_sentiment_by_brand()` - Brand sentiment comparison
-  - `slide_12_topic_by_brand()` - Topics per brand
-
-### `prompt_builder.py`
-Builds variables for report template rendering.
-
-**Key Functions:**
-- `build_prompt_variables(slides_data)` - Creates dictionary of all report variables
-- `_format_sample_records(records, max_records)` - Formats sample data for display
-
-### `prompt_template.py`
-Defines the markdown template and rendering logic.
-
-**Key Components:**
-- `PROMPT_MD_TEMPLATE` - Complete markdown template with placeholders
-- `render_prompt(template, variables)` - Replaces placeholders with actual values
-
-## Example Workflow
+### 4. Dừng services
 
 ```bash
-# 1. Prepare your Excel file with social listening data
-# File: weekly_data.xlsx
+# Dừng tất cả services
+docker-compose -f deployment/docker-compose.yml down
 
-# 2. Run the script
-python main.py weekly_data.xlsx
+# Dừng và xóa volumes
+docker-compose down -v
 
-# 3. Check the output
-# Report saved to: reports/Vinfast_report_20260130_214437.md
-
-# 4. Open and review the report
-cat reports/Vinfast_report_20260130_214437.md
+# Dừng và xóa images
+docker-compose down --rmi all
 ```
 
-## Error Handling
+### 5. Xem logs
 
-The script includes error handling for:
-- Missing input files
-- Invalid Excel format
-- Network errors when loading remote data
-- File write permissions
+```bash
+# Xem logs tất cả services
+docker-compose logs -f
 
-Error messages are displayed in the console with detailed traceback information.
+# Xem logs service cụ thể
+docker-compose logs -f streamlit-app
+docker-compose logs -f api-server
+```
 
-## Performance Notes
+## 📁 Cấu trúc Project
 
-- Processing time depends on data size (typically 1-5 seconds for 1000+ records)
-- Sample data is randomly selected from the first 50 records of each category
-- Large datasets (10,000+ records) may take longer to process
+```
+├── README.md                           # Hướng dẫn sử dụng
+├── .env.example                        # Template cho environment variables
+├── docker-compose.yml                  # Daily services (Streamlit + API)
+├── docker-compose.weekly.yml           # Weekly service
+├── docker-compose.api.yml              # API only service
+│
+├── app.py                              # Streamlit Daily app
+├── app_weekly.py                       # Streamlit Weekly app
+├── api_server.py                       # FastAPI server
+│
+├── generate_slide_prompt.py            # Daily prompt generator
+├── generate_slide_prompt_weekly.py     # Weekly prompt generator
+├── report_generator.py                 # Daily report generator
+├── report_generator_weekly.py          # Weekly report generator
+├── slide_generators.py                 # Daily slide generators
+├── slide_generators_weekly.py          # Weekly slide generators
+├── prompts.py                          # Daily LLM prompts
+├── prompts_weekly.py                   # Weekly LLM prompts
+│
+├── llm_client.py                       # OpenAI client wrapper
+├── data_loader.py                      # Excel data loader
+├── config.py                           # Configuration constants
+│
+├── Dockerfile                          # Daily Streamlit container
+├── Dockerfile.api                      # API container
+├── Dockerfile.weekly                   # Weekly Streamlit container
+├── requirements.txt                    # Daily dependencies
+├── requirements_api.txt                # API dependencies
+│
+├── nginx.conf                          # Nginx config for Streamlit
+├── nginx.api.conf                      # Nginx config for API
+├── uploads/                            # File upload directory
+└── logs/                               # Application logs
+```
 
-## Troubleshooting
+## 🐳 Docker Commands
 
-### "File not found" error
-- Ensure the Excel file path is correct
-- Use absolute paths if relative paths don't work
+### Daily Services (Streamlit + API)
+```bash
+# Start both services
+docker-compose up --build
 
-### "No module named 'pandas'" error
-- Install required packages: `pip install pandas requests openpyxl`
+# Start in background
+docker-compose up -d --build
 
-### Report not saving
-- Check that the `reports/` directory exists or has write permissions
-- Verify disk space is available
+# Stop services
+docker-compose down
 
-### Empty sample data in report
-- Ensure the Excel file has data in the expected columns
-- Check that column names match exactly (case-sensitive)
+# View logs
+docker-compose logs -f
+```
 
-## License
+### Weekly Service
+```bash
+# Start weekly service
+docker-compose -f docker-compose.weekly.yml up --build
 
-This project is provided as-is for internal use.
+# Stop weekly service
+docker-compose -f docker-compose.weekly.yml down
+```
 
-## Support
+### API Only
+```bash
+# Start API only
+docker-compose -f docker-compose.api.yml up --build
 
-For issues or questions, please review the code comments and module documentation above.
+# Stop API only
+docker-compose -f docker-compose.api.yml down
+```
+
+### Daily Report (6 slides)
+
+### Bước 1: Upload Excel File
+- Click "Browse files" trong sidebar
+- Chọn file Excel chứa brand data
+- Hỗ trợ format: `.xlsx`, `.xls`
+
+### Bước 2: Nhập Brand Name
+- Nhập tên brand (ví dụ: Vinamilk, Vinfast, Nestle)
+
+### Bước 3: Chọn Report Date & Time
+- Chọn ngày báo cáo từ date picker
+- Chọn giờ cắt data (mặc định 15:00)
+- Hệ thống tự động tính cửa sổ 24 giờ
+
+### Bước 4: Generate
+- Click nút "🚀 Generate prompt"
+- Đợi ~1 phút (parallel processing)
+- Xem kết quả trong 3 tabs
+
+---
+
+### Weekly Report (12 slides)
+
+### Bước 1: Upload Excel File
+- Click "Browse files" trong sidebar
+- Chọn file Excel chứa brand data
+
+### Bước 2: Nhập Brand Name
+- Nhập tên brand
+
+### Bước 3: Chọn End Date & Time
+- Chọn ngày kết thúc tuần hiện tại
+- Chọn giờ cắt data (mặc định 15:00)
+- Hệ thống tự động tính 4 tuần (current + 3 past weeks)
+
+### Bước 4: Generate
+- Click nút "🚀 Generate weekly report"
+- Đợi ~2 phút (parallel processing)
+- Xem kết quả trong 3 tabs
+
+---
+
+### Output Tabs
+- **Preview**: Xem trước prompt
+- **Copy**: Copy prompt để paste vào slide platforms
+- **Download**: Tải file .txt và .json
+
+## 📊 Features
+
+### ✅ Daily Report (6 slides)
+1. **Slide 1**: Brand Overview - KPIs với so sánh 24h trước
+2. **Slide 2**: Trendline - Xu hướng 7 ngày
+3. **Slide 3**: Channel Breakdown - Phân bố theo kênh
+4. **Slide 4**: Sentiment & Attributes - Phân tích sắc thái
+5. **Slide 5**: Top 5 Posts - Bài đăng có tương tác cao
+6. **Slide 6**: Top 5 Deleted Posts - Bài đăng đã xóa
+
+### ✅ Weekly Report (12 slides)
+1. **Slide 1**: Tổng quan tuần - KPIs + so sánh 4 tuần
+2. **Slide 2**: Đường xu hướng - 7 ngày trong tuần
+3. **Slide 3**: Phân bố kênh - Pie chart + Top 10 nguồn
+4. **Slide 4**: Top nguồn tương tác cao - Bảng
+5. **Slide 5**: Top bài đăng tương tác cao - Bảng
+6. **Slide 6**: Sắc thái & chủ đề - 2 pie charts + chart cột
+7. **Slide 7**: Chủ đề tích cực - Chart + insight
+8. **Slide 8**: Top đề cập tích cực - Bảng
+9. **Slide 9**: Top bài đăng tích cực - Bảng
+10. **Slide 10**: Chủ đề tiêu cực - Chart + insight
+11. **Slide 11**: Top đề cập tiêu cực - Bảng
+12. **Slide 12**: Top bài đăng tiêu cực - Bảng
+
+### ✅ Technical Features
+- **Parallel processing** - Slides generated simultaneously
+- **24-hour window** (Daily) - Chính xác đến giờ
+- **7-day window** (Weekly) - Tự động tính 4 tuần
+- **Progress tracking** - Real-time updates
+- **Error handling** - Detailed traceback
+- **Auto-cleanup** - Temp files removed
+
+## 🎨 UI Features
+
+- **Responsive layout** - Wide mode với sidebar
+- **Custom styling** - Professional color scheme
+- **Progress tracking** - Visual feedback cho user
+- **Success/Error boxes** - Clear status indicators
+- **Tabs navigation** - Organized output display
+- **Download buttons** - Easy file export
+
+## 🔧 Technical Details
+
+### File Structure
+```
+/
+├── app.py                          # Daily report app (6 slides)
+├── app_weekly.py                   # Weekly report app (12 slides)
+├── report_generator.py             # Daily report generator
+├── report_generator_weekly.py      # Weekly report generator
+├── slide_generators.py             # Daily slide generators
+├── slide_generators_weekly.py      # Weekly slide generators (12 classes)
+├── generate_slide_prompt.py        # Daily prompt generator
+├── generate_slide_prompt_weekly.py # Weekly prompt generator
+├── prompts.py                      # Daily LLM prompts
+├── prompts_weekly.py               # Weekly LLM prompts
+├── data_loader.py                  # Shared data loader
+├── llm_client.py                   # Shared LLM client
+├── config.py                       # Shared configuration
+├── requirements.txt                # Python dependencies
+├── .env                           # API credentials
+└── README.md                      # This file
+```
+
+### Dependencies
+- `streamlit` - Web framework
+- `pandas` - Data processing
+- `openpyxl` - Excel file handling
+- `python-dotenv` - Environment variables
+- `requests` - API calls (via ReportGenerator)
+
+### Import Strategy
+App imports từ parent directory:
+- `generate_slide_prompt.py` - Core functions
+- `report_generator.py` - LLM integration
+- `config.py` - Configuration (auto-updated)
+
+## 🐛 Troubleshooting
+
+### Error: Cannot import ReportGenerator
+**Solution**: Đảm bảo file `report_generator.py` tồn tại trong folder `test/`
+
+### Error: API credentials not found
+**Solution**: Tạo file `.env` với API_KEY và BASE_URL
+
+### Error: Excel file not valid
+**Solution**: Kiểm tra format Excel file, đảm bảo có đúng columns
+
+### App chạy chậm
+**Normal**: Generate prompt mất 3-4 phút do gọi LLM 4 lần
+
+## 📝 Example Usage
+
+### Daily Report
+```bash
+# Terminal: Start app
+streamlit run app.py
+
+# Browser: http://localhost:8501
+# 1. Upload: brand_data.xlsx
+# 2. Brand: Vinamilk
+# 3. Date: 2026-02-10, Time: 15:00
+# 4. Click Generate
+# 5. Wait ~1 minute
+# 6. Copy/Download prompt
+```
+
+### Weekly Report
+```bash
+# Terminal: Start app
+streamlit run app_weekly.py
+
+# Browser: http://localhost:8501
+# 1. Upload: brand_data.xlsx
+# 2. Brand: Vinamilk
+# 3. End Date: 2026-02-10, Time: 15:00
+# 4. System auto-calculates 4 weeks
+# 5. Click Generate
+# 6. Wait ~2 minutes
+# 7. Copy/Download prompt
+```
+
+## 🎯 Next Steps After Generation
+
+### Manuss
+1. Open https://manuss.com
+2. Paste prompt
+3. Click "Generate"
+4. Wait 30-60 seconds
+
+### Gamma
+1. Open https://gamma.app
+2. Paste prompt
+3. Click "Generate"
+4. Wait 30-60 seconds
+
+### Beautiful.ai
+1. Open https://beautiful.ai
+2. Paste prompt
+3. Click "Generate"
+4. Manually add hyperlinks if needed
+
+## 💡 Tips
+
+- **Save JSON data** - Để reuse hoặc debug
+- **Check preview** - Trước khi copy
+- **Test with small data** - Để verify setup
+- **Keep .env secure** - Đừng commit API keys
+
+## 🔐 Security
+
+- API credentials loaded từ `.env`
+- Temp files auto-cleanup
+- No data persistence (session-based)
+- Safe file upload handling
+
+## 📞 Support
+
+Nếu gặp vấn đề:
+1. Check console logs
+2. View error details trong expander
+3. Verify API credentials
+4. Check Excel file format

@@ -1,0 +1,381 @@
+{
+  "title": "Tổng quan đề cập về thương hiệu Manulife với các đối thủ",
+  "subtitle": "Giai đoạn: 12/03/2026 → 18/03/2026",
+  "insight": "Phân tích so sánh thương hiệu Manulife với các đối thủ trong giai đoạn 12/03/2026 → 18/03/2026.",
+  "donut_charts": {
+    "week_before": {
+      "title": "Tuần trước",
+      "data": [
+        {
+          "brand": "AIA",
+          "mentions": 2502,
+          "color": "#FF6B6B"
+        },
+        {
+          "brand": "BIDV Metlife",
+          "mentions": 193,
+          "color": "#4ECDC4"
+        },
+        {
+          "brand": "Bảo Việt Life",
+          "mentions": 1207,
+          "color": "#45B7D1"
+        },
+        {
+          "brand": "Cathay Việt Nam",
+          "mentions": 157,
+          "color": "#96CEB4"
+        },
+        {
+          "brand": "Chubb Việt Nam",
+          "mentions": 375,
+          "color": "#FFEAA7"
+        },
+        {
+          "brand": "Dai-ichi Life Việt Nam",
+          "mentions": 2572,
+          "color": "#DDA0DD"
+        },
+        {
+          "brand": "FWD VietNam",
+          "mentions": 854,
+          "color": "#98D8C8"
+        },
+        {
+          "brand": "Fubon Life Việt Nam",
+          "mentions": 22,
+          "color": "#F7DC6F"
+        },
+        {
+          "brand": "Generali.",
+          "mentions": 770,
+          "color": "#FF6B6B"
+        },
+        {
+          "brand": "Hanwha Life Việt Nam",
+          "mentions": 455,
+          "color": "#4ECDC4"
+        },
+        {
+          "brand": "MB Ageas life",
+          "mentions": 6,
+          "color": "#45B7D1"
+        },
+        {
+          "brand": "Manulife",
+          "mentions": 6215,
+          "color": "#96CEB4"
+        },
+        {
+          "brand": "Mirae Asset Prévoir (MAP Life)",
+          "mentions": 83,
+          "color": "#FFEAA7"
+        },
+        {
+          "brand": "Phú Hưng Life",
+          "mentions": 32,
+          "color": "#DDA0DD"
+        },
+        {
+          "brand": "Prudential",
+          "mentions": 2266,
+          "color": "#98D8C8"
+        },
+        {
+          "brand": "Shinhan Life Việt Nam",
+          "mentions": 384,
+          "color": "#F7DC6F"
+        },
+        {
+          "brand": "Sun Life_FWD",
+          "mentions": 167,
+          "color": "#FF6B6B"
+        }
+      ]
+    },
+    "current_week": {
+      "title": "Tuần hiện tại",
+      "data": [
+        {
+          "brand": "AIA",
+          "mentions": 3176,
+          "color": "#FF6B6B"
+        },
+        {
+          "brand": "BIDV Metlife",
+          "mentions": 202,
+          "color": "#4ECDC4"
+        },
+        {
+          "brand": "Bảo Việt Life",
+          "mentions": 1039,
+          "color": "#45B7D1"
+        },
+        {
+          "brand": "Cathay Việt Nam",
+          "mentions": 417,
+          "color": "#96CEB4"
+        },
+        {
+          "brand": "Chubb Việt Nam",
+          "mentions": 383,
+          "color": "#FFEAA7"
+        },
+        {
+          "brand": "Dai-ichi Life Việt Nam",
+          "mentions": 2838,
+          "color": "#DDA0DD"
+        },
+        {
+          "brand": "FWD VietNam",
+          "mentions": 787,
+          "color": "#98D8C8"
+        },
+        {
+          "brand": "Fubon Life Việt Nam",
+          "mentions": 19,
+          "color": "#F7DC6F"
+        },
+        {
+          "brand": "Generali.",
+          "mentions": 784,
+          "color": "#FF6B6B"
+        },
+        {
+          "brand": "Hanwha Life Việt Nam",
+          "mentions": 354,
+          "color": "#4ECDC4"
+        },
+        {
+          "brand": "MB Ageas life",
+          "mentions": 13,
+          "color": "#45B7D1"
+        },
+        {
+          "brand": "Manulife",
+          "mentions": 5446,
+          "color": "#96CEB4"
+        },
+        {
+          "brand": "Mirae Asset Prévoir (MAP Life)",
+          "mentions": 59,
+          "color": "#FFEAA7"
+        },
+        {
+          "brand": "Phú Hưng Life",
+          "mentions": 47,
+          "color": "#DDA0DD"
+        },
+        {
+          "brand": "Prudential",
+          "mentions": 1231,
+          "color": "#98D8C8"
+        },
+        {
+          "brand": "Shinhan Life Việt Nam",
+          "mentions": 301,
+          "color": "#F7DC6F"
+        },
+        {
+          "brand": "Sun Life_FWD",
+          "mentions": 395,
+          "color": "#FF6B6B"
+        }
+      ]
+    }
+  },
+  "legend": [
+    {
+      "brand": "AIA",
+      "color": "#FF6B6B"
+    },
+    {
+      "brand": "BIDV Metlife",
+      "color": "#4ECDC4"
+    },
+    {
+      "brand": "Bảo Việt Life",
+      "color": "#45B7D1"
+    },
+    {
+      "brand": "Cathay Việt Nam",
+      "color": "#96CEB4"
+    },
+    {
+      "brand": "Chubb Việt Nam",
+      "color": "#FFEAA7"
+    },
+    {
+      "brand": "Dai-ichi Life Việt Nam",
+      "color": "#DDA0DD"
+    },
+    {
+      "brand": "FWD VietNam",
+      "color": "#98D8C8"
+    },
+    {
+      "brand": "Fubon Life Việt Nam",
+      "color": "#F7DC6F"
+    },
+    {
+      "brand": "Generali.",
+      "color": "#FF6B6B"
+    },
+    {
+      "brand": "Hanwha Life Việt Nam",
+      "color": "#4ECDC4"
+    },
+    {
+      "brand": "MB Ageas life",
+      "color": "#45B7D1"
+    },
+    {
+      "brand": "Manulife",
+      "color": "#96CEB4"
+    },
+    {
+      "brand": "Mirae Asset Prévoir (MAP Life)",
+      "color": "#FFEAA7"
+    },
+    {
+      "brand": "Phú Hưng Life",
+      "color": "#DDA0DD"
+    },
+    {
+      "brand": "Prudential",
+      "color": "#98D8C8"
+    },
+    {
+      "brand": "Shinhan Life Việt Nam",
+      "color": "#F7DC6F"
+    },
+    {
+      "brand": "Sun Life_FWD",
+      "color": "#FF6B6B"
+    }
+  ],
+  "bar_chart": {
+    "title": "Tổng đề cập của các thương hiệu",
+    "data": [
+      {
+        "brand": "Manulife",
+        "week_before": 6215,
+        "current_week": 5446,
+        "percentage_change": -12.4,
+        "change_color": "red"
+      },
+      {
+        "brand": "AIA",
+        "week_before": 2502,
+        "current_week": 3176,
+        "percentage_change": 26.9,
+        "change_color": "green"
+      },
+      {
+        "brand": "Dai-ichi Life Việt Nam",
+        "week_before": 2572,
+        "current_week": 2838,
+        "percentage_change": 10.3,
+        "change_color": "green"
+      },
+      {
+        "brand": "Prudential",
+        "week_before": 2266,
+        "current_week": 1231,
+        "percentage_change": -45.7,
+        "change_color": "red"
+      },
+      {
+        "brand": "Bảo Việt Life",
+        "week_before": 1207,
+        "current_week": 1039,
+        "percentage_change": -13.9,
+        "change_color": "red"
+      },
+      {
+        "brand": "FWD VietNam",
+        "week_before": 854,
+        "current_week": 787,
+        "percentage_change": -7.8,
+        "change_color": "red"
+      },
+      {
+        "brand": "Generali.",
+        "week_before": 770,
+        "current_week": 784,
+        "percentage_change": 1.8,
+        "change_color": "green"
+      },
+      {
+        "brand": "Cathay Việt Nam",
+        "week_before": 157,
+        "current_week": 417,
+        "percentage_change": 165.6,
+        "change_color": "green"
+      },
+      {
+        "brand": "Sun Life_FWD",
+        "week_before": 167,
+        "current_week": 395,
+        "percentage_change": 136.5,
+        "change_color": "green"
+      },
+      {
+        "brand": "Chubb Việt Nam",
+        "week_before": 375,
+        "current_week": 383,
+        "percentage_change": 2.1,
+        "change_color": "green"
+      },
+      {
+        "brand": "Hanwha Life Việt Nam",
+        "week_before": 455,
+        "current_week": 354,
+        "percentage_change": -22.2,
+        "change_color": "red"
+      },
+      {
+        "brand": "Shinhan Life Việt Nam",
+        "week_before": 384,
+        "current_week": 301,
+        "percentage_change": -21.6,
+        "change_color": "red"
+      },
+      {
+        "brand": "BIDV Metlife",
+        "week_before": 193,
+        "current_week": 202,
+        "percentage_change": 4.7,
+        "change_color": "green"
+      },
+      {
+        "brand": "Mirae Asset Prévoir (MAP Life)",
+        "week_before": 83,
+        "current_week": 59,
+        "percentage_change": -28.9,
+        "change_color": "red"
+      },
+      {
+        "brand": "Phú Hưng Life",
+        "week_before": 32,
+        "current_week": 47,
+        "percentage_change": 46.9,
+        "change_color": "green"
+      },
+      {
+        "brand": "Fubon Life Việt Nam",
+        "week_before": 22,
+        "current_week": 19,
+        "percentage_change": -13.6,
+        "change_color": "red"
+      },
+      {
+        "brand": "MB Ageas life",
+        "week_before": 6,
+        "current_week": 13,
+        "percentage_change": 116.7,
+        "change_color": "green"
+      }
+    ]
+  }
+}

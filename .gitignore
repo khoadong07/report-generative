@@ -1,3 +1,7 @@
+# Environment variables
+.env
+deployment/.env
+
 # Python
 __pycache__/
 *.py[cod]
@@ -20,41 +24,28 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
+# Virtual environments
+.venv/
 venv/
 ENV/
 env/
-.venv
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
-.DS_Store
-
-# Streamlit
-.streamlit/secrets.toml
-.streamlit/cache/
-
-# Temporary files
-*.tmp
-*.temp
-*.log
-*.pid
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Project specific
-reports/
-*.xlsx
-*.xls
-temp/
-tmp/
-.streamlit/
+# Logs
+logs/
+*.log
+
+# Uploads
 uploads/
-data/
-.env
+
+# Docker
+.dockerignore
