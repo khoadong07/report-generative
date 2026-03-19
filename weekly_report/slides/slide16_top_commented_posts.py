@@ -87,7 +87,6 @@ class Slide16TopCommentedPosts(SlideGenerator):
             .replace("", pd.NA)
             .dropna()
             .value_counts()
-            .head(top_n)
         )
 
         if comment_counts.empty:
@@ -99,33 +98,28 @@ class Slide16TopCommentedPosts(SlideGenerator):
         id_to_row = df_indexed.set_index("_id_str")
 
         rows = []
-        for rank, (parent_id, count) in enumerate(comment_counts.items(), start=1):
+        stt = 1
+        for parent_id, count in comment_counts.items():
+            if stt > top_n:
+                break
             pid_str = str(parent_id)
-            if pid_str in id_to_row.index:
-                row = id_to_row.loc[pid_str]
-                # loc may return a DataFrame if duplicate ids exist; take first
-                if isinstance(row, pd.DataFrame):
-                    row = row.iloc[0]
-                rows.append({
-                    "stt":           rank,
-                    "topic":         str(row.get("Topic", "") or ""),
-                    "content":       _pick_content(row),
-                    "channel":       str(row.get("Channel", "") or ""),
-                    "source_name":   str(row.get("SiteName", "") or ""),
-                    "source_url":    str(row.get("UrlTopic", "") or ""),
-                    "comment_count": int(count),
-                })
-            else:
-                # Parent post not found in dataset – still include with id as placeholder
-                rows.append({
-                    "stt":           rank,
-                    "topic":         "",
-                    "content":       f"[ID: {pid_str}]",
-                    "channel":       "",
-                    "source_name":   "",
-                    "source_url":    "",
-                    "comment_count": int(count),
-                })
+            if pid_str not in id_to_row.index:
+                # Parent post not found – skip and try next rank
+                continue
+            row = id_to_row.loc[pid_str]
+            # loc may return a DataFrame if duplicate ids exist; take first
+            if isinstance(row, pd.DataFrame):
+                row = row.iloc[0]
+            rows.append({
+                "stt":           stt,
+                "topic":         str(row.get("Topic", "") or ""),
+                "content":       _pick_content(row),
+                "channel":       str(row.get("Channel", "") or ""),
+                "source_name":   str(row.get("SiteName", "") or ""),
+                "source_url":    str(row.get("UrlTopic", "") or ""),
+                "comment_count": int(count),
+            })
+            stt += 1
 
         return rows
 
