@@ -87,7 +87,7 @@ class DataLoader:
         start_dt = end_dt - timedelta(days=days)
         
         return self.df[
-            (self.df["PublishedDate"] > start_dt) &
+            (self.df["PublishedDate"] >= start_dt) &
             (self.df["PublishedDate"] <= end_dt)
         ].copy()
     

@@ -129,7 +129,7 @@ class WeeklyReportOrchestrator:
         w1s = w1e - timedelta(days=7)
 
         def _slice(src, end_dt):
-            return src[(src["PublishedDate"] > end_dt - timedelta(days=7)) &
+            return src[(src["PublishedDate"] >= end_dt - timedelta(days=7)) &
                        (src["PublishedDate"] <= end_dt)].copy()
 
         week1_df = self._data_loader.filter_by_datetime_range(self.week1_end, days=7)
