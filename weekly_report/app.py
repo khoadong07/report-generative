@@ -223,7 +223,7 @@ if (t := _tab("slide_1")):
                 st.metric(m["label"], f"{m['value']:,}", delta)
         st.markdown("**So sánh 4 tuần**")
         df_cmp = pd.DataFrame(s["weekly_comparison"])
-        st.bar_chart(df_cmp.set_index("week")["total_mentions"], height=220)
+        st.bar_chart(df_cmp.sort_values("total_mentions").set_index("week")["total_mentions"], height=220)
         st.dataframe(df_cmp.rename(columns={"week":"Tuần","total_mentions":"Đề cập","growth_rate":"Tăng trưởng (%)"}),
                      use_container_width=True, hide_index=True)
         st.info(s["insight"])
@@ -249,12 +249,12 @@ if (t := _tab("slide_3")):
         with c1:
             st.markdown("**Phân bổ kênh**")
             df_ch = pd.DataFrame(s["channel_distribution"])
-            st.bar_chart(df_ch.set_index("Channel")["count"], height=220)
+            st.bar_chart(df_ch.sort_values("count").set_index("Channel")["count"], height=220)
             st.dataframe(df_ch, use_container_width=True, hide_index=True)
         with c2:
             st.markdown("**Top 10 nguồn**")
             df_src = pd.DataFrame(s["top_sources"])
-            st.bar_chart(df_src.set_index("SiteName")["count"], height=220)
+            st.bar_chart(df_src.sort_values("count").set_index("SiteName")["count"], height=220)
             st.dataframe(df_src.rename(columns={"SiteName":"Nguồn","count":"Đề cập"}),
                          use_container_width=True, hide_index=True)
         st.info(s["insight"])
@@ -268,10 +268,10 @@ if (t := _tab("slide_4")):
         if s.get("show_interactions", True) and "total_engagement" in df_t.columns:
             df_t = df_t.rename(columns={"stt":"#","source_name":"Nguồn","total_engagement":"Tổng tương tác",
                                          "reactions":"Reactions","shares":"Shares","comments":"Comments"})
-            st.bar_chart(df_t.set_index("Nguồn")["Tổng tương tác"], height=220)
+            st.bar_chart(df_t.sort_values("Tổng tương tác").set_index("Nguồn")["Tổng tương tác"], height=220)
         else:
             df_t = df_t.rename(columns={"stt":"#","source_name":"Nguồn","count":"Đề cập"})
-            st.bar_chart(df_t.set_index("Nguồn")["Đề cập"], height=220)
+            st.bar_chart(df_t.sort_values("Đề cập").set_index("Nguồn")["Đề cập"], height=220)
         st.dataframe(df_t, use_container_width=True, hide_index=True)
 
 # Slide 5
@@ -297,14 +297,16 @@ if (t := _tab("slide_6")):
         c1, c2, c3 = st.columns([2,1,2])
         with c1:
             st.markdown("**Tuần trước**")
-            st.bar_chart(pd.DataFrame(s["previous_sentiment"]).set_index("sentiment")["count"], height=180)
+            df_prev_chart = pd.DataFrame(s["previous_sentiment"])
+            st.bar_chart(df_prev_chart.sort_values("count").set_index("sentiment")["count"], height=180)
             st.metric("NSR", f"{s['previous_nsr']:.1f}%")
         with c2:
             st.metric("NSR hiện tại", f"{s['current_nsr']:.1f}%", f"{s['nsr_growth']:+.2f}%")
             st.caption("NSR = (Pos%-Neg%) / (Pos%+Neg%) x 100")
         with c3:
             st.markdown("**Tuần này**")
-            st.bar_chart(pd.DataFrame(s["current_sentiment"]).set_index("sentiment")["count"], height=180)
+            df_curr_chart = pd.DataFrame(s["current_sentiment"])
+            st.bar_chart(df_curr_chart.sort_values("count").set_index("sentiment")["count"], height=180)
             st.metric("NSR", f"{s['current_nsr']:.1f}%")
         st.markdown("**Top chủ đề theo sắc thái**")
         df_top = pd.DataFrame(s["top_topics_with_sentiment"])
@@ -321,7 +323,7 @@ if (t := _tab("slide_7")):
         st.subheader(s["title"]); st.caption(s["subtitle"])
         df_pos = pd.DataFrame(s["positive_topics"])
         if not df_pos.empty and df_pos["count"].sum() > 0:
-            st.bar_chart(df_pos.set_index("Labels1")["count"], height=250)
+            st.bar_chart(df_pos.sort_values("count").set_index("Labels1")["count"], height=250)
             st.dataframe(df_pos.rename(columns={"Labels1":"Chủ đề","count":"Đề cập"}),
                          use_container_width=True, hide_index=True)
         else:
@@ -346,7 +348,7 @@ if (t := _tab("slide_9")):
         st.subheader(s["title"]); st.caption(s["subtitle"])
         df_neg = pd.DataFrame(s["negative_topics"])
         if not df_neg.empty and df_neg["count"].sum() > 0:
-            st.bar_chart(df_neg.set_index("Labels1")["count"], height=250)
+            st.bar_chart(df_neg.sort_values("count").set_index("Labels1")["count"], height=250)
             st.dataframe(df_neg.rename(columns={"Labels1":"Chủ đề","count":"Đề cập"}),
                          use_container_width=True, hide_index=True)
         else:
@@ -374,11 +376,13 @@ if (t := _tab("slide_11")):
         with c1:
             st.markdown("**Tuần trước**")
             df_prev = pd.DataFrame(s["donut_charts"]["week_before"]["data"])
-            st.bar_chart(df_prev[df_prev["mentions"]>0].set_index("brand")["mentions"], height=220)
+            df_prev = df_prev[df_prev["mentions"]>0]
+            st.bar_chart(df_prev.sort_values("mentions").set_index("brand")["mentions"], height=220)
         with c2:
             st.markdown("**Tuần này**")
             df_curr = pd.DataFrame(s["donut_charts"]["current_week"]["data"])
-            st.bar_chart(df_curr[df_curr["mentions"]>0].set_index("brand")["mentions"], height=220)
+            df_curr = df_curr[df_curr["mentions"]>0]
+            st.bar_chart(df_curr.sort_values("mentions").set_index("brand")["mentions"], height=220)
         st.markdown("**So sánh tăng trưởng**")
         df_bar = pd.DataFrame(s["bar_chart"]["data"]).rename(columns={
             "brand":"Thương hiệu","week_before":"Tuần trước",

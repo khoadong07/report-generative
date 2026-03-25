@@ -398,21 +398,57 @@ def generate_complete_prompt(report_data):
             prompt += f"  ■ {leg['group']}: {leg['color']}\n"
         prompt += "\n"
 
-    # ── SLIDE 14 ──────────────────────────────────────────────────────────────
-    if "slide_14" in report_data:
-        s = report_data["slide_14"]
-        prompt += _header("SLIDE 14 - TOP NGUỒN CÓ LƯỢNG THẢO LUẬN CAO NHẤT")
+    # ── SLIDE 15 ──────────────────────────────────────────────────────────────
+    if "slide_15" in report_data:
+        s = report_data["slide_15"]
+        prompt += _header("SLIDE 15 - SẮC THÁI ĐỀ CẬP THEO CHỦ ĐỀ (TOPIC)")
+        prompt += f"Tiêu đề: \"{s['title']}\"\nPhụ đề: \"{s['subtitle']}\"\n\n"
+        prompt += (
+            "BỐ CỤC: 3 HÀNG\n"
+            "  HÀNG 1: Khung nhận định\n"
+            "  HÀNG 2: Biểu đồ cột xếp chồng tỷ trọng sentiment theo Topic\n"
+            "  HÀNG 3: Bảng tổng hợp (N, NSR%, Top Positive/Negative labels)\n\n"
+        )
+        prompt += f"NHẬN ĐỊNH:\n{s['insight']}\n\n"
+
+        chart = s.get("stacked_bar_chart", {})
+        prompt += f"BIỂU ĐỒ CỘT XẾP CHỒNG: {chart.get('title', '')}\n"
+        prompt += "DỮ LIỆU BIỂU ĐỒ:\n"
+        for row in chart.get("data", []):
+            prompt += f"  [{row['topic']}] Tổng: {format_number(row['total'])} lượt\n"
+            for seg in row.get("segments", []):
+                if seg["percent"] > 0:
+                    prompt += f"    - {seg['sentiment']}: {seg['percent']}% ({format_number(seg['count'])} lượt)\n"
+
+        prompt += "\nBẢNG TỔNG HỢP THEO TOPIC:\n"
+        tbl = s.get("summary_table", {})
+        for topic in tbl.get("topics", []):
+            nsr = tbl["NSR"].get(topic, 0)
+            n   = tbl["N"].get(topic, 0)
+            pos = " | ".join(tbl["top_positive"].get(topic, []))
+            neg = " | ".join(tbl["top_negative"].get(topic, []))
+            prompt += (
+                f"  - {topic}: N={format_number(n)} | NSR={nsr:+.1f}% | "
+                f"Tích cực: {pos} | Tiêu cực: {neg}\n"
+            )
+        prompt += "\n"
+
+    # ── SLIDE 16 ──────────────────────────────────────────────────────────────
+    if "slide_16" in report_data:
+        s = report_data["slide_16"]
+        prompt += _header("SLIDE 16 - TOP BÀI ĐĂNG CÓ LƯỢT BÌNH LUẬN CAO NHẤT")
         prompt += f"Tiêu đề: \"{s['title']}\"\nPhụ đề: \"{s['subtitle']}\"\n\n"
         prompt += (
             "BỐ CỤC: Bảng toàn trang, KHÔNG có nhận định\n"
-            "CỘT CỐ ĐỊNH: STT | Nguồn | Kênh truyền thông | Tổng\n\n"
+            "CỘT CỐ ĐỊNH: STT | Thương hiệu | Bài đăng | Kênh | Nguồn | Bình luận\n\n"
             "DỮ LIỆU BẢNG:\n"
         )
         for r in s.get("table", []):
+            content = r["content"][:150] + "..." if len(r["content"]) > 150 else r["content"]
             prompt += (
-                f"- [{r['stt']}] {r['source_name']} | "
-                f"{r['channel']} | "
-                f"{format_number(r['total'])} lượt\n"
+                f"- [{r['stt']}] {r['topic']} | {content} | "
+                f"{r['channel']} | {r['source_name']} | "
+                f"{format_number(r['comment_count'])} lượt | {r['source_url']}\n"
             )
         prompt += "\n"
 
@@ -437,6 +473,8 @@ def generate_complete_prompt(report_data):
         "6. Slide 12: đánh dấu điểm đỉnh (peak) mỗi thương hiệu, trích dẫn là hyperlink dẫn đến URL\n"
         "7. Slide 13: cột xếp chồng — đỉnh cột ghi tổng lượt, ẩn nhãn % nếu < 20%, chú giải kênh cố định bên phải\n"
         "8. Slide 14: bảng 4 cột cố định, sắp xếp giảm dần theo tổng lượt thảo luận\n"
+        "9. Slide 15: biểu đồ cột xếp chồng sentiment, bảng tổng hợp hiển thị NSR% và các chủ đề tiêu biểu\n"
+        "10. Slide 16: bảng top bài đăng có lượt bình luận cao nhất, hiển thị nội dung và link nguồn\n"
     )
     prompt += "===============================================================\n"
 
