@@ -285,7 +285,7 @@ def generate_complete_prompt(report_data):
     # ── SLIDE 11 ──────────────────────────────────────────────────────────────
     if "slide_11" in report_data:
         s = report_data["slide_11"]
-        prompt += _header("SLIDE 11 - TỔNG QUAN ĐỀ CẬP VỀ THƯƠNG HIỆU VỚI CÁC ĐỐI THỦ")
+        prompt += _header("SLIDE 11 - TỔNG QUAN VỀ THƯƠNG HIỆU VỚI CÁC ĐỐI THỦ")
         prompt += f"Tiêu đề: \"{s['title']}\"\nPhụ đề: \"{s['subtitle']}\"\n\n"
         prompt += (
             "BỐ CỤC: 2 HÀNG\n"
@@ -334,7 +334,7 @@ def generate_complete_prompt(report_data):
     # ── SLIDE 12 ──────────────────────────────────────────────────────────────
     if "slide_12" in report_data:
         s = report_data["slide_12"]
-        prompt += _header("SLIDE 12 - ĐƯỜNG BIỂU DIỄN XU HƯỚNG ĐỀ CẬP NHIỀU THƯƠNG HIỆU")
+        prompt += _header("SLIDE 12 - XU HƯỚNG THẢO LUẬN THEO THỜI GIAN CỦA CÁC THƯƠNG HIỆU")
         prompt += f"Tiêu đề: \"{s['title']}\"\nPhụ đề: \"{s['subtitle']}\"\n\n"
         prompt += (
             "BỐ CỤC: 1 CỘT TOÀN TRANG\n"
@@ -364,7 +364,7 @@ def generate_complete_prompt(report_data):
     # ── SLIDE 13 ──────────────────────────────────────────────────────────────
     if "slide_13" in report_data:
         s = report_data["slide_13"]
-        prompt += _header("SLIDE 13 - PHÂN BỐ ĐỀ CẬP TRÊN CÁC KÊNH TRUYỀN THÔNG")
+        prompt += _header("SLIDE 13 - PHÂN BỐ TRÊN CÁC KÊNH TRUYỀN THÔNG")
         prompt += f"Tiêu đề: \"{s['title']}\"\nPhụ đề: \"{s['subtitle']}\"\n\n"
         prompt += (
             "BỐ CỤC: 2 HÀNG\n"
@@ -401,7 +401,7 @@ def generate_complete_prompt(report_data):
     # ── SLIDE 15 ──────────────────────────────────────────────────────────────
     if "slide_15" in report_data:
         s = report_data["slide_15"]
-        prompt += _header("SLIDE 15 - SẮC THÁI ĐỀ CẬP THEO CHỦ ĐỀ (TOPIC)")
+        prompt += _header("SLIDE 15 - SẮC THÁI THEO CHỦ ĐỀ (TOPIC)")
         prompt += f"Tiêu đề: \"{s['title']}\"\nPhụ đề: \"{s['subtitle']}\"\n\n"
         prompt += (
             "BỐ CỤC: 3 HÀNG\n"
