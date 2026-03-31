@@ -26,6 +26,32 @@ services:
     networks:
       - app-network
 
+  streamlit-masan:
+    build:
+      context: ..
+      dockerfile: deployment/docker/Dockerfile.masan
+    container_name: slide-prompt-generator-masan
+    ports:
+      - "8524:8501"
+    environment:
+      - API_KEY=${API_KEY}
+      - BASE_URL=${BASE_URL}
+      - MODEL=${MODEL}
+    env_file:
+      - .env
+    volumes:
+      - ../uploads:/app/uploads
+      - .env:/app/.env:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
