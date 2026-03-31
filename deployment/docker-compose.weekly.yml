@@ -32,7 +32,7 @@ services:
       dockerfile: deployment/docker/Dockerfile.masan
     container_name: slide-prompt-generator-masan
     ports:
-      - "8524:8501"
+      - "8525:8501"
     environment:
       - API_KEY=${API_KEY}
       - BASE_URL=${BASE_URL}
