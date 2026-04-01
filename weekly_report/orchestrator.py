@@ -26,15 +26,14 @@ from weekly_report.slides import (
     Slide04TopSources, Slide05TopPosts, Slide06Sentiment,
     Slide07PositiveTopics, Slide08PositivePosts,
     Slide09NegativeTopics, Slide10NegativePosts,
-    Slide11BrandComparison, Slide12BrandTrendline,
-    Slide13ChannelDistribution,
-    Slide14TopSources,
+    Slide11BrandComparison, Slide12BrandRanking,
+    Slide13BrandTrendline, Slide14ChannelDistribution,
     Slide15TopicSentiment,
     Slide16TopCommentedPosts,
 )
 
 # Slides that call LLM (run in parallel); rest are data-only (run sequentially)
-_LLM_SLIDES: Set[str] = {"slide_1", "slide_2", "slide_3", "slide_6", "slide_7", "slide_9", "slide_11", "slide_13", "slide_15"}
+_LLM_SLIDES: Set[str] = {"slide_1", "slide_2", "slide_3", "slide_6", "slide_7", "slide_9", "slide_11", "slide_14", "slide_15"}
 ALL_SLIDES: List[str] = [f"slide_{i}" for i in range(1, 17)]
 
 
@@ -64,6 +63,7 @@ class WeeklyReportOrchestrator:
         week4_end: str = None,
         show_interactions: bool = True,
         competitor_brands: Optional[List[str]] = None,
+        has_logo: bool = False,
     ):
         self.file_path        = file_path or FILE_PATH
         self.brand_name       = brand_name or BRAND_NAME
@@ -72,6 +72,7 @@ class WeeklyReportOrchestrator:
         self.week3_end        = week3_end
         self.week4_end        = week4_end
         self.show_interactions = show_interactions
+        self.has_logo          = has_logo
 
         if competitor_brands:
             self.slide11_brands = [brand_name] + [b for b in competitor_brands if b != brand_name]
@@ -101,9 +102,9 @@ class WeeklyReportOrchestrator:
         self._s09 = Slide09NegativeTopics(llm, tt)
         self._s10 = Slide10NegativePosts(tt, ct, top_n=10)
         self._s11 = Slide11BrandComparison(llm, tt)
-        self._s12 = Slide12BrandTrendline(tt)
-        self._s13 = Slide13ChannelDistribution(llm, tt)
-        self._s14 = Slide14TopSources()
+        self._s12 = Slide12BrandRanking()
+        self._s13 = Slide13BrandTrendline(tt)
+        self._s14 = Slide14ChannelDistribution(llm, tt)
         self._s15 = Slide15TopicSentiment(llm, tt)
         self._s16 = Slide16TopCommentedPosts()
 
@@ -200,18 +201,18 @@ class WeeklyReportOrchestrator:
                 week1_df=wa1, week2_df=wa2, brand=b,
                 week1_display=wd, brands_filter=bf),
             "slide_12": lambda: self._s12.generate(
+                week1_df=wa1, week2_df=wa2, brand=b,
+                week1_display=wd, brands_filter=bf),
+            "slide_13": lambda: self._s13.generate(
                 week1_df=wa1, brand=b, week1_display=wd,
                 week1_start_date=w1s.strftime("%Y-%m-%d"),
                 week1_end_date=w1e.strftime("%Y-%m-%d"),
-                brands_filter=bf),
-            "slide_13": lambda: self._s13.generate(
-                week1_df=wa1, brand=b, week1_display=wd,
                 brands_filter=bf),
             "slide_14": lambda: self._s14.generate(
                 week1_df=wa1, brand=b, week1_display=wd,
                 brands_filter=bf),
             "slide_15": lambda: self._s15.generate(
-                week1_df=wa1, brand=b, week1_display=wd,
+                week1_df=wa1, week2_df=wa2, brand=b, week1_display=wd,
                 brands_filter=bf),
             "slide_16": lambda: self._s16.generate(
                 week1_df=wa1, brand=b, week1_display=wd,
@@ -288,6 +289,7 @@ class WeeklyReportOrchestrator:
             "week4_period":    ctx["week4_display"],
             "generated_at":    pd.Timestamp.now().isoformat(),
             "generation_mode": "partial" if len(keys) < 16 else "parallel",
+            "has_logo":        self.has_logo,
         }
 
         if existing_report:

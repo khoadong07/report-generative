@@ -42,8 +42,8 @@ class Slide01Overview(SlideGenerator, InsightMixin):
         )
 
         return {
-            "title": f"Tổng quan về {brand}",
-            "subtitle": f"Giai đoạn: {week1_display}",
+            "title": f"TỔNG QUAN LƯỢNG ĐỀ CẬP CỦA {brand}",
+            "subtitle": f"Tổng quan lược đề cập trong tuần",
             "current_week_metrics": current_week_metrics,
             "weekly_comparison": weekly_comparison,
             "insight": insight,

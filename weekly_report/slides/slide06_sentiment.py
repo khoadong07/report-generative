@@ -39,8 +39,8 @@ class Slide06Sentiment(SlideGenerator, InsightMixin):
                                          top_topics=top_topics)
 
         return {
-            "title":                   "Sắc thái và cụm chủ đề đề cập nổi bật",
-            "subtitle":                f"Giai đoạn: {week1_display}",
+            "title":                   f"PHÂN TÍCH SẮC THÁI ĐỀ CẬP CỦA {brand}",
+            "subtitle":                f"Phân tích chỉ số cảm xúc (Sentiment) và các chủ đề thảo luận chính",
             "current_sentiment":       curr_sent,
             "previous_sentiment":      prev_sent,
             "current_nsr":             round(curr_nsr, 2),

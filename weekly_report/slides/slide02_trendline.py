@@ -36,8 +36,8 @@ class Slide02Trendline(SlideGenerator, InsightMixin):
         )
 
         return {
-            "title":    f"Đường biểu diễn xu hướng đề cập về {brand}",
-            "subtitle": f"Giai đoạn: {week1_display}",
+            "title":    f"XU HƯỚNG ĐỀ CẬP CỦA {brand} THEO THỜI GIAN",
+            "subtitle": f"Phân tích biến động lượng thảo luận theo ngày",
             "trendline": trendline,
             "insight":   insight,
         }
@@ -50,10 +50,30 @@ class Slide02Trendline(SlideGenerator, InsightMixin):
                     "Không có dữ liệu bài đăng chính (topics) để phân tích chi tiết.")
 
         df_topics["engagement"] = calculate_engagement(df_topics)
-        df_top = df_topics.sort_values("engagement", ascending=False).head(3)
-        context_text = "\n\n---\n\n".join([
-            f"Tiêu đề: {r['Title']}\nNội dung: {r['Content']}\nURL: {r['UrlTopic']}"
-            for _, r in df_top.iterrows()
-        ])
-        prompt = get_weekly_trendline_insight_prompt(brand, week1_display, trendline_data, context_text)
-        return self.llm_client.generate_insight(prompt)
+
+        # Top 1 engagement per day within the date range
+        df_top = (
+            df_topics.sort_values("engagement", ascending=False)
+            .groupby("PublishedDay", sort=False)
+            .first()
+            .reset_index()
+            .sort_values("PublishedDay")
+        )
+
+        # Build DIỄN BIẾN CHÍNH lines: date - first ~20 words of content
+        dien_bien_lines = []
+        for _, r in df_top.iterrows():
+            content_words = str(r.get("Content", "")).split()
+            snippet = " ".join(content_words[:20])
+            if len(content_words) > 20:
+                snippet += "..."
+            dien_bien_lines.append(f"{r['PublishedDay']} - {snippet}")
+        context_text = "DIỄN BIẾN CHÍNH:\n" + "\n".join(dien_bien_lines)
+
+        # context_text = dien_bien_text + "\n\n" + "\n\n---\n\n".join([
+        #     f"Tiêu đề: {r['Title']}\nNội dung: {r['Content']}\nURL: {r['UrlTopic']}"
+        #     for _, r in df_top.iterrows()
+        # ])
+        # prompt = get_weekly_trendline_insight_prompt(brand, week1_display, trendline_data, context_text)
+        # return self.llm_client.generate_insight(prompt)
+        return context_text

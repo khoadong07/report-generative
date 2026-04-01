@@ -1,5 +1,5 @@
 """
-Slide 13 – Phân bố đề cập trên các kênh truyền thông (multi-brand stacked bar)
+Slide 14 – Phân bố đề cập trên các kênh truyền thông (multi-brand stacked bar)
 Input:  week1_all_df, brand, week1_display, brands_filter
 Output: {title, subtitle, insight_sections, stacked_bar_chart, channel_legend}
 
@@ -50,7 +50,7 @@ def _assign_channel_group(type_val: str) -> str:
     return "Others"
 
 
-class Slide13ChannelDistribution(SlideGenerator, InsightMixin):
+class Slide14ChannelDistribution(SlideGenerator, InsightMixin):
     """Multi-brand stacked-bar channel distribution slide."""
 
     def __init__(self, llm_client: LLMClient, topic_types: List[str]):
@@ -113,8 +113,8 @@ class Slide13ChannelDistribution(SlideGenerator, InsightMixin):
         legend = [{"group": g, "color": CHANNEL_COLORS[g]} for g in all_groups]
 
         return {
-            "title":    "PHÂN BỐ ĐỀ CẬP TRÊN CÁC KÊNH TRUYỀN THÔNG",
-            "subtitle": f"Giai đoạn: {week1_display}",
+            "title":    "PHÂN BỔ ĐỀ CẬP TRÊN CÁC KÊNH TRUYỀN THÔNG",
+            "subtitle": f"",
             "insight_sections": insight_sections,
             "stacked_bar_chart": {
                 "title": f"Phân bổ đề cập của {brand} và đối thủ trên các kênh truyền thông",

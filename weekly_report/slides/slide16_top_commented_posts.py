@@ -49,7 +49,7 @@ class Slide16TopCommentedPosts(SlideGenerator):
 
         return {
             "title":    "Top bài đăng có bình luận cao nhất",
-            "subtitle": f"Giai đoạn: {week1_display}",
+            "subtitle": f"",
             "table":    table,
         }
 
@@ -128,7 +128,7 @@ class Slide16TopCommentedPosts(SlideGenerator):
     def _empty(week1_display: str) -> Dict[str, Any]:
         return {
             "title":    "Top bài đăng có bình luận cao nhất",
-            "subtitle": f"Giai đoạn: {week1_display}",
+            "subtitle": f"",
             "table":    [],
         }
 

@@ -54,7 +54,7 @@ class Slide04TopSources(SlideGenerator):
         title = "Top nguồn có lượng tương tác cao nhất" if show_interactions else "Top nguồn có lượng đề cập cao nhất"
         return {
             "title":             title,
-            "subtitle":          f"Giai đoạn: {week1_display}",
+            "subtitle":          f"",
             "table_rows":        table_rows,
             "show_interactions": show_interactions,
         }

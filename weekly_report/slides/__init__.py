@@ -9,20 +9,18 @@ from weekly_report.slides.slide08_positive_posts  import Slide08PositivePosts
 from weekly_report.slides.slide09_negative_topics import Slide09NegativeTopics
 from weekly_report.slides.slide10_negative_posts  import Slide10NegativePosts
 from weekly_report.slides.slide11_brand_comparison    import Slide11BrandComparison
-from weekly_report.slides.slide12_brand_trendline     import Slide12BrandTrendline
-from weekly_report.slides.slide13_channel_distribution import Slide13ChannelDistribution
-from weekly_report.slides.slide14_top_sources            import Slide14TopSources
-from weekly_report.slides.slide15_topic_sentiment        import Slide15TopicSentiment
-from weekly_report.slides.slide16_top_commented_posts    import Slide16TopCommentedPosts
+from weekly_report.slides.slide12_brand_ranking       import Slide12BrandRanking
+from weekly_report.slides.slide13_brand_trendline     import Slide13BrandTrendline
+from weekly_report.slides.slide14_channel_distribution import Slide14ChannelDistribution
+from weekly_report.slides.slide15_topic_sentiment      import Slide15TopicSentiment
+from weekly_report.slides.slide16_top_commented_posts  import Slide16TopCommentedPosts
 
 __all__ = [
     "Slide01Overview", "Slide02Trendline", "Slide03Channels",
     "Slide04TopSources", "Slide05TopPosts", "Slide06Sentiment",
     "Slide07PositiveTopics", "Slide08PositivePosts",
     "Slide09NegativeTopics", "Slide10NegativePosts",
-    "Slide11BrandComparison", "Slide12BrandTrendline",
-    "Slide13ChannelDistribution",
-    "Slide14TopSources",
-    "Slide15TopicSentiment",
-    "Slide16TopCommentedPosts",
+    "Slide11BrandComparison", "Slide12BrandRanking",
+    "Slide13BrandTrendline", "Slide14ChannelDistribution",
+    "Slide15TopicSentiment", "Slide16TopCommentedPosts",
 ]

@@ -37,8 +37,8 @@ class Slide03Channels(SlideGenerator, InsightMixin):
         )
 
         return {
-            "title":                f"Phân bố lượt đề cập về {brand} trên các kênh truyền thông",
-            "subtitle":             f"Giai đoạn: {week1_display}",
+            "title":                f"PHÂN BỔ ĐỀ CẬP VỀ {brand} TRÊN CÁC KÊNH TRỰC TUYẾN",
+            "subtitle":             f"",
             "channel_distribution": channel_dist.to_dict(orient="records"),
             "top_sources":          top_sources.to_dict(orient="records"),
             "insight":              insight,

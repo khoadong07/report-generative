@@ -35,15 +35,15 @@ SLIDE_LABELS = {
     "slide_9":  "9 · Chủ đề tiêu cực",
     "slide_10": "10 · Bài đăng tiêu cực",
     "slide_11": "11 · So sánh thương hiệu",
-    "slide_12": "12 · Trendline nhiều brand",
-    "slide_13": "13 · Phân bổ kênh truyền thông",
-    "slide_14": "14 · Top nguồn thảo luận",
+    "slide_12": "12 · Xếp hạng thương hiệu",
+    "slide_13": "13 · Trendline nhiều brand",
+    "slide_14": "14 · Phân bổ kênh truyền thông",
     "slide_15": "15 · Sắc thái theo Topic",
     "slide_16": "16 · Top bài bình luận cao",
 }
 LLM_SLIDES = {
     "slide_1", "slide_2", "slide_3", "slide_6",
-    "slide_7", "slide_9", "slide_11", "slide_13", "slide_15",
+    "slide_7", "slide_9", "slide_11", "slide_14", "slide_15",
 }
 
 st.set_page_config(page_title="Weekly Report Generator", page_icon="📊",
@@ -112,6 +112,7 @@ with st.sidebar:
 
     st.subheader("4. Tuỳ chọn")
     show_interactions = st.toggle("Hiển thị Interactions", value=True)
+    has_logo = st.toggle("Chèn logo Kompa.ai", value=False)
 
     st.subheader("5. Chọn slides cần build")
     col_all, col_none = st.columns(2)
@@ -170,6 +171,7 @@ def _run_build(keys: list, existing_report=None):
                 week4_end=week4_end.strftime("%Y-%m-%d %H:%M:%S"),
                 show_interactions=show_interactions,
                 competitor_brands=competitor_brands or None,
+                has_logo=has_logo,
             )
             llm_n  = sum(1 for k in keys if k in LLM_SLIDES)
             data_n = len(keys) - llm_n
@@ -201,7 +203,7 @@ built_keys = [k for k in ALL_SLIDES if k in data]
 week1_start = week1_end - timedelta(days=7)
 
 st.markdown(f"### 📊 Báo cáo tuần — **{brand_name}**")
-st.caption(f"Kỳ: {week1_start.strftime('%d/%m/%Y')} → {week1_end.strftime('%d/%m/%Y')}  ·  Đã build: {len(built_keys)}/13 slides")
+st.caption(f"Kỳ: {week1_start.strftime('%d/%m/%Y')} → {week1_end.strftime('%d/%m/%Y')}  ·  Đã build: {len(built_keys)}/16 slides")
 st.divider()
 
 tab_labels = [SLIDE_LABELS[k] for k in built_keys] + ["📄 Prompt"]
@@ -396,6 +398,29 @@ if (t := _tab("slide_12")):
     with t:
         s = data["slide_12"]
         st.subheader(s["title"]); st.caption(s["subtitle"])
+        rows = s.get("table", [])
+        if rows:
+            df12 = pd.DataFrame(rows)
+            df12["Biến động"] = df12.apply(
+                lambda r: f"{'↑' if r['pct_change'] > 0 else ('↓' if r['pct_change'] < 0 else '→')} {r['pct_change']:+.1f}%",
+                axis=1,
+            )
+            st.dataframe(
+                df12[["stt", "brand", "total", "Biến động"]].rename(columns={
+                    "stt": "STT", "brand": "Thương hiệu", "total": "Tổng lượt thảo luận",
+                }),
+                use_container_width=True,
+                hide_index=True,
+                column_config={"Tổng lượt thảo luận": st.column_config.NumberColumn(format="%d")},
+            )
+        else:
+            st.warning("Không có dữ liệu.")
+
+# Slide 13
+if (t := _tab("slide_13")):
+    with t:
+        s = data["slide_13"]
+        st.subheader(s["title"]); st.caption(s["subtitle"])
         dfs = []
         for b in s["brands"]:
             tl = s["trendlines"].get(b, [])
@@ -420,13 +445,12 @@ if (t := _tab("slide_12")):
                 use_container_width=True, hide_index=True,
             )
 
-
-# Slide 13
-if (t := _tab("slide_13")):
+# Slide 14
+if (t := _tab("slide_14")):
     with t:
-        s = data["slide_13"]
+        s = data["slide_14"]
         st.subheader(s["title"]); st.caption(s["subtitle"])
-        st.markdown("#### Insight theo kenh")
+        st.markdown("#### Insight theo kênh")
         n_sec = len(s["insight_sections"])
         insight_cols = st.columns(max(n_sec, 1))
         for i, sec in enumerate(s["insight_sections"]):
@@ -438,7 +462,7 @@ if (t := _tab("slide_13")):
                     unsafe_allow_html=True,
                 )
                 for topic in sec.get("topics", []):
-                    st.caption(topic["label"] + " - " + str(topic["count"]) + " luot")
+                    st.caption(topic["label"] + " - " + str(topic["count"]) + " lượt")
                 st.info(sec.get("summary", ""))
         st.divider()
         chart_data = s["stacked_bar_chart"]
@@ -450,16 +474,16 @@ if (t := _tab("slide_13")):
             for row in bar_rows:
                 seg_map = {seg["group"]: seg["count"] for seg in row["segments"]}
                 chart_dict[row["topic"]] = [seg_map.get(g, 0) for g in all_groups]
-            df_bar13 = pd.DataFrame.from_dict(chart_dict, orient="index", columns=all_groups)
-            st.bar_chart(df_bar13, height=350)
+            df_bar14 = pd.DataFrame.from_dict(chart_dict, orient="index", columns=all_groups)
+            st.bar_chart(df_bar14, height=350)
             table_rows = []
             for row in bar_rows:
-                r = {"Topic": row["topic"], "Tong buzz": row["total"]}
+                r = {"Topic": row["topic"], "Tổng buzz": row["total"]}
                 for seg in row["segments"]:
                     r[seg["group"]] = str(seg["count"]) + " (" + str(seg["percent"]) + "%)"
                 table_rows.append(r)
             st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
-        st.markdown("**Chu giai kenh:**")
+        st.markdown("**Chú giải kênh:**")
         leg_cols = st.columns(len(s["channel_legend"]))
         for i, leg in enumerate(s["channel_legend"]):
             with leg_cols[i]:
@@ -468,35 +492,12 @@ if (t := _tab("slide_13")):
                     unsafe_allow_html=True,
                 )
 
-
-# Slide 14
-if (t := _tab("slide_14")):
-    with t:
-        s = data["slide_14"]
-        st.subheader(s["title"]); st.caption(s["subtitle"])
-        rows = s.get("table", [])
-        if rows:
-            df14 = pd.DataFrame(rows).rename(columns={
-                "stt": "STT",
-                "source_name": "Nguon",
-                "channel": "Kenh truyen thong",
-                "total": "Tong",
-            })
-            st.dataframe(
-                df14[["STT", "Nguon", "Kenh truyen thong", "Tong"]],
-                use_container_width=True,
-                hide_index=True,
-            )
-        else:
-            st.warning("Khong co du lieu.")
-
 # Slide 15
 if (t := _tab("slide_15")):
     with t:
         try:
             s = data["slide_15"]
             st.subheader(s["title"]); st.caption(s["subtitle"])
-
             st.info(s["insight"])
             st.divider()
 
@@ -516,7 +517,7 @@ if (t := _tab("slide_15")):
             for i, leg in enumerate(s["sentiment_legend"]):
                 with leg_cols[i]:
                     st.markdown(
-                        f'<span style="background:{leg["color"]};color:white;padding:3px 14px;' +
+                        f'<span style="background:{leg["color"]};color:white;padding:3px 14px;'
                         f'border-radius:4px;font-size:0.85rem">{leg["sentiment"]}</span>',
                         unsafe_allow_html=True,
                     )
@@ -526,42 +527,41 @@ if (t := _tab("slide_15")):
             tbl = s["summary_table"]
             topics = tbl["topics"]
             max_nsr = tbl.get("max_nsr_topic")
+
             table_rows = []
             for topic in topics:
                 nsr_val = tbl["NSR"].get(topic, 0.0)
+                pct_val = tbl["pct_change"].get(topic, 0.0)
                 nsr_str = f"★ {nsr_val:+.1f}%" if topic == max_nsr else f"{nsr_val:+.1f}%"
+                arrow   = "↑" if pct_val > 0 else ("↓" if pct_val < 0 else "→")
+                sign    = "+" if pct_val >= 0 else ""
+
+                pos_posts = tbl["positive_posts"].get(topic, [])
+                neg_posts = tbl["negative_posts"].get(topic, [])
+                pos_url = pos_posts[0]["url"] if pos_posts and pos_posts[0].get("url") else ""
+                neg_url = neg_posts[0]["url"] if neg_posts and neg_posts[0].get("url") else ""
+
                 table_rows.append({
-                    "Topic": topic,
-                    "N (buzz)": tbl["N"].get(topic, 0),
-                    "NSR (%)": nsr_str,
-                    "Tích cực nổi bật": " | ".join(tbl["top_positive"].get(topic, [])) or "—",
-                    "Tiêu cực nổi bật": " | ".join(tbl["top_negative"].get(topic, [])) or "—",
+                    "Thương hiệu \\ NSR": f"{topic} ({nsr_str})",
+                    "Biến động":          f"{arrow} {sign}{pct_val:.1f}%",
+                    "Bài đăng tích cực":  pos_url,
+                    "Bài đăng tiêu cực":  neg_url,
                 })
+
             st.dataframe(
                 pd.DataFrame(table_rows),
                 use_container_width=True,
                 hide_index=True,
-                column_config={"N (buzz)": st.column_config.NumberColumn(format="%d")},
+                column_config={
+                    "Bài đăng tích cực": st.column_config.LinkColumn(
+                        "Bài đăng tích cực", display_text="URL"
+                    ),
+                    "Bài đăng tiêu cực": st.column_config.LinkColumn(
+                        "Bài đăng tiêu cực", display_text="URL"
+                    ),
+                },
             )
 
-            st.markdown("#### Bài viết mẫu theo Topic")
-            for topic in topics:
-                samples = tbl["sample_posts"].get(topic, [])
-                if not samples:
-                    continue
-                with st.expander(f"📌 {topic} – {len(samples)} mẫu"):
-                    for post in samples:
-                        sent_color = {"Positive": "#2A9D5C", "Negative": "#E63946"}.get(post["sentiment"], "#ADB5BD")
-                        st.markdown(
-                            f'<span style="background:{sent_color};color:white;padding:2px 8px;' +
-                            f'border-radius:3px;font-size:0.75rem">{post["sentiment"]}</span> ' +
-                            f'<b>{post["label"]}</b>',
-                            unsafe_allow_html=True,
-                        )
-                        st.caption(post["text"][:250])
-                        if post.get("url") and post["url"].startswith("http"):
-                            st.markdown(f"[🔗 Xem bài]({post['url']})")
-                        st.markdown("---")
         except Exception as _e15:
             import traceback as _tb
             st.error(f"Lỗi render slide 15: {_e15}")

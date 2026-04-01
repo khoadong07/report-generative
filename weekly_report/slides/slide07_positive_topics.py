@@ -29,8 +29,8 @@ class Slide07PositiveTopics(SlideGenerator, InsightMixin):
 
         if df_pos.empty:
             return {
-                "title":           f"Các chủ đề đề cập tích cực về {brand}",
-                "subtitle":        f"Giai đoạn: {week1_display}",
+                "title":           f"CHỦ ĐỀ ĐÓNG GÓP ĐỀ CẬP TÍCH CỰC",
+                "subtitle":        f"Top 10 chủ đề nhận được phản hồi tích cực từ cộng đồng",
                 "positive_topics": [{"Labels1": "Không xác định", "count": 0}],
                 "insight":         f"Không có dữ liệu đề cập tích cực về {brand} trong giai đoạn {week1_display}.",
             }
@@ -47,8 +47,8 @@ class Slide07PositiveTopics(SlideGenerator, InsightMixin):
         )
 
         return {
-            "title":           f"Các chủ đề đề cập tích cực về {brand}",
-            "subtitle":        f"Giai đoạn: {week1_display}",
+            "title":           f"CHỦ ĐỀ ĐÓNG GÓP ĐỀ CẬP TÍCH CỰC",
+            "subtitle":        f"Top 10 chủ đề nhận được phản hồi tích cực từ cộng đồng",
             "positive_topics": agg.to_dict(orient="records"),
             "insight":         insight,
         }

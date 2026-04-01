@@ -1,5 +1,5 @@
 """
-Slide 12 – Multi-brand daily trendline + peak annotations
+Slide 13 – Multi-brand daily trendline + peak annotations
 Input:  week1_all_df, brand, week1_display, week1_start_date, week1_end_date, brands_filter
 Output: {title, subtitle, brands, trendlines, annotations}
 """
@@ -10,7 +10,7 @@ from core.data_loader import calculate_engagement
 from weekly_report.slides.base import SlideGenerator
 
 
-class Slide12BrandTrendline(SlideGenerator):
+class Slide13BrandTrendline(SlideGenerator):
     """Multi-brand trendline with peak annotations."""
 
     def __init__(self, topic_types: List[str]):
@@ -78,8 +78,8 @@ class Slide12BrandTrendline(SlideGenerator):
             }
 
         return {
-            "title":       f"Đường biểu diễn xu hướng đề cập của {brand} và một số brand khác",
-            "subtitle":    f"Giai đoạn: {week1_display}",
+            "title":       f"XU HƯỚNG ĐỀ CẬP CỦA CÁC THƯƠNG HIỆU THEO THỜI GIAN",
+            "subtitle":    f"Diễn biến thảo luận theo này và các sự kiện nổi bật tạo đỉnh thảo luận",
             "brands":      all_brands,
             "trendlines":  trendlines,
             "annotations": annotations,

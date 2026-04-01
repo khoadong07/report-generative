@@ -325,25 +325,23 @@ def get_slide15_topic_sentiment_insight_prompt(
             f"Positive {pos}% / Neutral {neu}% / Negative {neg}% | NSR {nsr:+.1f}%"
         )
 
-    # Build top labels text
+    # Build sample posts text (positive + negative)
     label_lines = []
-    for topic in all_topics:
-        pos_labels = ", ".join(summary_table["top_positive"].get(topic, [])) or "—"
-        neg_labels = ", ".join(summary_table["top_negative"].get(topic, [])) or "—"
-        label_lines.append(
-            f"- {topic}: Tích cực [{pos_labels}] | Tiêu cực [{neg_labels}]"
-        )
-
-    # Build sample posts text
     sample_lines = []
     for topic in all_topics:
-        samples = summary_table["sample_posts"].get(topic, [])
-        if samples:
+        pos_posts = summary_table["positive_posts"].get(topic, [])
+        neg_posts = summary_table["negative_posts"].get(topic, [])
+        pos_preview = (" | ".join(p["text"][:60] for p in pos_posts[:2])) or "—"
+        neg_preview = (" | ".join(p["text"][:60] for p in neg_posts[:2])) or "—"
+        label_lines.append(
+            f"- {topic}: Tích cực [{pos_preview}] | Tiêu cực [{neg_preview}]"
+        )
+        if pos_posts or neg_posts:
             sample_lines.append(f"\n[{topic}]")
-            for s in samples[:3]:
-                sample_lines.append(
-                    f"  [{s['sentiment']}] {s['label']}: {s['text'][:150]}"
-                )
+            for p in pos_posts[:2]:
+                sample_lines.append(f"  [Positive] {p['text'][:150]}")
+            for p in neg_posts[:2]:
+                sample_lines.append(f"  [Negative] {p['text'][:150]}")
 
     return f"""
 Bạn là chuyên gia phân tích truyền thông và social listening.

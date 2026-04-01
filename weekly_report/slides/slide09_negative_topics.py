@@ -29,8 +29,8 @@ class Slide09NegativeTopics(SlideGenerator, InsightMixin):
 
         if df_neg.empty:
             return {
-                "title":           f"Các chủ đề đề cập tiêu cực về {brand}",
-                "subtitle":        f"Giai đoạn: {week1_display}",
+                "title":           f"CHỦ ĐỀ TẠO NÊN ĐỀ CẬP TIÊU CỰC",
+                "subtitle":        f"Top 10 chủ đề nhận được phản hồi tiêu cực từ cộng đồng",
                 "negative_topics": [{"Labels1": "Không xác định", "count": 0}],
                 "insight":         f"Không có dữ liệu đề cập tiêu cực về {brand} trong giai đoạn {week1_display}.",
             }
@@ -47,8 +47,8 @@ class Slide09NegativeTopics(SlideGenerator, InsightMixin):
         )
 
         return {
-            "title":           f"Các chủ đề đề cập tiêu cực về {brand}",
-            "subtitle":        f"Giai đoạn: {week1_display}",
+            "title":           f"CHỦ ĐỀ TẠO NÊN ĐỀ CẬP TIÊU CỰC",
+            "subtitle":        f"Top 10 chủ đề nhận được phản hồi tiêu cực từ cộng đồng",
             "negative_topics": agg.to_dict(orient="records"),
             "insight":         insight,
         }

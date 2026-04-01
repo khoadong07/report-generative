@@ -40,6 +40,18 @@ class Slide05TopPosts(SlideGenerator):
                 if has_s: row["shares"]    = int(r.Shares)
                 row["comments"] = int(r.Comments)
                 table_rows.append(row)
+        elif "Comments" in df.columns:
+            df = df.sort_values("Comments", ascending=False).head(self.top_n)
+            df = df.head(self.top_n)
+            table_rows = [
+                {"stt": i,
+                 "content": str(r.Content) if pd.notna(r.Content) else str(r.Title),
+                 "published_date": str(r.PublishedDate),
+                 "channel": str(r.Channel),
+                 "site_name": str(r.SiteName),
+                 "url": str(r.UrlTopic)}
+                for i, r in enumerate(df.itertuples(), 1)
+            ]
         else:
             df = df.head(self.top_n)
             table_rows = [
@@ -55,7 +67,7 @@ class Slide05TopPosts(SlideGenerator):
         title = "Top bài đăng có tương tác cao nhất" if show_interactions else "Top bài đăng nổi bật"
         return {
             "title":             title,
-            "subtitle":          f"Giai đoạn: {week1_display}",
+            "subtitle":          f"",
             "table_rows":        table_rows,
             "show_interactions": show_interactions,
         }
